@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DragonMounts 2 Wiki</title>
-<meta name="description" content="The player guide to DragonMounts 2 for Minecraft Bedrock: install it, raise and breed dragons, fly in formation, and find every item in Update 2.0 Drop 1.">
-<meta name="theme-color" content="#f97316">
+<meta name="description" content="Dragon Mounts 2 Bedrock 1.2.5.1 quick guide: find eggs, hatch and tame dragons, ride, and browse equipment.">
+<meta name="theme-color" content="#f6f7f5">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
 <script>try{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(x){}</script>
@@ -30,7 +30,7 @@
 </defs></svg>
 <header class="site"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="DragonMounts 2 Wiki, home"><svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg><span>DragonMounts 2</span></a>
-<nav class="primary" aria-label="Main"><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="faq.html">FAQ</a></li></ul></nav>
+<nav class="primary" aria-label="Main"><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Release info</a></li><li><a href="faq.html">FAQ</a></li></ul></nav>
 <div class="tools">
 <button class="sbtn" id="sbtn" type="button" aria-label="Search the wiki"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span><kbd>/</kbd></button>
 <button class="ibtn" id="theme" type="button" aria-label="Switch between light and dark mode"><svg class="ico moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="ico sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
@@ -38,34 +38,26 @@
 <main id="main">
 <div class="wrap homehead">
 <h1>DragonMounts 2 Wiki</h1>
-<p class="lede">A player guide to the DragonMounts 2 add-on for Minecraft Bedrock. Covers Update 2.0 Drop 1.</p>
+<p class="lede">A concise field guide to the Bedrock add-on's dragons, eggs, riding, and equipment.</p>
+<div class="release-strip"><span>PUBLIC RELEASE</span><b>v1.2.5.1</b><span>Minecraft Bedrock 26.40+</span><a href="https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all">Official download and files</a></div>
+<p class="note"><strong>Fan-made quick reference.</strong> Mechanics and species below follow the <a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">official project wiki</a>. Check it for full instructions and updates.</p>
 </div>
 <div class="wrap" style="padding-bottom:1rem">
 <h2 id="tasks"><a class="anchor" href="#tasks" aria-label="Link to this section">#</a>What do you want to do?</h2>
-<div class="tasks"><a href="install.html#steps"><b>Install the add-on</b><span>Download it, import it and switch on both packs.</span></a><a href="install.html#updating"><b>Update from an older build</b><span>The add-on ID changed. Remove the old packs first.</span></a><a href="dragons.html#growth"><b>Raise a dragon</b><span>Baby, Juvenile and Adult stages, plus collars.</span></a><a href="breeding.html#predictor"><b>Cross breed Fire and Ice</b><span>The parent that starts the breeding sets the egg.</span></a><a href="flight.html#dynamic"><b>Take off and fly</b><span>Double jump while riding to start Dynamic Flight.</span></a><a href="flight.html#formation"><b>Fly in formation</b><span>Bind up to 4 dragons and fly in a V.</span></a><a href="items.html"><b>Find armor and tools</b><span>Everything new and changed in Update 2.0 Drop 1.</span></a><a href="install.html#troubleshooting"><b>Fix a problem</b><span>Packs not showing, dragons missing, things look broken.</span></a><a href="changelog.html"><b>See what changed</b><span>The full, searchable changelog.</span></a></div>
+<div class="tasks"><a href="dragons.html#species"><b>Find an egg</b><span>Look for nests in the Overworld, Nether, and End.</span></a><a href="breeding.html#hatching"><b>Hatch an egg</b><span>Interact until particles appear; hatching takes about 20 minutes.</span></a><a href="breeding.html#taming"><b>Tame a dragon</b><span>Feed a wild dragon raw fish, except pufferfish.</span></a><a href="flight.html#controls"><b>Ride and fly</b><span>Equip a saddle, mount, then press Jump to take off.</span></a><a href="items.html"><b>Browse equipment</b><span>Dragon scales, armor, tools, flutes, and more.</span></a><a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki"><b>Check the official guide</b><span>Use the project wiki for the complete instructions.</span></a></div>
 
-<h2 id="first-hour"><a class="anchor" href="#first-hour" aria-label="Link to this section">#</a>Your first hour</h2>
-<p class="mute">The shortest route from download to flying.</p>
-<ol class="path"><li><div><b><a href="install.html#steps">Install and enable both packs</a></b><span>Turn on the Behavior Pack and the Resource Pack in your world.</span></div></li><li><div><b><a href="breeding.html">Get a dragon egg</a></b><span>Eggs were redesigned in Update 2.0 Drop 1. Fire and Ice eggs come from breeding, and the starting parent decides which.</span></div></li><li><div><b><a href="dragons.html#growth">Raise it</a></b><span>Every dragon grows from Baby to Juvenile to Adult. Dragon collars are available too.</span></div></li><li><div><b><a href="flight.html">Ride it</a></b><span>Fire and Ice dragons are rideable.</span></div></li><li><div><b><a href="flight.html#dynamic">Take off</a></b><span>Double jump while riding to start Dynamic Flight.</span></div></li></ol>
+<h2 id="quick-start"><a class="anchor" href="#quick-start" aria-label="Link to this section">#</a>Quick start</h2>
+<ol class="path"><li><div><b><a href="dragons.html#species">Find an egg</a></b><span>Eggs occur in nests across the three dimensions.</span></div></li><li><div><b><a href="breeding.html#hatching">Hatch it</a></b><span>Interact with the egg until particles appear; allow about 20 minutes.</span></div></li><li><div><b><a href="breeding.html#taming">Tame a wild dragon</a></b><span>Feed raw fish, except pufferfish. The official guide lists a 10% chance per attempt.</span></div></li><li><div><b><a href="flight.html#controls">Mount up</a></b><span>Place a saddle, right-click to ride, and press Jump to take off.</span></div></li></ol>
 
 <h2 id="meet"><a class="anchor" href="#meet" aria-label="Link to this section">#</a>Meet the dragons</h2>
 <div class="three">
 <div><h3>Forest Dragon</h3><p>Four supplied appearances: Forest Base, Jungle, Dry and Cold.</p><a href="dragons.html#forest">Explore the Forest Dragon</a></div>
 <div><h3>Aether Dragon</h3><p>Three supplied appearances: Normal, Breeze and Wind.</p><a href="dragons.html#aether">Explore the Aether Dragon</a></div>
-<div><h3>Fire Dragon</h3><p>A fire-themed dragon with a fast takeoff. Rideable, and cross breeds with the Ice Dragon.</p><a href="dragons.html#fire">Read about the Fire Dragon</a></div>
-<div><h3>Ice Dragon</h3><p>A rideable dragon with ice visuals. Cross breeds with the Fire Dragon.</p><a href="dragons.html#ice">Read about the Ice Dragon</a></div>
-<div><h3>Light Dragon<span class="badge">New</span></h3><p>The newest dragon, added in Update 2.0 Drop 1. Comes with its own scales and feather armor.</p><a href="dragons.html#light">Read about the Light Dragon</a></div>
+<div><h3>All 17 species</h3><p>Find each dragon's breath type, egg image, and nest information.</p><a href="dragons.html#species">Browse the roster</a></div>
 </div>
 
-<h2 id="whats-new"><a class="anchor" href="#whats-new" aria-label="Link to this section">#</a>New in Update 2.0 Drop 1</h2>
-<ul>
-<li><b>Backend rewrite</b> and a new add-on ID, <code>dragonmounts2</code>.</li>
-<li><b>Light Dragon</b>, the third dragon, with its own scales and armor.</li>
-<li><b>Dynamic Flight</b>: double jump to take off.</li>
-<li><b>V-Formation Flight</b>: bind up to 4 dragons.</li>
-<li><b>Armor overhaul</b>, including Leather, Netherite, Light Feather and two bone sets.</li>
-</ul>
-<p><a href="changelog.html">Read the full changelog</a></p>
+<h2 id="sources"><a class="anchor" href="#sources" aria-label="Link to this section">#</a>Use the project sources</h2>
+<p>This wiki is an independent quick reference, not the complete manual. Check the official <a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">wiki</a> and <a href="https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all">release page</a> when a mechanic or version detail matters.</p>
 
 <h2 id="help"><a class="anchor" href="#help" aria-label="Link to this section">#</a>Spotted a mistake or a gap?</h2>
 <p>This is a community guide and it improves when players speak up. Tell us what is wrong or missing.</p>
@@ -74,18 +66,19 @@
 </main>
 <footer class="foot"><div class="wrap">
 <div class="footgrid">
-<div><a class="brand" href="index.html"><svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg><span>DragonMounts 2 Wiki</span></a><p>A community guide to the DragonMounts 2 add-on for Minecraft Bedrock. Covers Update 2.0 Drop 1.</p></div>
-<div><h4>Guide</h4><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
-<div><h4>Official links</h4><ul>
+<div><a class="brand" href="index.html"><svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg><span>DragonMounts 2 Wiki</span></a><p>Unofficial quick reference for the public Minecraft Bedrock v1.2.5.1 release.</p></div>
+<div><h4>Guide</h4><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Release info</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+<div><h4>Official sources</h4><ul>
+<li><a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">Project wiki</a></li>
 <li data-link="curseforge" hidden><a href="#">CurseForge page</a></li>
 <li data-link="discord" hidden><a href="#">Discord</a></li></ul></div>
 <div><h4>This wiki</h4><ul>
 <li data-link="issues" hidden><a href="#">Report a mistake</a></li>
 <li data-link="repo" hidden><a href="#">Source on GitHub</a></li></ul></div>
 </div>
-<small>Fan-made and not affiliated with Mojang, Microsoft or the DragonMounts team. Credits for Update 2.0 Drop 1: Kyuu, Lotus, Bedrock Add-on Server, Jão, Tomanex and Tomohiko.</small>
+<small>Fan-made quick reference; not an official Dragon Mounts 2 resource. Verify release-specific details in the official project wiki and download listing.</small>
 </div></footer>
-<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, breeding, flight, items, changelog" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
+<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, eggs, taming, riding, equipment" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
 <script src="assets/config.js"></script>
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>

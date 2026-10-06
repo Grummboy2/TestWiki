@@ -22,8 +22,7 @@
     if (ls.length && ls.every(function (l) { return l.hidden; })) col.hidden = true;
   });
 
-  /* ---------- theme and dragon preview ---------- */
-  var DR = window.DM_DRAGONS || {};
+  /* ---------- theme ---------- */
   var tbtn = $("#theme");
   if (tbtn) tbtn.addEventListener("click", function () {
     var cur = root.getAttribute("data-theme");
@@ -32,72 +31,15 @@
     root.setAttribute("data-theme", next); store.set("dm2-theme", next);
   });
 
-  function renderProfile(k) {
-    var box = $("#profile"); if (!box) return;
-    var x = DR[k]; if (!x) return;
-    box.setAttribute("data-dragon", k);
-    $$("[data-profile-dragon]", box).forEach(function (b) {
-      b.setAttribute("aria-pressed", b.getAttribute("data-profile-dragon") === k ? "true" : "false");
-    });
-    $("#pname").textContent = x.n;
-    $("#pdesc").textContent = x.d;
-    $("#pfacts").innerHTML = x.f.map(function (r) { return "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("");
-  }
-  $$("#profile [data-profile-dragon]").forEach(function (b) {
-    b.addEventListener("click", function () { renderProfile(b.getAttribute("data-profile-dragon")); });
-  });
-  $$("#profile [data-g]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      $$("#profile [data-g]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-      $("#profile").style.setProperty("--gs", b.getAttribute("data-g"));
-    });
-  });
-
-  /* ---------- breeding tool ---------- */
-  var egg = $("#eggbox");
-  if (egg) {
-    var NAMES = { fire: "Fire", ice: "Ice" };
-    var setParent = function (k) {
-      var other = k === "fire" ? "ice" : "fire";
-      var svg = $("#eggi");
-      svg.style.setProperty("--eg", DR[k].egg);
-      egg.setAttribute("data-p", k);
-      $("#eggn").textContent = NAMES[k] + " egg";
-      $("#eggt").textContent = "The " + NAMES[k] + " dragon started the breeding, so you get its egg.";
-      $("#bpartner").textContent = "Partner: " + NAMES[other] + " dragon";
-      $$("#starter button").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-p") === k ? "true" : "false"); });
-      $$("#bresults tr[data-start]").forEach(function (tr) { tr.classList.toggle("hl", tr.getAttribute("data-start") === k); });
-      svg.classList.remove("w"); void svg.getBoundingClientRect(); svg.classList.add("w");
-    };
-    $$("#starter button").forEach(function (b) { b.addEventListener("click", function () { setParent(b.getAttribute("data-p")); }); });
-    setParent("fire");
-  }
-
-  /* ---------- formation planner ---------- */
-  var sky = $("#fsky");
-  if (sky) {
-    var FP = [[300, 96], [250, 62], [250, 130], [200, 30]];
-    var fly = function (n) {
-      sky.innerHTML = FP.slice(0, n).map(function (p, i) {
-        return '<use class="fd' + (i ? "" : " lead") + '" href="#head" width="64" height="48" x="' + (p[0] - 32) + '" y="' + (p[1] - 24) + '" style="animation-delay:-' + (i * 0.8) + 's"/>';
-      }).join("");
-      $$("#fseg button").forEach(function (b) { b.setAttribute("aria-pressed", +b.getAttribute("data-n") === n ? "true" : "false"); });
-      $("#fnote").textContent = n === 1 ? "" : "You ride the leader. The other " + (n - 1) + " trail behind.";
-    };
-    $$("#fseg button").forEach(function (b) { b.addEventListener("click", function () { fly(+b.getAttribute("data-n")); }); });
-    fly(3);
-  }
-
   /* ---------- items filter ---------- */
   var il = $("#itemlist");
   if (il) {
-    var grp = "all", onlyNew = false, iq = $("#iq");
-    var cards = $$(".item", il), sets = $("#itemsets");
+    var grp = "all", iq = $("#iq");
+    var cards = $$(".item", il);
     var drawItems = function () {
       var q = iq.value.trim().toLowerCase(), n = 0;
       cards.forEach(function (c) {
         var ok = (grp === "all" || c.getAttribute("data-group") === grp) &&
-          (!onlyNew || c.getAttribute("data-status") !== "existing") &&
           (!q || c.textContent.toLowerCase().indexOf(q) > -1);
         c.hidden = !ok; if (ok) n++;
       });
@@ -110,9 +52,6 @@
         $$("#igroups button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
         drawItems();
       });
-    });
-    $("#inew").addEventListener("click", function () {
-      onlyNew = !onlyNew; this.setAttribute("aria-pressed", onlyNew ? "true" : "false"); drawItems();
     });
     iq.addEventListener("input", drawItems);
     drawItems();
@@ -135,40 +74,6 @@
     prog();
   }
 
-  /* ---------- changelog ---------- */
-  var cl = $("#cllist");
-  if (cl) {
-    var cat = "All", cq = $("#cq"), groups = $$("details.q", cl);
-    groups.forEach(function (g) { $$("li", g).forEach(function (li) { li.setAttribute("data-t", li.textContent); }); });
-    var drawLog = function () {
-      var q = cq.value.trim().toLowerCase(), n = 0;
-      groups.forEach(function (g) {
-        var hits = 0;
-        $$("li", g).forEach(function (li) {
-          var t = li.getAttribute("data-t"), i = q ? t.toLowerCase().indexOf(q) : -1;
-          var ok = !q || i > -1;
-          li.hidden = !ok;
-          li.innerHTML = (q && ok) ? esc(t.slice(0, i)) + "<mark>" + esc(t.slice(i, i + q.length)) + "</mark>" + esc(t.slice(i + q.length)) : esc(t);
-          if (ok) hits++;
-        });
-        var show = hits > 0 && (cat === "All" || g.getAttribute("data-cat") === cat);
-        g.hidden = !show;
-        if (show) { n += hits; $(".n", g).textContent = hits; if (q || cat !== "All") g.open = true; }
-      });
-      $("#ccount").textContent = n + (n === 1 ? " change" : " changes");
-      $("#cempty").hidden = n > 0;
-      if (!n) $("#cempty b").textContent = cq.value;
-    };
-    $$("#cfilters button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        cat = b.getAttribute("data-c");
-        $$("#cfilters button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-        drawLog();
-      });
-    });
-    cq.addEventListener("input", drawLog);
-    drawLog();
-  }
   $$("[data-toggle-all]").forEach(function (b) {
     b.addEventListener("click", function () {
       var open = b.getAttribute("data-toggle-all") === "open";
@@ -233,7 +138,7 @@
   }
   function drawSearch() {
     var q = sq.value.trim().toLowerCase();
-    if (!q) { sr.innerHTML = "<p>Search dragons, breeding, flight, items, install help and the changelog.</p>"; return; }
+    if (!q) { sr.innerHTML = "<p>Search dragons, eggs, taming, riding, and equipment.</p>"; return; }
     var terms = q.split(/\s+/), out = [];
     IDX.forEach(function (e) { var s = rank(e, terms); if (s) out.push([s, e]); });
     out.sort(function (a, b) { return b[0] - a[0]; });
@@ -270,6 +175,4 @@
     else if ((e.key === "/" && !typing) || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) { e.preventDefault(); openSearch(); }
   });
 
-  /* Start the dragon article preview in its documented default state. */
-  renderProfile("fire");
 })();

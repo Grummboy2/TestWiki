@@ -6,7 +6,7 @@ You do NOT need to run this to publish the site: the generated files are already
 in the project root. Run it only if you want to change content in bulk:
 
     python3 tools/build.py
-    python3 tools/build.py --url https://yourname.github.io/dragonmounts2-wiki
+    python tools/build.py --url https://Grummboy2.github.io/TestWiki
 
 Passing --url adds canonical links, social tags and a sitemap.xml.
 """
@@ -17,8 +17,35 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--url", default="", help="Public site URL, no trailing slash")
 SITE_URL = ap.parse_args().url.rstrip("/")
 
-VERSION = "Update 2.0 Drop 1"
+VERSION = "1.2.5.1"
+BEDROCK_VERSION = "26.40"
 SITE = "DragonMounts 2 Wiki"
+OFFICIAL_WIKI = "https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki"
+OFFICIAL_DRAGONS = OFFICIAL_WIKI + "/Dragons"
+OFFICIAL_ITEMS = OFFICIAL_WIKI + "/Items"
+OFFICIAL_RECIPES = OFFICIAL_WIKI + "/Recipes"
+OFFICIAL_BLOCKS = OFFICIAL_WIKI + "/Blocks"
+OFFICIAL_FILES = "https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all"
+
+DRAGON_ROSTER = [
+    ("Forest", "Poison", "Overworld: forests, jungles and flower forests", "forest"),
+    ("Aether", "Levitation", "Overworld: most biomes except Mesa", "aether"),
+    ("Fire", "Fire", "Overworld: desert, plains, dripstone caves and plateaus", "fire"),
+    ("Ice", "Ice", "Overworld: frozen biomes", "ice"),
+    ("Dark", "Dark", "No natural nest; transform a Moonlight egg with lightning", "dark"),
+    ("Enchant", "Fire", "The End: End biomes", "enchanted"),
+    ("Ender", "Ender", "Convert the vanilla Ender Dragon egg", "ender"),
+    ("Moonlight", "Dark", "Overworld: cold and deep oceans, and rivers", "moonlight"),
+    ("Nether", "Nether", "Nether: all biomes", "nether"),
+    ("Sculk", "Wither", "Overworld underground: Deep Dark only", "sculk"),
+    ("Skeleton", "Melee only", "Nether: all biomes", "skeleton"),
+    ("Storm", "Air", "No natural nest; transform a Water egg with lightning", "storm"),
+    ("Sunlight", "Fire", "Overworld: desert and desert hills", "sunlight"),
+    ("Terra", "Fire", "Overworld: Mesa / Badlands", "terra"),
+    ("Water", "Water", "Overworld: oceans and swamps", "water"),
+    ("Wither", "Wither", "No natural nest; transform a Skeleton egg with lightning", "wither"),
+    ("Zombie", "Poison", "Nether: all biomes", "zombie"),
+]
 
 def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
@@ -27,84 +54,48 @@ def e(s):
     return html.escape(s, quote=True)
 
 # ---------------------------------------------------------------- content
-DRAGONS = {
-    "fire": {"n": "Fire Dragon", "d": "A fire-themed dragon with a fast takeoff.",
-             "f": [["Rideable", "Yes"], ["Takeoff", "Fast"], ["Theme", "Fire"], ["Cross breeds with", "Ice Dragon"]], "egg": "#f97316"},
-    "ice": {"n": "Ice Dragon", "d": "A rideable dragon with ice visuals.",
-            "f": [["Rideable", "Yes"], ["Theme", "Ice"], ["Cross breeds with", "Fire Dragon"]], "egg": "#5ec2f2"},
-    "light": {"n": "Light Dragon", "d": "The newest dragon, added in Update 2.0 Drop 1.",
-              "f": [["Added in", "Update 2.0 Drop 1"], ["Related items", "Light Dragon Scales, Light Feather Armor"]], "egg": "#f5c84b"},
-}
-
-LOG = [
-    ("Overview", ["Backend rewrite", "Light Dragon", "Dynamic Flight", "V-Formation Flight", "Armor overhaul"]),
-    ("Technical", ["Compatibility framework", "Manifest updates", "Server API 2.10.0", "Performance optimisation", "ID changed to dragonmounts2"]),
-    ("Dragons", ["New Light Dragon", "Growth stages: Baby, Juvenile, Adult", "Dragon collars", "New audio", "Texture updates", "Animation rebuild"]),
-    ("Items", ["Dragon Scepter expanded", "Dragon Flute updates", "Leather Armor", "Netherite Armor", "Light Feather Armor", "Skeleton Dragon Bone Armor", "Wither Dragon Bone Armor"]),
-    ("Entities and flight", ["Dragon Keeper added", "Baby and zombie variants", "Dynamic Flight", "V-Formation Flight", "Elytra following"]),
-    ("Eggs and materials", ["Redesigned eggs", "Skeleton Dragon Bone", "Wither Dragon Bone", "Light Dragon Scales", "End Trance music disc", "en_GB support"]),
-]
-
-# name, group, status, icon, note
+# name, group, icon, note
 ITEMS = [
-    ("Dragon Core", "Tools", "existing", "i-core", "Carried over. Not listed in the Update 2.0 Drop 1 changes."),
-    ("Dragon Scepter", "Tools", "updated", "i-scepter", "Expanded in Update 2.0 Drop 1."),
-    ("Dragon Flutes", "Tools", "updated", "i-flute", "Updated in Update 2.0 Drop 1."),
-    ("Netherite Shears", "Tools", "existing", "i-shears", "Carried over. Not listed in the Update 2.0 Drop 1 changes."),
-    ("Dragon Armor", "Armor", "existing", "i-chest", "Carried over. Not listed in the Update 2.0 Drop 1 changes."),
-    ("Dragonscale Armor", "Armor", "existing", "i-chest", "Carried over. Not listed in the Update 2.0 Drop 1 changes."),
-    ("Leather Armor", "Armor", "new", "i-chest", "New in Update 2.0 Drop 1."),
-    ("Netherite Armor", "Armor", "new", "i-chest", "New in Update 2.0 Drop 1."),
-    ("Light Feather Armor", "Armor", "new", "i-feather", "New. Listed as related to the Light Dragon."),
-    ("Skeleton Dragon Bone Armor", "Armor", "new", "i-bone", "New. Pairs by name with Skeleton Dragon Bone."),
-    ("Wither Dragon Bone Armor", "Armor", "new", "i-bone", "New. Pairs by name with Wither Dragon Bone."),
-    ("Skeleton Dragon Bone", "Materials and extras", "new", "i-bone", "New material."),
-    ("Wither Dragon Bone", "Materials and extras", "new", "i-bone", "New material."),
-    ("Light Dragon Scales", "Materials and extras", "new", "i-scale", "New. Listed as related to the Light Dragon."),
-    ("Redesigned eggs", "Materials and extras", "new", "i-egg", "Dragon eggs have new designs."),
-    ("End Trance music disc", "Materials and extras", "new", "i-disc", "A new music disc."),
+    ("Dragon Scales", "Materials", "i-scale", "Shear an adult tamed dragon with Diamond or Netherite Shears. There is a 60-second cooldown; Skeleton and Wither dragons do not produce scales."),
+    ("Dragon Swords and Tools", "Equipment", "i-scepter", "15 scale-producing dragon types have swords, axes, pickaxes, shovels, hoes, bows, and shields. Aether swords deal 9 damage; other dragon swords deal 7."),
+    ("Humanoid Armor", "Armor", "i-chest", "15 four-piece sets. The documented piece values are helmet 5, chestplate 8, leggings 7, and boots 4."),
+    ("Dragon Armor", "Armor", "i-chest", "Six material types equip on the dragon. All types prevent fall damage; damage reduction depends on material and dragon."),
+    ("Dragon Flutes", "Equipment", "i-flute", "Crouch and interact with a tamed dragon while holding a flute to bind it. Use the flute to teleport it to you; 16 dye colors are listed."),
+    ("Dragon Scepter", "Equipment", "i-scepter", "Use while riding a dragon to activate its breath attack."),
+    ("Amulets", "Equipment", "i-core", "Tame a dragon, then hit it with an amulet to bind the two together. The official guide lists 18 types."),
+    ("Variation Orb", "Equipment", "i-disc", "Changes the visual variant of a tamed dragon."),
+    ("Essence Gems", "Materials", "i-bone", "Used with a Dragon Core to revive a tamed dragon as a hatchling."),
+    ("Eggs and Nests", "Eggs and blocks", "i-egg", "The official guide lists 17 dragon eggs. Find nests or use the documented block and lightning transformations."),
+    ("Dragon Core", "Eggs and blocks", "i-core", "A revival block dropped when a tamed dragon dies; it is not used to hatch eggs."),
+    ("Dragon Meat", "Food", "i-bone", "Raw dragon meat gives 3 nutrition; cooked dragon meat gives 6. Cook raw meat in a furnace."),
 ]
 
 FAQ = [
     ("Getting started", [
-        ("Which version does this wiki cover?", "Update 2.0 Drop 1 of the DragonMounts 2 add-on for Minecraft Bedrock Edition."),
+        ("Which version does this wiki cover?", f"The latest public CurseForge file listed is v{VERSION} for Minecraft Bedrock {BEDROCK_VERSION}+. Check the <a href=\"{OFFICIAL_FILES}\">official files page</a> before downloading."),
         ("How do I install the add-on?", 'Follow the <a href="install.html#steps">install steps</a>. In short: import the add-on file, then turn on both the Behavior Pack and the Resource Pack in your world.'),
-        ("Does this work on Java Edition?", "No. This guide covers the Bedrock add-on. Java Edition has its own, separate Dragon Mounts mods."),
-        ("Did the add-on ID change?", 'Yes. The ID is now <code>dragonmounts2</code>. If you are updating, <a href="install.html#updating">remove the old packs first</a>.'),
-        ("What is the Light Dragon?", 'A new dragon added in Update 2.0 Drop 1. See the <a href="dragons.html#light">Light Dragon section</a> for what is known so far.'),
+        ("Where are the official instructions?", f'Use the <a href="{OFFICIAL_WIKI}">Dragon Mounts 2 official wiki</a> for the complete guide and current mechanics.'),
     ]),
-    ("Dragons and breeding", [
-        ("Which dragons can I raise?", "Fire, Ice and the new Light Dragon. All of them grow through three stages: Baby, Juvenile and Adult."),
-        ("Which egg do I get when I cross breed?", 'The egg matches the parent that starts the breeding. Try it in the <a href="breeding.html#predictor">egg predictor</a>.'),
-        ("Which dragons can cross breed?", "Fire and Ice dragons can cross breed with each other."),
-        ("Can the Light Dragon be ridden or bred?", "This guide does not cover that yet. Riding and breeding are documented for Fire and Ice dragons."),
-        ("Are there dragon collars?", "Yes. Dragon collars are available for your dragons."),
+    ("Eggs and taming", [
+        ("How do I find a dragon egg?", f'Eggs occur in naturally generated nests across the Overworld, Nether and End. See the official <a href="{OFFICIAL_DRAGONS}">dragon guide</a> for species-specific locations.'),
+        ("How long does hatching take?", "Interact with an egg until particles appear; the official guide gives an approximate hatch time of 20 minutes."),
+        ("How do I tame a wild dragon?", "Feed it raw fish other than pufferfish. The official guide lists a 10% tame chance per attempt."),
+        ("What food is used for breeding?", "The official guide lists raw fish (except pufferfish) as breeding food. Follow its instructions for the current release."),
+        ("Can eggs change into other breeds?", f'Yes. Some eggs transform when placed on specific blocks; others require lightning. See the official <a href="{OFFICIAL_DRAGONS}">egg transformation table</a>.'),
     ]),
-    ("Riding and flight", [
-        ("Can I ride my dragon?", "Yes. Fire and Ice dragons are rideable."),
-        ("How do I take off?", 'Double jump while riding. This is part of <a href="flight.html#dynamic">Dynamic Flight</a>.'),
-        ("Can I fly several dragons together?", 'Yes. Bind up to 4 dragons for <a href="flight.html#formation">V-Formation Flight</a>.'),
-        ("Will my dragon follow me if I use an Elytra?", "Yes. Dragons can follow a player who is flying with an Elytra."),
-    ]),
-    ("Items", [
-        ("What items are new in Update 2.0 Drop 1?", 'Leather Armor, Netherite Armor, Light Feather Armor, the Skeleton and Wither Dragon Bone armors, their bone materials, Light Dragon Scales, redesigned eggs and the End Trance music disc. See the <a href="items.html">item list</a>.'),
-        ("Which items changed rather than being added?", "The Dragon Scepter was expanded and the Dragon Flutes were updated."),
-    ]),
-    ("Updating", [
-        ("I am updating from an older build. What should I do?", 'Remove the old packs from your world first, then apply the new ones. Details are in <a href="install.html#updating">Updating from an older build</a>.'),
-        ("Where can I see everything that changed?", 'The <a href="changelog.html">changelog</a> lists every change in Update 2.0 Drop 1 and you can search it.'),
+    ("Riding and items", [
+        ("How do I ride a dragon?", "Equip it with a saddle, then right-click to mount. Press Jump to take off and use arrow keys to steer while airborne."),
+        ("What does the Dragon Core do?", f'The Dragon Core is for revival, not egg hatching. See the official <a href="{OFFICIAL_BLOCKS}">blocks guide</a>.'),
+        ("Where are item recipes?", f'The official <a href="{OFFICIAL_RECIPES}">recipes guide</a> is the source for crafting grids and ingredients.'),
     ]),
 ]
 
 GLOSSARY = [
-    ("Add-on ID", "The internal name Minecraft uses to identify the add-on. In Update 2.0 Drop 1 it is dragonmounts2."),
-    ("Behavior Pack", "The half of the add-on that holds the logic: dragons, items and how they act."),
-    ("Resource Pack", "The half of the add-on that holds the visuals and sounds: models, textures and audio."),
-    ("Cross breeding", "Breeding two different dragons. Fire and Ice dragons can cross breed, and the parent that starts the breeding decides the egg."),
-    ("Dynamic Flight", "The flight system added in Update 2.0 Drop 1. Double jump while riding to take off."),
-    ("V-Formation Flight", "Binding up to 4 dragons so they fly together in a V."),
-    ("Elytra following", "Dragons following a player who is flying with an Elytra."),
-    ("Growth stages", "Baby, Juvenile and Adult. Every dragon goes through all three."),
+    ("Dragon egg", "An egg block found in a generated nest. Breaking it drops an egg item."),
+    ("Egg transformation", "Changing an egg into another breed by placing it on a documented block or striking it with lightning."),
+    ("Dragon Core", "A block dropped when a tamed dragon dies; use it with the dropped Essence Gems to revive the dragon as a hatchling."),
+    ("Dragon flute", "A bindable item used to teleport a tamed dragon to its owner."),
+    ("Raw fish", "The official guide lists raw fish, except pufferfish, for taming and breeding."),
 ]
 
 # ------------------------------------------------------------ svg pieces
@@ -132,7 +123,7 @@ PAGES = [  # file, nav label, title
     ("breeding.html", "Breeding", "Breeding"),
     ("flight.html", "Flight", "Riding and flight"),
     ("items.html", "Items", "Items"),
-    ("changelog.html", "Changelog", "Changelog"),
+    ("changelog.html", "Release info", "Release info"),
     ("faq.html", "FAQ", "FAQ and glossary"),
 ]
 
@@ -166,7 +157,7 @@ def head(file, title, desc, theme_hero=False):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(full_title)}</title>
 <meta name="description" content="{e(desc)}">
-<meta name="theme-color" content="#f97316">
+<meta name="theme-color" content="#f6f7f5">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 {canon}{og}
 <script>try{{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}}catch(x){{}}</script>
@@ -194,18 +185,19 @@ def footer():
     nav = "".join(f'<li><a href="{f}">{l}</a></li>' for f, l, _ in PAGES)
     return f"""<footer class="foot"><div class="wrap">
 <div class="footgrid">
-<div><a class="brand" href="index.html">{MARK}<span>DragonMounts 2 Wiki</span></a><p>A community guide to the DragonMounts 2 add-on for Minecraft Bedrock. Covers {VERSION}.</p></div>
+<div><a class="brand" href="index.html">{MARK}<span>DragonMounts 2 Wiki</span></a><p>Unofficial quick reference for the public Minecraft Bedrock v{VERSION} release.</p></div>
 <div><h4>Guide</h4><ul>{nav}</ul></div>
-<div><h4>Official links</h4><ul>
+<div><h4>Official sources</h4><ul>
+<li><a href="{OFFICIAL_WIKI}">Project wiki</a></li>
 <li data-link="curseforge" hidden><a href="#">CurseForge page</a></li>
 <li data-link="discord" hidden><a href="#">Discord</a></li></ul></div>
 <div><h4>This wiki</h4><ul>
 <li data-link="issues" hidden><a href="#">Report a mistake</a></li>
 <li data-link="repo" hidden><a href="#">Source on GitHub</a></li></ul></div>
 </div>
-<small>Fan-made and not affiliated with Mojang, Microsoft or the DragonMounts team. Credits for {VERSION}: Kyuu, Lotus, Bedrock Add-on Server, Jão, Tomanex and Tomohiko.</small>
+<small>Fan-made quick reference; not an official Dragon Mounts 2 resource. Verify release-specific details in the official project wiki and download listing.</small>
 </div></footer>
-<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, breeding, flight, items, changelog" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
+<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, eggs, taming, riding, equipment" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
 <script src="assets/config.js"></script>
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>
@@ -255,60 +247,47 @@ def write(path, content):
 def build_home():
     f = "index.html"
     tasks = [
-        ("Install the add-on", "Download it, import it and switch on both packs.", "install.html#steps"),
-        ("Update from an older build", "The add-on ID changed. Remove the old packs first.", "install.html#updating"),
-        ("Raise a dragon", "Baby, Juvenile and Adult stages, plus collars.", "dragons.html#growth"),
-        ("Cross breed Fire and Ice", "The parent that starts the breeding sets the egg.", "breeding.html#predictor"),
-        ("Take off and fly", "Double jump while riding to start Dynamic Flight.", "flight.html#dynamic"),
-        ("Fly in formation", "Bind up to 4 dragons and fly in a V.", "flight.html#formation"),
-        ("Find armor and tools", "Everything new and changed in Update 2.0 Drop 1.", "items.html"),
-        ("Fix a problem", "Packs not showing, dragons missing, things look broken.", "install.html#troubleshooting"),
-        ("See what changed", "The full, searchable changelog.", "changelog.html"),
+        ("Find an egg", "Look for nests in the Overworld, Nether, and End.", "dragons.html#species"),
+        ("Hatch an egg", "Interact until particles appear; hatching takes about 20 minutes.", "breeding.html#hatching"),
+        ("Tame a dragon", "Feed a wild dragon raw fish, except pufferfish.", "breeding.html#taming"),
+        ("Ride and fly", "Equip a saddle, mount, then press Jump to take off.", "flight.html#controls"),
+        ("Browse equipment", "Dragon scales, armor, tools, flutes, and more.", "items.html"),
+        ("Check the official guide", "Use the project wiki for the complete instructions.", OFFICIAL_WIKI),
     ]
     tasks_html = "".join(f'<a href="{u}"><b>{t}</b><span>{d}</span></a>' for t, d, u in tasks)
     path = [
-        ("Install and enable both packs", "Turn on the Behavior Pack and the Resource Pack in your world.", "install.html#steps"),
-        ("Get a dragon egg", "Eggs were redesigned in Update 2.0 Drop 1. Fire and Ice eggs come from breeding, and the starting parent decides which.", "breeding.html"),
-        ("Raise it", "Every dragon grows from Baby to Juvenile to Adult. Dragon collars are available too.", "dragons.html#growth"),
-        ("Ride it", "Fire and Ice dragons are rideable.", "flight.html"),
-        ("Take off", "Double jump while riding to start Dynamic Flight.", "flight.html#dynamic"),
+        ("Find an egg", "Eggs occur in nests across the three dimensions.", "dragons.html#species"),
+        ("Hatch it", "Interact with the egg until particles appear; allow about 20 minutes.", "breeding.html#hatching"),
+        ("Tame a wild dragon", "Feed raw fish, except pufferfish. The official guide lists a 10% chance per attempt.", "breeding.html#taming"),
+        ("Mount up", "Place a saddle, right-click to ride, and press Jump to take off.", "flight.html#controls"),
     ]
     path_html = "".join(f'<li><div><b><a href="{u}">{t}</a></b><span>{d}</span></div></li>' for t, d, u in path)
     TASKS_H2 = h2("tasks", "What do you want to do?")
-    idx("Your first hour", f, "first-hour", "Section")
+    idx("Quick start", f, "quick-start", "Section")
     idx("What do you want to do?", f, "tasks", "Section")
-    idx("New in Update 2.0 Drop 1", f, "whats-new", "Section")
-    body = head(f, "", f"The player guide to DragonMounts 2 for Minecraft Bedrock: install it, raise and breed dragons, fly in formation, and find every item in {VERSION}.") + header(f) + f"""<main id="main">
+    body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} quick guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f) + f"""<main id="main">
 <div class="wrap homehead">
 <h1>DragonMounts 2 Wiki</h1>
-<p class="lede">A player guide to the DragonMounts 2 add-on for Minecraft Bedrock. Covers {VERSION}.</p>
+<p class="lede">A concise field guide to the Bedrock add-on's dragons, eggs, riding, and equipment.</p>
+<div class="release-strip"><span>PUBLIC RELEASE</span><b>v{VERSION}</b><span>Minecraft Bedrock {BEDROCK_VERSION}+</span><a href="{OFFICIAL_FILES}">Official download and files</a></div>
+<p class="note"><strong>Fan-made quick reference.</strong> Mechanics and species below follow the <a href="{OFFICIAL_WIKI}">official project wiki</a>. Check it for full instructions and updates.</p>
 </div>
 <div class="wrap" style="padding-bottom:1rem">
 {TASKS_H2}
 <div class="tasks">{tasks_html}</div>
 
-{h2("first-hour", "Your first hour")}
-<p class="mute">The shortest route from download to flying.</p>
+{h2("quick-start", "Quick start")}
 <ol class="path">{path_html}</ol>
 
 {h2("meet", "Meet the dragons", f, "Section")}
 <div class="three">
 <div><h3>Forest Dragon</h3><p>Four supplied appearances: Forest Base, Jungle, Dry and Cold.</p><a href="dragons.html#forest">Explore the Forest Dragon</a></div>
 <div><h3>Aether Dragon</h3><p>Three supplied appearances: Normal, Breeze and Wind.</p><a href="dragons.html#aether">Explore the Aether Dragon</a></div>
-<div><h3>Fire Dragon</h3><p>{DRAGONS["fire"]["d"]} Rideable, and cross breeds with the Ice Dragon.</p><a href="dragons.html#fire">Read about the Fire Dragon</a></div>
-<div><h3>Ice Dragon</h3><p>{DRAGONS["ice"]["d"]} Cross breeds with the Fire Dragon.</p><a href="dragons.html#ice">Read about the Ice Dragon</a></div>
-<div><h3>Light Dragon<span class="badge">New</span></h3><p>{DRAGONS["light"]["d"]} Comes with its own scales and feather armor.</p><a href="dragons.html#light">Read about the Light Dragon</a></div>
+<div><h3>All 17 species</h3><p>Find each dragon's breath type, egg image, and nest information.</p><a href="dragons.html#species">Browse the roster</a></div>
 </div>
 
-{h2("whats-new", "New in Update 2.0 Drop 1")}
-<ul>
-<li><b>Backend rewrite</b> and a new add-on ID, <code>dragonmounts2</code>.</li>
-<li><b>Light Dragon</b>, the third dragon, with its own scales and armor.</li>
-<li><b>Dynamic Flight</b>: double jump to take off.</li>
-<li><b>V-Formation Flight</b>: bind up to 4 dragons.</li>
-<li><b>Armor overhaul</b>, including Leather, Netherite, Light Feather and two bone sets.</li>
-</ul>
-<p><a href="changelog.html">Read the full changelog</a></p>
+{h2("sources", "Use the project sources")}
+<p>This wiki is an independent quick reference, not the complete manual. Check the official <a href="{OFFICIAL_WIKI}">wiki</a> and <a href="{OFFICIAL_FILES}">release page</a> when a mechanic or version detail matters.</p>
 
 {h2("help", "Spotted a mistake or a gap?")}
 <p>This is a community guide and it improves when players speak up. Tell us what is wrong or missing.</p>
@@ -322,41 +301,38 @@ def build_home():
 def build_install():
     f = "install.html"
     steps = [
-        ("Download the add-on", "Get the DragonMounts 2 file (<code>.mcaddon</code>, or the <code>.mcpack</code> files for each pack)."),
-        ("Open the file", "Minecraft Bedrock Edition launches and imports the packs automatically."),
-        ("Create or edit a world", "Use a new world, or edit one you already have."),
-        ("Turn on both packs", "In the world settings, open Add-ons and turn on both the DragonMounts 2 Behavior Pack and the Resource Pack."),
-        ("Load the world", "The add-on ID changed to <code>dragonmounts2</code> in this update, so make sure the new packs are the ones active."),
+        ("Download the current file", f'Use the official <a href="{OFFICIAL_FILES}">CurseForge files page</a> and check that the release supports your Minecraft version.'),
+        ("Import the add-on", "Open the downloaded file with Minecraft Bedrock and wait for the import to finish."),
+        ("Apply it to a world", "In the world settings, enable the imported Dragon Mounts 2 packs, then load the world."),
+        ("Check the official guide", f'Read the project <a href="{OFFICIAL_WIKI}">wiki</a> for full instructions and current troubleshooting.'),
     ]
     steps_html = "".join(f'<li><label><input type="checkbox"><span>{t}<small>{d}</small></span></label></li>' for t, d in steps)
     for t, d in steps:
         idx(t, f, "steps", "Install step", re.sub("<[^>]+>", "", d))
     trouble = [
         ("I can't find the add-on in my world's settings",
-         "Make sure Minecraft showed a message that the import finished. If it did not, open the file again, or open the <code>.mcpack</code> files one at a time. Then fully close and reopen Minecraft, and edit your world again."),
+            "Confirm Minecraft finished importing the file, then check the world's Resource Packs and Behavior Packs lists."),
         ("Dragons or items are missing",
-         "Both packs must be on. With only the Resource Pack you get textures but no dragons. With only the Behavior Pack you get the features without the visuals. Open your world's Add-ons list and check that both DragonMounts 2 packs are active."),
-        ("Things look broken after updating",
-         f'The add-on ID changed to <code>dragonmounts2</code>. Old packs and new packs can end up active together. Remove the old packs from the world, then apply the new ones. See <a href="#updating">Updating from an older build</a>.'),
-        ("It works for me but not on my server or Realm",
-         "Packs have to be applied to the world that is actually running, not just the copy on your device. Apply both DragonMounts 2 packs to the server's world, then restart it."),
-        ("A feature does not behave as described",
-         f'Check that your Minecraft version is up to date, because {VERSION} targets Server API 2.10.0. Then compare against the <a href="changelog.html">changelog</a>. If it is still wrong, ask on Discord or report it.'),
+            "Check that every pack included with the download is enabled for the world."),
+           ("The file will not import",
+            f'Confirm your Minecraft version is supported by the selected <a href="{OFFICIAL_FILES}">release file</a>, then follow the official <a href="{OFFICIAL_WIKI}">installation notes</a>.'),
+           ("A mechanic differs from this quick guide",
+            f'Use the <a href="{OFFICIAL_WIKI}">official project wiki</a> and the notes attached to your exact release.'),
     ]
     tr_html = ""
     for q, a in trouble:
         i = "t-" + slug(q)
         idx(q, f, i, "Troubleshooting", re.sub("<[^>]+>", "", a))
         tr_html += f'<details class="q" id="{i}"><summary>{q}</summary><div class="body"><p>{a}</p></div></details>'
-    secs = [("before", "Before you start"), ("steps", "Install steps"), ("updating", "Updating from an older build"), ("info", "Add-on info"), ("troubleshooting", "Troubleshooting")]
+    secs = [("before", "Before you start"), ("steps", "Install steps"), ("version", "Version scope"), ("troubleshooting", "Troubleshooting")]
     body = f"""
 {h2("before", "Before you start", f)}
 <ul>
-<li>This guide covers the <b>Bedrock Edition</b> add-on. Java Edition has its own, separate Dragon Mounts mods.</li>
-<li>Back up your world first. In Minecraft, edit the world and choose Export World.</li>
-<li>Keep Minecraft up to date. {VERSION} targets Server API 2.10.0.</li>
+<li>This is the <b>Minecraft Bedrock</b> add-on; check the exact supported game version on the selected file.</li>
+<li>Back up your world before adding or updating packs.</li>
+<li>Use the official project pages linked here for release-specific steps.</li>
 </ul>
-<p><a class="btn" data-link="download" href="#" hidden>Get the add-on</a></p>
+<p><a class="btn" href="{OFFICIAL_FILES}">Open official downloads</a></p>
 
 {h2("steps", "Install steps", f)}
 <p>Tick each step as you go. Your progress is saved in this browser.</p>
@@ -366,23 +342,12 @@ def build_install():
 <p><button class="btn ghost sm" id="preset" type="button">Start over</button></p>
 </div>
 
-{h2("updating", "Updating from an older build", f)}
-<p>The add-on ID changed to <code>dragonmounts2</code> in this update, so do not just copy the new files over the old ones.</p>
-<ol>
-<li>Back up your world.</li>
-<li>Edit the world, open Add-ons, and remove the old DragonMounts packs.</li>
-<li>Import the new add-on file.</li>
-<li>Turn on both the new Behavior Pack and Resource Pack.</li>
-<li>Load the world and check that your dragons are still there.</li>
-</ol>
-
-{h2("info", "Add-on info", f)}
+{h2("version", "Version scope", f)}
 <dl class="facts">
-<dt>Version</dt><dd>{VERSION}</dd>
+<dt>Latest public file</dt><dd>v{VERSION}</dd>
+<dt>Listed game version</dt><dd>Minecraft Bedrock {BEDROCK_VERSION}+</dd>
 <dt>Edition</dt><dd>Minecraft Bedrock</dd>
-<dt>Add-on ID</dt><dd>dragonmounts2</dd>
-<dt>Server API</dt><dd>2.10.0</dd>
-<dt>Languages</dt><dd>en_GB support added</dd>
+<dt>Release source</dt><dd><a href="{OFFICIAL_FILES}">CurseForge</a></dd>
 </dl>
 
 {h2("troubleshooting", "Troubleshooting", f)}
@@ -395,15 +360,14 @@ def build_install():
 # ------------------------------------------------------------ DRAGONS
 def build_dragons():
     f = "dragons.html"
-    secs = [("forest", "Forest Dragon"), ("aether", "Aether Dragon"), ("compare", "Compare the dragons"), ("fire", "Fire Dragon"), ("ice", "Ice Dragon"), ("light", "Light Dragon"), ("growth", "Growth stages"), ("creatures", "Other creatures")]
-    ND = '<span class="nd">Not covered yet</span>'
-    f0 = DRAGONS["fire"]
-    facts0 = "".join(f"<dt>{e(a)}</dt><dd>{e(b)}</dd>" for a, b in f0["f"])
-    portrait = '<svg class="portrait" viewBox="-10 -20 180 150" aria-hidden="true"><g class="d d-light"><circle class="halo" cx="80" cy="64" r="72"/><circle class="halo" cx="80" cy="64" r="56"/></g><g class="d d-fire"><path d="M64 40C56 24 70 20 66 2c18 10 18 24 10 38zM86 40c0-12 10-14 8-28 14 8 14 20 6 30z"/></g><g class="d d-ice"><path d="M62 42L56 6l22 34zM82 40L86 0l14 42zM102 46l16-34 0 38z"/></g><use href="#head" width="160" height="120"/></svg>'
-    gs = lambda w, h: f'<svg class="gs" width="{w}" height="{h}" aria-hidden="true"><use href="#head" width="{w}" height="{h}"/></svg>'
+    secs = [("forest", "Forest Dragon"), ("aether", "Aether Dragon"), ("species", "All 17 species")]
+    roster_rows = ""
+    for name, breath, nest, egg in DRAGON_ROSTER:
+        idx(name + " Dragon", f, "species", "Dragon", breath + " breath; " + nest)
+        roster_rows += f'<tr><th scope="row">{e(name)} Dragon</th><td><img class="dragon-roster-thumb" src="textures/dragon.egg/dragonmounts2.dragon_egg_{egg}.png" alt="{e(name)} Dragon egg" width="64" height="64" loading="lazy"></td><td>{e(breath)}</td><td>{e(nest)}</td></tr>'
     body = f"""
 {h2("forest", "Forest Dragon", f, "Dragon")}
-<p>The Forest Dragon is first in this guide. Its supplied artwork includes four appearances; gameplay details are not documented here yet.</p>
+<p>The official guide lists Poison breath and nests in Overworld forests, jungles, and flower forests. Its appearance varies by biome rather than by gender.</p>
 <div class="dragon-showcase" aria-label="Forest Dragon appearance gallery">
 <div class="dragon-showcase-head"><b>Forest Dragon</b><span>Four supplied appearances</span></div>
 <div class="dragon-gallery">
@@ -412,11 +376,11 @@ def build_dragons():
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_dry.png" alt="Forest Dragon with its dry appearance." width="818" height="392" loading="lazy"><figcaption><b>Dry</b><span>Dry appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_cold.png" alt="Forest Dragon with its cold appearance." width="818" height="392" loading="lazy"><figcaption><b>Cold</b><span>Cold appearance</span></figcaption></figure>
 </div>
-<p class="dragon-caption">This first profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
+<p class="dragon-caption">Appearance renders supplied with this fan wiki. See the official guide for full Forest Dragon details.</p>
 </div>
 
 {h2("aether", "Aether Dragon", f, "Dragon")}
-<p>The Aether Dragon is shown here with the three supplied appearances. Gameplay details are not documented here yet.</p>
+<p>The official guide lists Levitation breath and nests across most Overworld biomes, except Mesa.</p>
 <div class="dragon-showcase" aria-label="Aether Dragon appearance gallery">
 <div class="dragon-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
 <div class="dragon-gallery">
@@ -424,192 +388,111 @@ def build_dragons():
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
 </div>
-<p class="dragon-caption">This profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
+<p class="dragon-caption">Appearance renders supplied with this fan wiki. See the official guide for full Aether Dragon details.</p>
 </div>
 
-<div class="dgrid">
-<aside class="profile" id="profile" aria-live="polite" aria-label="Dragon preview">
-<h3><span id="pname">{f0["n"]}</span>{portrait}</h3>
-<p id="pdesc">{f0["d"]}</p>
-<dl id="pfacts">{facts0}</dl>
-<div class="seg top" role="group" aria-label="Choose a dragon">
-<button type="button" data-profile-dragon="fire" aria-pressed="true">Fire</button><button type="button" data-profile-dragon="ice" aria-pressed="false">Ice</button><button type="button" data-profile-dragon="light" aria-pressed="false">Light</button></div>
-<div class="seg" role="group" aria-label="Growth stage preview">
-<button type="button" data-g=".55" aria-pressed="false">Baby</button><button type="button" data-g=".78" aria-pressed="false">Juvenile</button><button type="button" data-g="1" aria-pressed="true">Adult</button></div>
-</aside>
-<div>
-{h2("compare", "Compare the dragons", f)}
-<p>Where a cell says "Not covered yet", this guide does not have that detail for the dragon.</p>
-<div class="tbl"><table>
-<thead><tr><th></th><th>Forest</th><th>Aether</th><th>Fire</th><th>Ice</th><th>Light</th></tr></thead>
-<tbody>
-<tr><th scope="row">Rideable</th><td>{ND}</td><td>{ND}</td><td>Yes</td><td>Yes</td><td>{ND}</td></tr>
-<tr><th scope="row">Takeoff</th><td>{ND}</td><td>{ND}</td><td>Fast</td><td>{ND}</td><td>{ND}</td></tr>
-<tr><th scope="row">Theme</th><td>Forest</td><td>Aether</td><td>Fire</td><td>Ice</td><td>Light</td></tr>
-<tr><th scope="row">Cross breeds with</th><td>{ND}</td><td>{ND}</td><td>Ice Dragon</td><td>Fire Dragon</td><td>{ND}</td></tr>
-<tr><th scope="row">Added in</th><td>{ND}</td><td>{ND}</td><td>Before 2.0</td><td>Before 2.0</td><td>{VERSION}</td></tr>
-<tr><th scope="row">Texture variants</th><td>Forest Base, Jungle, Dry, Cold</td><td>Normal, Breeze, Wind</td><td>{ND}</td><td>{ND}</td><td>{ND}</td></tr>
-<tr><th scope="row">Related items</th><td>{ND}</td><td>{ND}</td><td>{ND}</td><td>{ND}</td><td>Light Dragon Scales, Light Feather Armor</td></tr>
-</tbody></table></div>
-
-{h2("fire", "Fire Dragon", f, "Dragon")}
-<p>A fire-themed dragon with a fast takeoff. It is rideable, and it can cross breed with the Ice Dragon. Fire dragons come from Fire eggs, and a Fire egg is what you get when a Fire dragon starts the breeding.</p>
-<p><a href="flight.html#dynamic">How to take off</a> &middot; <a href="breeding.html#predictor">Breed a Fire egg</a></p>
-
-{h2("ice", "Ice Dragon", f, "Dragon")}
-<p>A rideable dragon with ice visuals. It can cross breed with the Fire Dragon, and you get an Ice egg when the Ice dragon starts the breeding.</p>
-<p><a href="flight.html#dynamic">How to take off</a> &middot; <a href="breeding.html#predictor">Breed an Ice egg</a></p>
-
-{h2("light", "Light Dragon", f, "Dragon")}
-<p>The newest dragon, added in {VERSION}. It has its own gear: <a href="items.html#light-dragon-scales">Light Dragon Scales</a> and <a href="items.html#light-feather-armor">Light Feather Armor</a>.</p>
-<div class="note"><p>This guide does not yet cover whether the Light Dragon can be ridden or bred. Fire and Ice are the documented rideable dragons.</p></div>
-
-{h2("growth", "Growth stages", f, "Section")}
-<p>Every dragon grows through three stages. Use the Baby, Juvenile and Adult buttons in the preview card to see the size difference.</p>
-<ol class="stages"><li>{gs(26,20)}Baby</li><li>{gs(38,28)}Juvenile</li><li>{gs(54,40)}Adult</li></ol>
-<p>Dragon collars are available for your dragons.</p>
-
-{h2("creatures", "Other creatures", f, "Section")}
-<p>The {VERSION} changelog also lists a Dragon Keeper, along with baby and zombie variants. Dragons got new audio, updated textures and a rebuilt set of animations as well.</p>
-</div>
-</div>
+{h2("species", "All 17 species", f, "Roster")}
+<p>Egg thumbnails and quick facts below follow the <a href="{OFFICIAL_DRAGONS}">official Dragons guide</a>. For full stats, variants, and mechanics, use that source.</p>
+<div class="tbl"><table class="dragon-roster"><thead><tr><th scope="col">Dragon</th><th scope="col">Egg</th><th scope="col">Breath</th><th scope="col">Nest or egg source</th></tr></thead><tbody>{roster_rows}</tbody></table></div>
+<p class="source-line">Source: <a href="{OFFICIAL_DRAGONS}">Official Dragon Mounts 2 Dragons guide</a>.</p>
 """
-    write(f, inner_page(f, "Dragons", "Explore the Forest and Aether Dragon visuals, then compare the currently documented dragons.",
-                        "Forest and Aether Dragon artwork and texture variants, plus documented Fire, Ice and Light Dragon details.", secs, body, " has-profile"))
+    write(f, inner_page(f, "Dragons", f"Browse all 17 dragons in the public v{VERSION} release, with egg images and official nest and breath summaries.",
+                        f"The 17 Dragon Mounts 2 dragons, with official egg sources and breath types, plus Forest and Aether appearance galleries.", secs, body))
 
 # ------------------------------------------------------------ BREEDING
 def build_breeding():
     f = "breeding.html"
-    secs = [("rule", "The rule"), ("predictor", "Egg predictor"), ("tips", "Tips"), ("older", "Older versions")]
+    secs = [("hatching", "Hatching"), ("taming", "Taming and breeding"), ("transformations", "Block transformations"), ("lightning", "Lightning transformations")]
+    block_changes = [
+        ("Lava", "Fire"), ("Water", "Water"), ("Snow, Ice, Blue Ice, Packed Ice", "Ice"),
+        ("Glowstone", "Aether"), ("Magma Block", "Nether"), ("Sculk or Sculk Catalyst", "Sculk"),
+        ("Bone Block", "Skeleton"), ("Mossy Cobblestone or Soul Sand", "Zombie"),
+        ("Terracotta or Sand", "Terra"), ("End Stone", "Ender"),
+        ("Daylight Sensor (day mode)", "Sunlight"), ("Inverted Daylight Sensor (night mode)", "Moonlight"),
+        ("Bookshelves (Ender egg only)", "Enchant"),
+    ]
+    block_rows = "".join(f"<tr><th scope=\"row\">{e(block)}</th><td>{e(dragon)} Dragon Egg</td></tr>" for block, dragon in block_changes)
+    lightning_rows = "".join(f"<tr><th scope=\"row\">{e(start)} Dragon Egg</th><td>{e(result)} Dragon Egg</td></tr>" for start, result in [("Water", "Storm"), ("Skeleton", "Wither"), ("Moonlight", "Dark")])
     body = f"""
-{h2("rule", "The rule", f)}
-<p>Fire and Ice dragons can cross breed. <b>The parent that starts the breeding decides which egg you get.</b> The other dragon is the partner.</p>
+{h2("hatching", "Hatching an egg", f)}
+<p>Dragon eggs are found in naturally generated nests across the Overworld, Nether, and End. Interact with an egg until particles appear; the official guide gives an approximate incubation time of 20 minutes.</p>
+<p><a href="{OFFICIAL_DRAGONS}">Official dragon and nest guide</a></p>
 
-{h2("predictor", "Egg predictor", f, "Tool")}
-<p>Choose which dragon starts the breeding to see the egg you will get.</p>
-<div class="breedtool">
-<div class="panel" style="margin:0"><h3>Who starts the breeding?</h3>
-<div class="seg" id="starter" role="group" aria-label="Starting parent"><button type="button" data-p="fire" aria-pressed="true">Fire dragon</button><button type="button" data-p="ice" aria-pressed="false">Ice dragon</button></div>
-<p class="mute" id="bpartner" aria-live="polite">Partner: Ice dragon</p></div>
-<div class="panel egg" id="eggbox" data-p="fire" aria-live="polite" style="margin:0">
-<svg id="eggi" viewBox="0 0 80 100" aria-hidden="true"><path d="M40 3C62 3 77 40 77 64c0 22-16 33-37 33S3 86 3 64C3 40 18 3 40 3z"/><path class="sh" d="M66 40c8 30-4 54-30 56 26 4 41-8 41-32 0-9-4-18-11-24z"/><g class="mk"><path class="m-fire" d="M10 70q10-9 20 0t20 0 20 0M12 84q10-9 20 0t20 0 18-3M24 56q8-8 16 0t16 0"/><path class="m-ice" d="M40 6L26 44l14 18 14-18zM26 44L8 66M54 44l18 22M40 62v34"/></g><ellipse class="hl" cx="27" cy="26" rx="7" ry="12" transform="rotate(18 27 26)"/></svg>
-<div><b id="eggn">Fire egg</b><span id="eggt">The Fire dragon started the breeding, so you get its egg.</span></div></div>
-</div>
-<div class="tbl"><table id="bresults"><thead><tr><th>Starts the breeding</th><th>Partner</th><th>You get</th></tr></thead>
-<tbody><tr data-start="fire"><td>Fire dragon</td><td>Ice dragon</td><td>Fire egg</td></tr><tr data-start="ice"><td>Ice dragon</td><td>Fire dragon</td><td>Ice egg</td></tr></tbody></table></div>
+{h2("taming", "Taming and breeding", f)}
+<dl class="facts"><dt>Taming food</dt><dd>Any raw fish except pufferfish</dd><dt>Tame chance</dt><dd>10% per attempt</dd><dt>Breeding food</dt><dd>Any raw fish except pufferfish</dd><dt>Healing</dt><dd>Any meat; 2-4 HP</dd></dl>
+<p>These values come from the <a href="{OFFICIAL_DRAGONS}">official Dragons guide</a>.</p>
 
-{h2("tips", "Tips", f)}
-<ul>
-<li>Want a Fire egg from a Fire and Ice pair? Make sure the Fire dragon starts the breeding.</li>
-<li>Want an Ice egg from the same pair? Swap roles so the Ice dragon starts.</li>
-<li>Eggs were redesigned in {VERSION}.</li>
-<li>Breeding for the Light Dragon is not covered in this guide yet.</li>
-</ul>
+{h2("transformations", "Block transformations", f)}
+<p>Place an egg on the listed block and wait about 5 minutes. Unless noted, any egg can be the starting egg.</p>
+<div class="tbl"><table><thead><tr><th scope="col">Block</th><th scope="col">Result</th></tr></thead><tbody>{block_rows}</tbody></table></div>
 
-{h2("older", "Older versions", f)}
-{legacy("Dragons were tamed with any meat except pufferfish, and bred with any raw fish except pufferfish. Update 2.0 Drop 1 rewrote the backend, so test this in your own world before relying on it.")}
+{h2("lightning", "Lightning transformations", f)}
+<p>Lightning transforms these eggs in about 2 seconds. A natural storm or a Trident with Channeling can provide the strike.</p>
+<div class="tbl"><table><thead><tr><th scope="col">Starting egg</th><th scope="col">Result</th></tr></thead><tbody>{lightning_rows}</tbody></table></div>
+<p class="source-line">Source: <a href="{OFFICIAL_DRAGONS}">Official Dragon Mounts 2 Dragons guide</a>.</p>
 """
-    write(f, inner_page(f, "Breeding", "Fire and Ice dragons can cross breed. The parent that starts the breeding decides which egg you get.",
-                        "How breeding works in DragonMounts 2, with an egg predictor for Fire and Ice cross breeding.", secs, body))
+    write(f, inner_page(f, "Eggs and taming", f"How to hatch, tame, and transform eggs in public release v{VERSION}.",
+                        "Official egg hatching, raw-fish taming and breeding food, and egg transformation reference for Dragon Mounts 2.", secs, body))
 
 # ------------------------------------------------------------ FLIGHT
 def build_flight():
     f = "flight.html"
-    secs = [("overview", "What's new"), ("dynamic", "Dynamic Flight"), ("formation", "V-Formation Flight"), ("elytra", "Elytra following"), ("older", "Older versions")]
+    secs = [("controls", "Mount and take off"), ("inventory", "Dragon inventory")]
     body = f"""
-{h2("overview", "What's new", f)}
-<p>Fire and Ice dragons are rideable, and {VERSION} adds three flight features.</p>
-<div class="feat">
-<div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wing"/></svg><h3>Dynamic Flight</h3><p>Double jump to take off, with improved controls.</p></div>
-<div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-core"/></svg><h3>V-Formation Flight</h3><p>Bind up to 4 dragons and fly them in formation.</p></div>
-<div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-follow"/></svg><h3>Elytra following</h3><p>Dragons follow a player who is flying with an Elytra.</p></div>
-</div>
+{h2("controls", "Mount and take off", f)}
+<ol><li>Place a saddle on your dragon.</li><li>Right-click the dragon to mount it.</li><li>Press Jump to take off.</li><li>Use the arrow keys to steer while airborne.</li></ol>
+<p>The official guide describes these controls for the public release. Other control schemes may vary by platform.</p>
 
-{h2("dynamic", "Dynamic Flight", f, "Flight")}
-<p>Dynamic Flight is the new flight system. To start it, <b>double jump while riding</b> a Fire or Ice dragon.</p>
-<div class="keys" aria-label="Controls"><kbd class="k">Jump</kbd><span>then</span><kbd class="k">Jump</kbd><span>= take off</span></div>
-<p>Fire dragons have a fast takeoff.</p>
-
-{h2("formation", "V-Formation Flight", f, "Flight")}
-<p>Bind up to 4 dragons and fly them in formation. You ride the leader, and the others trail behind in a V.</p>
-<div class="panel"><h3>Formation planner</h3>
-<p class="mute">Choose how many dragons to fly together.</p>
-<div class="seg" id="fseg" role="group" aria-label="Dragons in formation"><button type="button" data-n="2" aria-pressed="false">2 dragons</button><button type="button" data-n="3" aria-pressed="true">3 dragons</button><button type="button" data-n="4" aria-pressed="false">4 dragons</button></div>
-<svg id="fsky" viewBox="0 0 400 190" role="img" aria-label="Dragons flying in a V formation"></svg>
-<p class="mute" id="fnote" aria-live="polite"></p></div>
-
-{h2("elytra", "Elytra following", f, "Flight")}
-<p>Dragons can follow a player who is flying with an Elytra. Your dragons keep up with you when you take to the air yourself.</p>
-
-{h2("older", "Older versions", f)}
-{legacy("You pressed jump to take off, steered with the movement keys while flying, and opened your dragon's inventory while riding. Dynamic Flight changes the takeoff to a double jump, so check the controls in your own world.")}
+{h2("inventory", "Dragon inventory", f)}
+<p>Open the dragon's inventory while riding to manage its equipment. The official guide documents saddle, dragon armor, and chest slots; a chest unlocks 18 storage slots.</p>
+<p class="source-line">Source: <a href="{OFFICIAL_DRAGONS}">Official Dragon Mounts 2 Dragons guide</a>.</p>
 """
-    write(f, inner_page(f, "Riding and flight", "Fire and Ice dragons are rideable. Double jump to take off, then fly alone or in a V with up to 4 dragons.",
-                        "How to ride and fly dragons in DragonMounts 2: Dynamic Flight, V-Formation Flight and Elytra following.", secs, body))
+    write(f, inner_page(f, "Riding and flight", "Mount with a saddle, press Jump to take off, and steer with the arrow keys.",
+                        "Official saddle, riding, takeoff, steering, and dragon inventory instructions for Dragon Mounts 2.", secs, body))
 
 # ------------------------------------------------------------ ITEMS
 def build_items():
     f = "items.html"
-    secs = [("all", "All items"), ("sets", "Matching sets")]
+    secs = [("all", "Items and equipment"), ("sources", "Official references")]
     cards = ""
-    for name, group, status, icon, note in ITEMS:
+    for name, group, icon, note in ITEMS:
         i = slug(name)
-        idx(name, f, i, "Item", f"{group} {status}")
-        badge = '<span class="badge">New</span>' if status == "new" else ('<span class="badge upd">Updated</span>' if status == "updated" else "")
-        cards += (f'<li class="item{" new" if status == "new" else ""}" id="{i}" data-group="{group}" data-status="{status}">'
-                  f'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#{icon}"/></svg><div><b>{name}{badge}</b><p>{note}</p></div></li>')
-    groups = ["Tools", "Armor", "Materials and extras"]
+        idx(name, f, i, "Item", group)
+        cards += (f'<li class="item" id="{i}" data-group="{group}">'
+                  f'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#{icon}"/></svg><div><b>{name}</b><p>{note}</p></div></li>')
+    groups = ["Equipment", "Armor", "Materials", "Eggs and blocks", "Food"]
     gbtn = '<button type="button" data-group="all" aria-pressed="true">All</button>' + "".join(
         f'<button type="button" data-group="{g}" aria-pressed="false">{g}</button>' for g in groups)
     body = f"""
 {h2("all", "All items", f)}
-<p>Items marked <span class="badge" style="margin:0">New</span> or <span class="badge upd" style="margin:0">Updated</span> came with {VERSION}.</p>
-<div class="finder"><input id="iq" type="search" placeholder="Search items" aria-label="Search items"><button class="btn ghost sm" id="inew" type="button" aria-pressed="false" style="min-height:44px">New or changed only</button></div>
+<p>Quick summaries of documented equipment and materials. Recipes and full item details are maintained in the official project wiki.</p>
+<div class="finder"><input id="iq" type="search" placeholder="Search items" aria-label="Search items"></div>
 <div class="chipset" id="igroups" role="group" aria-label="Filter by type">{gbtn}</div>
 <p class="count" id="icount" aria-live="polite"></p>
 <ul class="items wide" id="itemlist">{cards}</ul>
 <div class="empty" id="iempty" hidden>No items match. Clear the search or choose All.</div>
 
-{h2("sets", "Matching sets", f)}
-<p>Some new materials and armor share a name or a dragon.</p>
-<div class="sets">
-<div><h3>Light</h3><ul><li><a href="#light-dragon-scales">Light Dragon Scales</a></li><li><a href="#light-feather-armor">Light Feather Armor</a></li></ul><p class="mute">Both are listed as related to the <a href="dragons.html#light">Light Dragon</a>.</p></div>
-<div><h3>Skeleton Dragon Bone</h3><ul><li><a href="#skeleton-dragon-bone">Skeleton Dragon Bone</a></li><li><a href="#skeleton-dragon-bone-armor">Skeleton Dragon Bone Armor</a></li></ul></div>
-<div><h3>Wither Dragon Bone</h3><ul><li><a href="#wither-dragon-bone">Wither Dragon Bone</a></li><li><a href="#wither-dragon-bone-armor">Wither Dragon Bone Armor</a></li></ul></div>
-</div>
+{h2("sources", "Official references")}
+<ul><li><a href="{OFFICIAL_ITEMS}">Items and equipment</a></li><li><a href="{OFFICIAL_RECIPES}">Crafting recipes</a></li><li><a href="{OFFICIAL_BLOCKS}">Blocks and eggs</a></li></ul>
 """
-    write(f, inner_page(f, "Items", f"Every tool, armor and material in the add-on. New and changed items from {VERSION} are marked.",
-                        "Item list for DragonMounts 2: tools, armor and materials, with everything new in Update 2.0 Drop 1 marked.", secs, body))
+    write(f, inner_page(f, "Items and equipment", "A sourced quick reference to Dragon Mounts 2 equipment, materials, and food.",
+                        f"Documented items for Dragon Mounts 2 v{VERSION}, with direct links to official equipment and recipe guides.", secs, body))
 
 # ------------------------------------------------------------ CHANGELOG
 def build_changelog():
     f = "changelog.html"
-    secs = [("log", "Full changelog"), ("credits", "Credits")]
-    fb = '<button type="button" data-c="All" aria-pressed="true">All</button>' + "".join(
-        f'<button type="button" data-c="{c}" aria-pressed="false">{c}</button>' for c, _ in LOG)
-    groups = ""
-    for c, items in LOG:
-        i = "cl-" + slug(c)
-        idx(c + " changes", f, i, "Changelog")
-        for t in items:
-            idx(t, f, i, "Changelog", c)
-        lis = "".join(f"<li>{e(t)}</li>" for t in items)
-        groups += f'<details class="q" id="{i}" data-cat="{c}"{" open" if c == "Overview" else ""}><summary>{c}<span class="n">{len(items)}</span></summary><ul>{lis}</ul></details>'
+    secs = [("release", "Current public release"), ("sources", "Official release pages")]
     body = f"""
-{h2("log", f"{VERSION}: full changelog", f)}
-<div class="note"><p><strong>Updating?</strong> The add-on ID changed to <code>dragonmounts2</code>. Remove the old packs first. See <a href="install.html#updating">Updating from an older build</a>.</p></div>
-<div class="finder"><input id="cq" type="search" placeholder="Search the changelog" aria-label="Search the changelog"></div>
-<div class="chipset" id="cfilters" role="group" aria-label="Filter by category">{fb}</div>
-<p class="count" id="ccount" aria-live="polite"></p>
-<p><button class="btn ghost sm" type="button" data-toggle-all="open" data-scope="#cllist">Expand all</button> <button class="btn ghost sm" type="button" data-toggle-all="close" data-scope="#cllist">Collapse all</button></p>
-<div id="cllist">{groups}</div>
-<div class="empty" id="cempty" hidden>Nothing matches "<b></b>". Try a shorter word or choose All.</div>
+{h2("release", "Current public release", f)}
+<dl class="facts"><dt>Release</dt><dd>Dragon Mounts 2 v{VERSION}</dd><dt>Platform</dt><dd>Minecraft Bedrock</dd><dt>Listed game version</dt><dd>{BEDROCK_VERSION}+</dd></dl>
+<p>The official CurseForge listing is the authority for current files, supported game versions, and release notes. This fan wiki does not reproduce an unverified changelog.</p>
+<p><a class="btn" href="{OFFICIAL_FILES}">View official files and release notes</a></p>
 
-{h2("credits", "Credits", f)}
-<p>Kyuu, Lotus, Bedrock Add-on Server, Jão, Tomanex and Tomohiko.</p>
+{h2("sources", "Official release pages")}
+<ul><li><a href="{OFFICIAL_FILES}">CurseForge files</a></li><li><a href="{OFFICIAL_WIKI}">Project wiki</a></li></ul>
 """
-    write(f, inner_page(f, "Changelog", f"Everything that changed in {VERSION}. Search it, or filter by category.",
-                        "Full, searchable changelog for DragonMounts 2 Update 2.0 Drop 1.", secs, body))
+    write(f, inner_page(f, "Release info", f"Public release details and direct links for Dragon Mounts 2 v{VERSION}.",
+                        f"Release reference for Dragon Mounts 2 v{VERSION}, with official file listing and project wiki.", secs, body))
 
 # ------------------------------------------------------------ FAQ
 def build_faq():
@@ -643,16 +526,13 @@ def build_faq():
 def build_404():
     f = "404.html"
     write(f, head(f, "Page not found", "Page not found.") + header(f) + """<main id="main"><div class="wrap" style="padding:5rem 0">
-<h1 style="font-size:2.6rem">That page flew away</h1>
-<p class="lede">The link may be old or mistyped. Try the search, or pick a section.</p>
-<p class="cta"><a class="btn" href="index.html">Go to the home page</a> <a class="btn ghost" href="install.html">Install guide</a></p>
+<h1 style="font-size:2.6rem">Page not found</h1>
+<p class="lede">This address does not match a page in the guide.</p>
+<p class="cta"><a class="btn" href="index.html">Home</a> <a class="btn ghost" href="dragons.html">Browse dragons</a></p>
 </div></main>""" + footer())
 
 def build_assets():
-    # search + dragon data
-    for g in DRAGONS.values():
-        pass
-    js = "window.DM_DRAGONS=" + json.dumps(DRAGONS, ensure_ascii=False) + ";\nwindow.DM_INDEX=" + json.dumps(INDEX, ensure_ascii=False) + ";\n"
+    js = "window.DM_INDEX=" + json.dumps(INDEX, ensure_ascii=False) + ";\n"
     write("assets/data.js", js)
     write("assets/favicon.svg", """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120"><rect width="160" height="120" rx="26" fill="#f97316"/><g fill="#1d1008" transform="translate(16 12) scale(.8)"><path d="M58 40C44 28 28 22 10 24c14 6 26 16 34 30z"/><path d="M80 38C70 22 56 12 40 8c12 10 20 24 24 38z"/><path d="M28 90C20 66 34 44 62 40c22-4 50 4 78 22 10 6 8 16-2 18l-26 2c-6 12-22 16-36 12-14 8-30 4-48-4z"/><path d="M30 92l-14 14 22-6zM46 98l-6 16 18-12z"/><path d="M86 52c10-8 26-4 36 6-12 2-26 0-36-6z" fill="#f97316"/></g></svg>""")
     write(".nojekyll", "")

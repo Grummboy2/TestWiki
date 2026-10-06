@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Install | DragonMounts 2 Wiki</title>
 <meta name="description" content="Step-by-step install guide for the DragonMounts 2 Bedrock add-on, with update steps and troubleshooting.">
-<meta name="theme-color" content="#f97316">
+<meta name="theme-color" content="#f6f7f5">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
 <script>try{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(x){}</script>
@@ -30,7 +30,7 @@
 </defs></svg>
 <header class="site"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="DragonMounts 2 Wiki, home"><svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg><span>DragonMounts 2</span></a>
-<nav class="primary" aria-label="Main"><ul><li><a href="install.html" aria-current="page">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="faq.html">FAQ</a></li></ul></nav>
+<nav class="primary" aria-label="Main"><ul><li><a href="install.html" aria-current="page">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Release info</a></li><li><a href="faq.html">FAQ</a></li></ul></nav>
 <div class="tools">
 <button class="sbtn" id="sbtn" type="button" aria-label="Search the wiki"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span><kbd>/</kbd></button>
 <button class="ibtn" id="theme" type="button" aria-label="Switch between light and dark mode"><svg class="ico moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="ico sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
@@ -38,46 +38,35 @@
 <main id="main">
 <div class="phead"><div class="wrap"><h1>Install</h1><p class="lede">Get DragonMounts 2 running in a Bedrock world, update from an older build, and fix the usual problems.</p></div></div>
 <div class="wrap layout">
-<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#before">Before you start</a></li><li><a href="#steps">Install steps</a></li><li><a href="#updating">Updating from an older build</a></li><li><a href="#info">Add-on info</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></nav>
+<nav class="toc" aria-label="On this page"><b>On this page</b><ul><li><a href="#before">Before you start</a></li><li><a href="#steps">Install steps</a></li><li><a href="#version">Version scope</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></nav>
 <article>
 
 <h2 id="before"><a class="anchor" href="#before" aria-label="Link to this section">#</a>Before you start</h2>
 <ul>
-<li>This guide covers the <b>Bedrock Edition</b> add-on. Java Edition has its own, separate Dragon Mounts mods.</li>
-<li>Back up your world first. In Minecraft, edit the world and choose Export World.</li>
-<li>Keep Minecraft up to date. Update 2.0 Drop 1 targets Server API 2.10.0.</li>
+<li>This is the <b>Minecraft Bedrock</b> add-on; check the exact supported game version on the selected file.</li>
+<li>Back up your world before adding or updating packs.</li>
+<li>Use the official project pages linked here for release-specific steps.</li>
 </ul>
-<p><a class="btn" data-link="download" href="#" hidden>Get the add-on</a></p>
+<p><a class="btn" href="https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all">Open official downloads</a></p>
 
 <h2 id="steps"><a class="anchor" href="#steps" aria-label="Link to this section">#</a>Install steps</h2>
 <p>Tick each step as you go. Your progress is saved in this browser.</p>
 <div class="panel">
 <div class="prog"><i id="pbar"></i></div><p id="ptxt"></p>
-<ol class="steps"><li><label><input type="checkbox"><span>Download the add-on<small>Get the DragonMounts 2 file (<code>.mcaddon</code>, or the <code>.mcpack</code> files for each pack).</small></span></label></li><li><label><input type="checkbox"><span>Open the file<small>Minecraft Bedrock Edition launches and imports the packs automatically.</small></span></label></li><li><label><input type="checkbox"><span>Create or edit a world<small>Use a new world, or edit one you already have.</small></span></label></li><li><label><input type="checkbox"><span>Turn on both packs<small>In the world settings, open Add-ons and turn on both the DragonMounts 2 Behavior Pack and the Resource Pack.</small></span></label></li><li><label><input type="checkbox"><span>Load the world<small>The add-on ID changed to <code>dragonmounts2</code> in this update, so make sure the new packs are the ones active.</small></span></label></li></ol>
+<ol class="steps"><li><label><input type="checkbox"><span>Download the current file<small>Use the official <a href="https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all">CurseForge files page</a> and check that the release supports your Minecraft version.</small></span></label></li><li><label><input type="checkbox"><span>Import the add-on<small>Open the downloaded file with Minecraft Bedrock and wait for the import to finish.</small></span></label></li><li><label><input type="checkbox"><span>Apply it to a world<small>In the world settings, enable the imported Dragon Mounts 2 packs, then load the world.</small></span></label></li><li><label><input type="checkbox"><span>Check the official guide<small>Read the project <a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">wiki</a> for full instructions and current troubleshooting.</small></span></label></li></ol>
 <p><button class="btn ghost sm" id="preset" type="button">Start over</button></p>
 </div>
 
-<h2 id="updating"><a class="anchor" href="#updating" aria-label="Link to this section">#</a>Updating from an older build</h2>
-<p>The add-on ID changed to <code>dragonmounts2</code> in this update, so do not just copy the new files over the old ones.</p>
-<ol>
-<li>Back up your world.</li>
-<li>Edit the world, open Add-ons, and remove the old DragonMounts packs.</li>
-<li>Import the new add-on file.</li>
-<li>Turn on both the new Behavior Pack and Resource Pack.</li>
-<li>Load the world and check that your dragons are still there.</li>
-</ol>
-
-<h2 id="info"><a class="anchor" href="#info" aria-label="Link to this section">#</a>Add-on info</h2>
+<h2 id="version"><a class="anchor" href="#version" aria-label="Link to this section">#</a>Version scope</h2>
 <dl class="facts">
-<dt>Version</dt><dd>Update 2.0 Drop 1</dd>
+<dt>Latest public file</dt><dd>v1.2.5.1</dd>
+<dt>Listed game version</dt><dd>Minecraft Bedrock 26.40+</dd>
 <dt>Edition</dt><dd>Minecraft Bedrock</dd>
-<dt>Add-on ID</dt><dd>dragonmounts2</dd>
-<dt>Server API</dt><dd>2.10.0</dd>
-<dt>Languages</dt><dd>en_GB support added</dd>
+<dt>Release source</dt><dd><a href="https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all">CurseForge</a></dd>
 </dl>
 
 <h2 id="troubleshooting"><a class="anchor" href="#troubleshooting" aria-label="Link to this section">#</a>Troubleshooting</h2>
-<details class="q" id="t-i-can-t-find-the-add-on-in-my-world-s-settings"><summary>I can't find the add-on in my world's settings</summary><div class="body"><p>Make sure Minecraft showed a message that the import finished. If it did not, open the file again, or open the <code>.mcpack</code> files one at a time. Then fully close and reopen Minecraft, and edit your world again.</p></div></details><details class="q" id="t-dragons-or-items-are-missing"><summary>Dragons or items are missing</summary><div class="body"><p>Both packs must be on. With only the Resource Pack you get textures but no dragons. With only the Behavior Pack you get the features without the visuals. Open your world's Add-ons list and check that both DragonMounts 2 packs are active.</p></div></details><details class="q" id="t-things-look-broken-after-updating"><summary>Things look broken after updating</summary><div class="body"><p>The add-on ID changed to <code>dragonmounts2</code>. Old packs and new packs can end up active together. Remove the old packs from the world, then apply the new ones. See <a href="#updating">Updating from an older build</a>.</p></div></details><details class="q" id="t-it-works-for-me-but-not-on-my-server-or-realm"><summary>It works for me but not on my server or Realm</summary><div class="body"><p>Packs have to be applied to the world that is actually running, not just the copy on your device. Apply both DragonMounts 2 packs to the server's world, then restart it.</p></div></details><details class="q" id="t-a-feature-does-not-behave-as-described"><summary>A feature does not behave as described</summary><div class="body"><p>Check that your Minecraft version is up to date, because Update 2.0 Drop 1 targets Server API 2.10.0. Then compare against the <a href="changelog.html">changelog</a>. If it is still wrong, ask on Discord or report it.</p></div></details>
+<details class="q" id="t-i-can-t-find-the-add-on-in-my-world-s-settings"><summary>I can't find the add-on in my world's settings</summary><div class="body"><p>Confirm Minecraft finished importing the file, then check the world's Resource Packs and Behavior Packs lists.</p></div></details><details class="q" id="t-dragons-or-items-are-missing"><summary>Dragons or items are missing</summary><div class="body"><p>Check that every pack included with the download is enabled for the world.</p></div></details><details class="q" id="t-the-file-will-not-import"><summary>The file will not import</summary><div class="body"><p>Confirm your Minecraft version is supported by the selected <a href="https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all">release file</a>, then follow the official <a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">installation notes</a>.</p></div></details><details class="q" id="t-a-mechanic-differs-from-this-quick-guide"><summary>A mechanic differs from this quick guide</summary><div class="body"><p>Use the <a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">official project wiki</a> and the notes attached to your exact release.</p></div></details>
 <p class="mute" style="margin-top:1rem">Still stuck? <span data-link="discord" hidden><a href="#">Ask on Discord</a></span><span data-link="issues" hidden> or <a href="#">report it on GitHub</a></span></p>
 
 <nav class="pager" aria-label="Next and previous pages"><a class="next" href="dragons.html"><small>Next</small><b>Dragons</b></a></nav>
@@ -86,18 +75,19 @@
 </main>
 <footer class="foot"><div class="wrap">
 <div class="footgrid">
-<div><a class="brand" href="index.html"><svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg><span>DragonMounts 2 Wiki</span></a><p>A community guide to the DragonMounts 2 add-on for Minecraft Bedrock. Covers Update 2.0 Drop 1.</p></div>
-<div><h4>Guide</h4><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
-<div><h4>Official links</h4><ul>
+<div><a class="brand" href="index.html"><svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg><span>DragonMounts 2 Wiki</span></a><p>Unofficial quick reference for the public Minecraft Bedrock v1.2.5.1 release.</p></div>
+<div><h4>Guide</h4><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Release info</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+<div><h4>Official sources</h4><ul>
+<li><a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">Project wiki</a></li>
 <li data-link="curseforge" hidden><a href="#">CurseForge page</a></li>
 <li data-link="discord" hidden><a href="#">Discord</a></li></ul></div>
 <div><h4>This wiki</h4><ul>
 <li data-link="issues" hidden><a href="#">Report a mistake</a></li>
 <li data-link="repo" hidden><a href="#">Source on GitHub</a></li></ul></div>
 </div>
-<small>Fan-made and not affiliated with Mojang, Microsoft or the DragonMounts team. Credits for Update 2.0 Drop 1: Kyuu, Lotus, Bedrock Add-on Server, Jão, Tomanex and Tomohiko.</small>
+<small>Fan-made quick reference; not an official Dragon Mounts 2 resource. Verify release-specific details in the official project wiki and download listing.</small>
 </div></footer>
-<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, breeding, flight, items, changelog" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
+<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, eggs, taming, riding, equipment" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
 <script src="assets/config.js"></script>
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>

@@ -1,35 +1,35 @@
 # DragonMounts 2 Wiki
 
-A community guide to the DragonMounts 2 add-on for Minecraft Bedrock (Update 2.0 Drop 1).
-Plain HTML, CSS and JavaScript. No build step, no server, no tracking, no external fonts.
+An unofficial quick reference for the Dragon Mounts 2 Minecraft Bedrock add-on. It follows the public v1.2.5.1 release; check the official file listing for the supported game version and latest release notes.
 
-## Publish it for free on GitHub Pages
+- [Official CurseForge files](https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all)
+- [Official project wiki](https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki)
+- [Report a wiki issue](https://github.com/Grummboy2/TestWiki/issues/new)
 
-1. Create a free account at github.com if you do not have one.
-2. Click **New repository**. Name it something like `dragonmounts2-wiki`. Set it to **Public**.
-3. On the new repository page, click **uploading an existing file**.
-4. Unzip this project, open the folder, select **everything inside it** (not the folder itself) and drag it into the upload area. Make sure `index.html` ends up at the top level of the repository. Click **Commit changes**.
-5. Go to **Settings > Pages**. Under **Build and deployment**, set Source to **Deploy from a branch**, Branch to **main**, Folder to **/ (root)**, then Save.
-6. After about a minute your site is live at `https://YOUR-USERNAME.github.io/dragonmounts2-wiki/`.
+## Edit and preview
 
-Two files are easy to miss when uploading: `.nojekyll` (a hidden file) and the `assets` folder. If the site looks unstyled, one of them did not upload.
+The generated HTML pages are served directly by GitHub Pages. For content changes, edit `tools/build.py` and run:
 
-### Will it stay online?
-GitHub Pages is free for public repositories and keeps serving the site for as long as the repository exists. For extra safety, keep a copy of this folder on your computer. Cloudflare Pages and Netlify also host static sites like this for free if you ever want a second home, and the same files work unchanged.
+```powershell
+python tools/build.py
+```
 
-## Edit the site
+This regenerates the pages and `assets/data.js`; do not hand-edit generated HTML. Open `index.html` locally to preview. To add search/share canonical URLs, run `python tools/build.py --url https://Grummboy2.github.io/TestWiki`.
 
-- **Links and buttons:** open `assets/config.js`. Set `issues` and `repo` to your GitHub URLs and the matching buttons appear. Change `download` if you want the main button to point somewhere else.
-- **Small text fixes:** edit the `.html` files directly. On GitHub you can click a file, then the pencil icon.
-- **Bigger changes:** all content lives in `tools/build.py`. Edit it, then run `python3 tools/build.py`. This regenerates every page, so do not mix it with hand-edits to the HTML files.
-- **Search, sitemap and share previews:** run `python3 tools/build.py --url https://YOUR-USERNAME.github.io/dragonmounts2-wiki` once your address is known.
+## Publish changes
 
-## What is in the folder
+GitHub Pages deploys committed files from the `main` branch and repository root. Local edits do not appear on GitHub until they are committed and pushed; allow the Pages deployment to finish before checking the site.
 
-| File | Purpose |
+The dragon images are tracked under `textures/`. Keep their paths relative to the page, including exact letter case, for example `textures/dragon.entity/dragonmounts2.forest_base.png`. GitHub Pages serves these PNGs directly; avoid computer-specific paths such as `C:\Users\...`.
+
+In **Settings > Pages**, use **Deploy from a branch**, branch `main`, folder `/ (root)`. Keep `.nojekyll`, `assets/`, and `textures/` in the repository.
+
+## Project files
+
+| Path | Purpose |
 | --- | --- |
-| `index.html` | Home page |
-| `install.html`, `dragons.html`, `breeding.html`, `flight.html`, `items.html`, `changelog.html`, `faq.html` | Guide pages |
-| `404.html` | Shown for broken links |
-| `assets/` | Styles, scripts, search data, icon |
-| `CONTENT-TODO.md` | Details worth adding to make the guide complete |
+| `tools/build.py` | Page content and static-site generator |
+| `index.html` and guide pages | Generated static pages |
+| `assets/` | Shared styling, behavior, configuration, and search index |
+| `textures/` | Dragon and egg artwork used by the galleries |
+| `CONTENT-TODO.md` | Remaining work that needs source confirmation or new assets |
