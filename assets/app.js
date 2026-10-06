@@ -270,66 +270,6 @@
     else if ((e.key === "/" && !typing) || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) { e.preventDefault(); openSearch(); }
   });
 
-  /* ---------- home hero: eye + particles ---------- */
-  var eye = $(".eye"), cv = $("#fx");
-  if (eye && cv && cv.getContext("2d")) {
-    var iris = $("#iris"), cx = cv.getContext("2d"), P = [], W = 0, H = 0, run = true, frame = 0;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    addEventListener("pointermove", function (e) {
-      iris.style.transform = "translate(" + ((e.clientX / innerWidth - 0.5) * 34).toFixed(1) + "px," + ((e.clientY / innerHeight - 0.5) * 14).toFixed(1) + "px)";
-    });
-    var kind = function () { return root.getAttribute("data-dragon"); };
-    var size = function () { var r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); };
-    var mk = function (init) {
-      var k = kind(), R = Math.random, p = { x: R() * W, y: R() * H, vx: (R() - 0.5) * 0.3, vy: 0, r: 1 + R() * 2, l: init ? R() : 1, d: 0.003 + R() * 0.004, k: k, b: 0 };
-      if (k === "fire") { if (!init) p.y = H + 5; p.vy = -(0.4 + R() * 1.1); p.vx = (R() - 0.5) * 0.5; p.h = 15 + R() * 30; }
-      else if (k === "ice") { if (!init) p.y = -5; p.vy = 0.25 + R() * 0.6; p.h = 195 + R() * 20; p.d = 0.0015 + R() * 0.002; }
-      else { p.vy = (R() - 0.5) * 0.3; p.h = 40 + R() * 15; p.d = 0.002 + R() * 0.003; }
-      return p;
-    };
-    var tick = function (t) {
-      frame = 0;
-      if (run && W) {
-        var k = kind(), n = Math.min(70, Math.round(W / 16));
-        cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = k === "ice" ? "source-over" : "lighter";
-        if (P.length < n) P.push(mk(false));
-        P = P.filter(function (p) {
-          p.l -= p.d * (p.b ? 3 : 1); if (p.l <= 0) return false;
-          if (p.b) { p.vx *= 0.97; p.vy *= 0.97; }
-          p.x += p.vx + (p.b ? 0 : Math.sin(t / 700 + p.y / 40) * 0.25); p.y += p.vy;
-          cx.globalAlpha = (p.k === "light" && !p.b ? Math.sin(Math.PI * p.l) : Math.min(1, p.l * 2)) * 0.85;
-          cx.fillStyle = "hsl(" + p.h + "," + (p.k === "ice" ? 85 : 100) + "%," + (p.k === "ice" ? 85 : p.k === "light" ? 72 : 58) + "%)";
-          cx.beginPath(); cx.arc(p.x, p.y, p.r * (p.k === "fire" && !p.b ? p.l + 0.3 : 1), 0, 6.283); cx.fill();
-          return p.y > -20 && p.y < H + 20 && p.x > -20 && p.x < W + 20;
-        });
-      }
-      if (run) frame = requestAnimationFrame(tick);
-    };
-    var burst = function () {
-      if (calm) return;
-      var r = eye.getBoundingClientRect(), h = cv.getBoundingClientRect(), R = Math.random;
-      for (var i = 0; i < 48; i++) {
-        var a = R() * 6.283, s = 1 + R() * 3.5, p = mk(false);
-        p.x = r.left - h.left + r.width / 2; p.y = r.top - h.top + r.height / 2;
-        p.vx = Math.cos(a) * s; p.vy = Math.sin(a) * s; p.b = 1; p.l = 1; p.d = 0.01 + R() * 0.01; p.r = 1.5 + R() * 2.5; P.push(p);
-      }
-    };
-    eye.addEventListener("click", burst);
-    eye.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); burst(); } });
-    document.addEventListener("dragon", function () { P.forEach(function (p) { p.l = Math.min(p.l, 0.25); }); });
-    addEventListener("resize", size);
-    new IntersectionObserver(function (es) {
-      run = es[0].isIntersecting;
-      if (run && !calm && !frame) frame = requestAnimationFrame(tick);
-    }).observe($(".hero-wrap"));
-    size();
-    if (!calm) {
-      for (var j = 0; j < Math.min(70, Math.round(W / 16)); j++) P.push(mk(true));
-      frame = requestAnimationFrame(tick);
-      (function b() { setTimeout(function () { eye.classList.remove("bl"); void eye.getBoundingClientRect(); eye.classList.add("bl"); b(); }, 2500 + Math.random() * 3500); })();
-    }
-  }
-
-  /* start up */
-  setDragon(root.getAttribute("data-dragon") || "fire", false);
+  /* Start the dragon article preview in its documented default state. */
+  renderProfile("fire");
 })();

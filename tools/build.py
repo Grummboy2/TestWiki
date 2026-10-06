@@ -293,6 +293,8 @@ def build_home():
 
 {h2("meet", "Meet the dragons", f, "Section")}
 <div class="three">
+<div><h3>Forest Dragon</h3><p>Four supplied appearances: Forest Base, Jungle, Dry and Cold.</p><a href="dragons.html#forest">Explore the Forest Dragon</a></div>
+<div><h3>Aether Dragon</h3><p>Three supplied appearances: Normal, Breeze and Wind.</p><a href="dragons.html#aether">Explore the Aether Dragon</a></div>
 <div><h3>Fire Dragon</h3><p>{DRAGONS["fire"]["d"]} Rideable, and cross breeds with the Ice Dragon.</p><a href="dragons.html#fire">Read about the Fire Dragon</a></div>
 <div><h3>Ice Dragon</h3><p>{DRAGONS["ice"]["d"]} Cross breeds with the Fire Dragon.</p><a href="dragons.html#ice">Read about the Ice Dragon</a></div>
 <div><h3>Light Dragon<span class="badge">New</span></h3><p>{DRAGONS["light"]["d"]} Comes with its own scales and feather armor.</p><a href="dragons.html#light">Read about the Light Dragon</a></div>
@@ -393,13 +395,38 @@ def build_install():
 # ------------------------------------------------------------ DRAGONS
 def build_dragons():
     f = "dragons.html"
-    secs = [("compare", "Compare the dragons"), ("fire", "Fire Dragon"), ("ice", "Ice Dragon"), ("light", "Light Dragon"), ("growth", "Growth stages"), ("creatures", "Other creatures")]
+    secs = [("forest", "Forest Dragon"), ("aether", "Aether Dragon"), ("compare", "Compare the dragons"), ("fire", "Fire Dragon"), ("ice", "Ice Dragon"), ("light", "Light Dragon"), ("growth", "Growth stages"), ("creatures", "Other creatures")]
     ND = '<span class="nd">Not covered yet</span>'
     f0 = DRAGONS["fire"]
     facts0 = "".join(f"<dt>{e(a)}</dt><dd>{e(b)}</dd>" for a, b in f0["f"])
     portrait = '<svg class="portrait" viewBox="-10 -20 180 150" aria-hidden="true"><g class="d d-light"><circle class="halo" cx="80" cy="64" r="72"/><circle class="halo" cx="80" cy="64" r="56"/></g><g class="d d-fire"><path d="M64 40C56 24 70 20 66 2c18 10 18 24 10 38zM86 40c0-12 10-14 8-28 14 8 14 20 6 30z"/></g><g class="d d-ice"><path d="M62 42L56 6l22 34zM82 40L86 0l14 42zM102 46l16-34 0 38z"/></g><use href="#head" width="160" height="120"/></svg>'
     gs = lambda w, h: f'<svg class="gs" width="{w}" height="{h}" aria-hidden="true"><use href="#head" width="{w}" height="{h}"/></svg>'
     body = f"""
+{h2("forest", "Forest Dragon", f, "Dragon")}
+<p>The Forest Dragon is first in this guide. Its supplied artwork includes four appearances; gameplay details are not documented here yet.</p>
+<div class="forest-showcase" aria-label="Forest Dragon appearance gallery">
+<div class="forest-showcase-head"><b>Forest Dragon</b><span>Four supplied appearances</span></div>
+<div class="forest-gallery">
+<figure><img src="textures/dragon.entity/dragonmounts2.forest_base.png" alt="Forest Dragon with its base forest appearance." width="818" height="392"><figcaption><b>Forest Base</b><span>Base appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.forest_jungle.png" alt="Forest Dragon with its jungle appearance." width="818" height="392" loading="lazy"><figcaption><b>Jungle</b><span>Jungle appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.forest_dry.png" alt="Forest Dragon with its dry appearance." width="818" height="392" loading="lazy"><figcaption><b>Dry</b><span>Dry appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.forest_cold.png" alt="Forest Dragon with its cold appearance." width="818" height="392" loading="lazy"><figcaption><b>Cold</b><span>Cold appearance</span></figcaption></figure>
+</div>
+<p class="forest-caption">This first profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
+</div>
+
+{h2("aether", "Aether Dragon", f, "Dragon")}
+<p>The Aether Dragon is shown here with the three supplied appearances. Gameplay details are not documented here yet.</p>
+<div class="forest-showcase" aria-label="Aether Dragon appearance gallery">
+<div class="forest-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
+<div class="forest-gallery">
+<figure><img src="textures/dragon.entity/dragonmounts2.aeteher_normal.png" alt="Aether Dragon with its normal appearance." width="818" height="392"><figcaption><b>Aether Normal</b><span>Normal appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.aeteher_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.aeteher_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
+</div>
+<p class="forest-caption">This profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
+</div>
+
 <div class="dgrid">
 <aside class="profile" id="profile" aria-live="polite" aria-label="Dragon preview">
 <h3><span id="pname">{f0["n"]}</span>{portrait}</h3>
@@ -414,14 +441,15 @@ def build_dragons():
 {h2("compare", "Compare the dragons", f)}
 <p>Where a cell says "Not covered yet", this guide does not have that detail for the dragon.</p>
 <div class="tbl"><table>
-<thead><tr><th></th><th>Fire</th><th>Ice</th><th>Light</th></tr></thead>
+<thead><tr><th></th><th>Forest</th><th>Aether</th><th>Fire</th><th>Ice</th><th>Light</th></tr></thead>
 <tbody>
-<tr><th scope="row">Rideable</th><td>Yes</td><td>Yes</td><td>{ND}</td></tr>
-<tr><th scope="row">Takeoff</th><td>Fast</td><td>{ND}</td><td>{ND}</td></tr>
-<tr><th scope="row">Theme</th><td>Fire</td><td>Ice</td><td>Light</td></tr>
-<tr><th scope="row">Cross breeds with</th><td>Ice Dragon</td><td>Fire Dragon</td><td>{ND}</td></tr>
-<tr><th scope="row">Added in</th><td>Before 2.0</td><td>Before 2.0</td><td>{VERSION}</td></tr>
-<tr><th scope="row">Related items</th><td>{ND}</td><td>{ND}</td><td>Light Dragon Scales, Light Feather Armor</td></tr>
+<tr><th scope="row">Rideable</th><td>{ND}</td><td>{ND}</td><td>Yes</td><td>Yes</td><td>{ND}</td></tr>
+<tr><th scope="row">Takeoff</th><td>{ND}</td><td>{ND}</td><td>Fast</td><td>{ND}</td><td>{ND}</td></tr>
+<tr><th scope="row">Theme</th><td>Forest</td><td>Aether</td><td>Fire</td><td>Ice</td><td>Light</td></tr>
+<tr><th scope="row">Cross breeds with</th><td>{ND}</td><td>{ND}</td><td>Ice Dragon</td><td>Fire Dragon</td><td>{ND}</td></tr>
+<tr><th scope="row">Added in</th><td>{ND}</td><td>{ND}</td><td>Before 2.0</td><td>Before 2.0</td><td>{VERSION}</td></tr>
+<tr><th scope="row">Texture variants</th><td>Forest Base, Jungle, Dry, Cold</td><td>Normal, Breeze, Wind</td><td>{ND}</td><td>{ND}</td><td>{ND}</td></tr>
+<tr><th scope="row">Related items</th><td>{ND}</td><td>{ND}</td><td>{ND}</td><td>{ND}</td><td>Light Dragon Scales, Light Feather Armor</td></tr>
 </tbody></table></div>
 
 {h2("fire", "Fire Dragon", f, "Dragon")}
@@ -446,8 +474,8 @@ def build_dragons():
 </div>
 </div>
 """
-    write(f, inner_page(f, "Dragons", f"Three dragons are available: Fire, Ice and the new Light Dragon. All of them grow through three stages.",
-                        "Guide to the Fire, Ice and Light dragons in DragonMounts 2: abilities, growth stages and how they compare.", secs, body, " has-profile"))
+    write(f, inner_page(f, "Dragons", "Explore the Forest and Aether Dragon visuals, then compare the currently documented dragons.",
+                        "Forest and Aether Dragon artwork and texture variants, plus documented Fire, Ice and Light Dragon details.", secs, body, " has-profile"))
 
 # ------------------------------------------------------------ BREEDING
 def build_breeding():
