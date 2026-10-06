@@ -404,27 +404,27 @@ def build_dragons():
     body = f"""
 {h2("forest", "Forest Dragon", f, "Dragon")}
 <p>The Forest Dragon is first in this guide. Its supplied artwork includes four appearances; gameplay details are not documented here yet.</p>
-<div class="forest-showcase" aria-label="Forest Dragon appearance gallery">
-<div class="forest-showcase-head"><b>Forest Dragon</b><span>Four supplied appearances</span></div>
-<div class="forest-gallery">
+<div class="dragon-showcase" aria-label="Forest Dragon appearance gallery">
+<div class="dragon-showcase-head"><b>Forest Dragon</b><span>Four supplied appearances</span></div>
+<div class="dragon-gallery">
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_base.png" alt="Forest Dragon with its base forest appearance." width="818" height="392"><figcaption><b>Forest Base</b><span>Base appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_jungle.png" alt="Forest Dragon with its jungle appearance." width="818" height="392" loading="lazy"><figcaption><b>Jungle</b><span>Jungle appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_dry.png" alt="Forest Dragon with its dry appearance." width="818" height="392" loading="lazy"><figcaption><b>Dry</b><span>Dry appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_cold.png" alt="Forest Dragon with its cold appearance." width="818" height="392" loading="lazy"><figcaption><b>Cold</b><span>Cold appearance</span></figcaption></figure>
 </div>
-<p class="forest-caption">This first profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
+<p class="dragon-caption">This first profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
 </div>
 
 {h2("aether", "Aether Dragon", f, "Dragon")}
 <p>The Aether Dragon is shown here with the three supplied appearances. Gameplay details are not documented here yet.</p>
-<div class="forest-showcase" aria-label="Aether Dragon appearance gallery">
-<div class="forest-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
-<div class="forest-gallery">
+<div class="dragon-showcase" aria-label="Aether Dragon appearance gallery">
+<div class="dragon-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
+<div class="dragon-gallery">
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_normal.png" alt="Aether Dragon with its normal appearance." width="818" height="392"><figcaption><b>Aether Normal</b><span>Normal appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
 </div>
-<p class="forest-caption">This profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
+<p class="dragon-caption">This profile focuses on the provided model renders. Ride, breeding and other gameplay details remain to be confirmed.</p>
 </div>
 
 <div class="dgrid">
