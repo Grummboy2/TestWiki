@@ -277,8 +277,8 @@
 
   /* ---------- home hero: eye + particles ---------- */
   var eye = $(".eye"), cv = $("#fx");
-  if (eye && cv) {
-    var iris = $("#iris"), cx = cv.getContext("2d"), P = [], W = 0, H = 0, run = true;
+  if (eye && cv && cv.getContext("2d")) {
+    var iris = $("#iris"), cx = cv.getContext("2d"), P = [], W = 0, H = 0, run = true, frame = 0;
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     addEventListener("pointermove", function (e) {
       iris.style.transform = "translate(" + ((e.clientX / innerWidth - 0.5) * 34).toFixed(1) + "px," + ((e.clientY / innerHeight - 0.5) * 14).toFixed(1) + "px)";
@@ -293,6 +293,7 @@
       return p;
     };
     var tick = function (t) {
+      frame = 0;
       if (run && W) {
         var k = kind(), n = Math.min(70, Math.round(W / 16));
         cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = k === "ice" ? "source-over" : "lighter";
@@ -307,7 +308,7 @@
           return p.y > -20 && p.y < H + 20 && p.x > -20 && p.x < W + 20;
         });
       }
-      requestAnimationFrame(tick);
+      if (run) frame = requestAnimationFrame(tick);
     };
     var burst = function () {
       if (calm) return;
@@ -322,11 +323,14 @@
     eye.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); burst(); } });
     document.addEventListener("dragon", function () { P.forEach(function (p) { p.l = Math.min(p.l, 0.25); }); });
     addEventListener("resize", size);
-    new IntersectionObserver(function (es) { run = es[0].isIntersecting; }).observe($(".hero-wrap"));
+    new IntersectionObserver(function (es) {
+      run = es[0].isIntersecting;
+      if (run && !calm && !frame) frame = requestAnimationFrame(tick);
+    }).observe($(".hero-wrap"));
     size();
     if (!calm) {
       for (var j = 0; j < Math.min(70, Math.round(W / 16)); j++) P.push(mk(true));
-      requestAnimationFrame(tick);
+      frame = requestAnimationFrame(tick);
       (function b() { setTimeout(function () { eye.classList.remove("bl"); void eye.getBoundingClientRect(); eye.classList.add("bl"); b(); }, 2500 + Math.random() * 3500); })();
     }
   }
