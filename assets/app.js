@@ -10,8 +10,6 @@
     get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   };
-  var calm = window.matchMedia && matchMedia("(prefers-reduced-motion:reduce)").matches;
-
   /* ---------- config-driven links ---------- */
   $$("[data-link]").forEach(function (el) {
     var url = CFG[el.getAttribute("data-link")];
@@ -24,17 +22,8 @@
     if (ls.length && ls.every(function (l) { return l.hidden; })) col.hidden = true;
   });
 
-  /* ---------- theme and dragon accent ---------- */
+  /* ---------- theme and dragon preview ---------- */
   var DR = window.DM_DRAGONS || {};
-  function setDragon(k, save) {
-    if (!DR[k]) k = "fire";
-    root.setAttribute("data-dragon", k);
-    if (save !== false) store.set("dm2-dragon", k);
-    $$("[data-d]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-d") === k ? "true" : "false"); });
-    renderProfile(k);
-    document.dispatchEvent(new Event("dragon"));
-  }
-  $$("[data-d]").forEach(function (b) { b.addEventListener("click", function () { setDragon(b.getAttribute("data-d")); }); });
   var tbtn = $("#theme");
   if (tbtn) tbtn.addEventListener("click", function () {
     var cur = root.getAttribute("data-theme");
@@ -43,14 +32,20 @@
     root.setAttribute("data-theme", next); store.set("dm2-theme", next);
   });
 
-  /* ---------- dragon profile (dragons page) ---------- */
   function renderProfile(k) {
     var box = $("#profile"); if (!box) return;
     var x = DR[k]; if (!x) return;
+    box.setAttribute("data-dragon", k);
+    $$("[data-profile-dragon]", box).forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-profile-dragon") === k ? "true" : "false");
+    });
     $("#pname").textContent = x.n;
     $("#pdesc").textContent = x.d;
     $("#pfacts").innerHTML = x.f.map(function (r) { return "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("");
   }
+  $$("#profile [data-profile-dragon]").forEach(function (b) {
+    b.addEventListener("click", function () { renderProfile(b.getAttribute("data-profile-dragon")); });
+  });
   $$("#profile [data-g]").forEach(function (b) {
     b.addEventListener("click", function () {
       $$("#profile [data-g]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });

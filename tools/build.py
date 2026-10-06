@@ -169,7 +169,7 @@ def head(file, title, desc, theme_hero=False):
 <meta name="theme-color" content="#f97316">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 {canon}{og}
-<script>try{{var d=localStorage.getItem("dm2-dragon"),t=localStorage.getItem("dm2-theme"),r=document.documentElement;r.setAttribute("data-dragon",d||"fire");if(t)r.setAttribute("data-theme",t)}}catch(x){{document.documentElement.setAttribute("data-dragon","fire")}}</script>
+<script>try{{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}}catch(x){{}}</script>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -186,11 +186,6 @@ def header(file):
 <nav class="primary" aria-label="Main"><ul>{links}</ul></nav>
 <div class="tools">
 <button class="sbtn" id="sbtn" type="button" aria-label="Search the wiki"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span><kbd>/</kbd></button>
-<div class="dots" role="group" aria-label="Choose a dragon colour">
-<button type="button" data-d="fire" aria-pressed="true" aria-label="Fire dragon colour" title="Fire"></button>
-<button type="button" data-d="ice" aria-pressed="false" aria-label="Ice dragon colour" title="Ice"></button>
-<button type="button" data-d="light" aria-pressed="false" aria-label="Light dragon colour" title="Light"></button>
-</div>
 <button class="ibtn" id="theme" type="button" aria-label="Switch between light and dark mode"><svg class="ico moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="ico sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
 </div></div></header>
 """
@@ -279,33 +274,14 @@ def build_home():
         ("Take off", "Double jump while riding to start Dynamic Flight.", "flight.html#dynamic"),
     ]
     path_html = "".join(f'<li><div><b><a href="{u}">{t}</a></b><span>{d}</span></div></li>' for t, d, u in path)
-    TASKS_H2 = h2("tasks", "What do you want to do?").replace("<h2 ", '<h2 style="border:0;padding-top:3rem;margin-top:0" ')
+    TASKS_H2 = h2("tasks", "What do you want to do?")
     idx("Your first hour", f, "first-hour", "Section")
     idx("What do you want to do?", f, "tasks", "Section")
     idx("New in Update 2.0 Drop 1", f, "whats-new", "Section")
     body = head(f, "", f"The player guide to DragonMounts 2 for Minecraft Bedrock: install it, raise and breed dragons, fly in formation, and find every item in {VERSION}.") + header(f) + f"""<main id="main">
-<div class="hero-wrap">
-<canvas id="fx" aria-hidden="true"></canvas>
-<div class="wrap hero">
-<div>
-<h1>DragonMounts 2</h1>
-<p class="sub">The player guide to the dragon add-on for Minecraft Bedrock. Install it, raise and breed dragons, and learn to fly. Covers {VERSION}.</p>
-<div class="cta"><a class="btn" href="install.html">Install the add-on</a><a class="btn ghost" href="#first-hour">Raise your first dragon</a></div>
-<div class="pick" role="group" aria-label="Choose a dragon"><button type="button" data-d="fire" aria-pressed="true">Fire</button><button type="button" data-d="ice" aria-pressed="false">Ice</button><button type="button" data-d="light" aria-pressed="false">Light</button></div>
-<p class="hint">Pick a dragon to change the colour of the whole wiki, then click its eye.</p>
-</div>
-<div class="eyebox"><svg class="eye" viewBox="0 0 200 120" role="button" tabindex="0" aria-label="Dragon's eye. Activate for a burst of particles.">
-<defs><radialGradient id="ir"><stop offset="0" style="stop-color:color-mix(in srgb,var(--a) 65%,#fff)"/><stop offset=".6" style="stop-color:var(--a)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--a) 40%,#000)"/></radialGradient><clipPath id="lid"><path d="M8 60Q100-8 192 60Q100 128 8 60Z"/></clipPath></defs>
-<path d="M8 60Q100-8 192 60Q100 128 8 60Z" fill="#05090d"/>
-<g clip-path="url(#lid)"><g id="iris"><circle cx="100" cy="60" r="46" fill="url(#ir)"/><circle cx="100" cy="60" r="32" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="22" stroke-dasharray="2 5"/><ellipse id="pupil" cx="100" cy="60" rx="7" ry="30" fill="#05090d"/><ellipse cx="82" cy="42" rx="8" ry="5" fill="#fff" fill-opacity=".85" transform="rotate(-25 82 42)"/></g><path d="M8 60Q100-8 192 60Q100-8 8 60Z" fill="#000" fill-opacity=".35"/></g>
-<path d="M8 60Q100-8 192 60Q100 128 8 60Z" fill="none" stroke="var(--a)" stroke-width="3" stroke-linejoin="round"/></svg></div>
-</div>
-<div class="wrap glance-wrap"><dl class="glance">
-<div><dt>Edition</dt><dd>Minecraft Bedrock</dd></div>
-<div><dt>Covers</dt><dd>{VERSION}</dd></div>
-<div><dt>Add-on ID</dt><dd>dragonmounts2</dd></div>
-<div><dt>Server API</dt><dd>2.10.0</dd></div>
-</dl></div>
+<div class="wrap homehead">
+<h1>DragonMounts 2 Wiki</h1>
+<p class="lede">A player guide to the DragonMounts 2 add-on for Minecraft Bedrock. Covers {VERSION}.</p>
 </div>
 <div class="wrap" style="padding-bottom:1rem">
 {TASKS_H2}
@@ -430,7 +406,7 @@ def build_dragons():
 <p id="pdesc">{f0["d"]}</p>
 <dl id="pfacts">{facts0}</dl>
 <div class="seg top" role="group" aria-label="Choose a dragon">
-<button type="button" data-d="fire" aria-pressed="true">Fire</button><button type="button" data-d="ice" aria-pressed="false">Ice</button><button type="button" data-d="light" aria-pressed="false">Light</button></div>
+<button type="button" data-profile-dragon="fire" aria-pressed="true">Fire</button><button type="button" data-profile-dragon="ice" aria-pressed="false">Ice</button><button type="button" data-profile-dragon="light" aria-pressed="false">Light</button></div>
 <div class="seg" role="group" aria-label="Growth stage preview">
 <button type="button" data-g=".55" aria-pressed="false">Baby</button><button type="button" data-g=".78" aria-pressed="false">Juvenile</button><button type="button" data-g="1" aria-pressed="true">Adult</button></div>
 </aside>

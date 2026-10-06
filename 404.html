@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#f97316">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-<script>try{var d=localStorage.getItem("dm2-dragon"),t=localStorage.getItem("dm2-theme"),r=document.documentElement;r.setAttribute("data-dragon",d||"fire");if(t)r.setAttribute("data-theme",t)}catch(x){document.documentElement.setAttribute("data-dragon","fire")}</script>
+<script>try{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(x){}</script>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -33,11 +33,6 @@
 <nav class="primary" aria-label="Main"><ul><li><a href="install.html">Install</a></li><li><a href="dragons.html">Dragons</a></li><li><a href="breeding.html">Breeding</a></li><li><a href="flight.html">Flight</a></li><li><a href="items.html">Items</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="faq.html">FAQ</a></li></ul></nav>
 <div class="tools">
 <button class="sbtn" id="sbtn" type="button" aria-label="Search the wiki"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span><kbd>/</kbd></button>
-<div class="dots" role="group" aria-label="Choose a dragon colour">
-<button type="button" data-d="fire" aria-pressed="true" aria-label="Fire dragon colour" title="Fire"></button>
-<button type="button" data-d="ice" aria-pressed="false" aria-label="Ice dragon colour" title="Ice"></button>
-<button type="button" data-d="light" aria-pressed="false" aria-label="Light dragon colour" title="Light"></button>
-</div>
 <button class="ibtn" id="theme" type="button" aria-label="Switch between light and dark mode"><svg class="ico moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="ico sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
 </div></div></header>
 <main id="main"><div class="wrap" style="padding:5rem 0">
