@@ -47,6 +47,22 @@ DRAGON_ROSTER = [
     ("Zombie", "Poison", "Nether: all biomes", "zombie"),
 ]
 
+DRAGON_APPEARANCES = [
+    ("Forest", [("Base", "forest_base"), ("Cold", "forest_cold"), ("Dry", "forest_dry"), ("Jungle", "forest_jungle")]),
+    ("Aether", [("Normal", "aether_normal"), ("Breeze", "aether_breeze"), ("Wind", "aether_wind")]),
+    ("Dark", [("Bloodmoon", "dark_bloodmoon"), ("Demon", "dark_demon"), ("Imp", "dark_imp"), ("Underworld", "dark_underworld")]),
+    ("Ice", [("Alpine", "ice_alpine"), ("Frost", "ice_frost"), ("Iceberg", "ice_iceberg")]),
+    ("Nether", [("Ash", "nether_ash"), ("Soul Fire", "nether_soul_fire"), ("Volcanic", "nether_volcanic")]),
+    ("Sculk", [("Amethyst", "sculk_amythest"), ("Mutated", "sculk_mutated"), ("Warden", "sculk_warden")]),
+    ("Storm", [("Bronzed", "storm_bronzed"), ("Lightning", "storm_lightning"), ("Thunder", "storm_thunder")]),
+    ("Water", [("Ocean", "water_ocean"), ("Pond", "water_pond"), ("Tidal", "water_tidel")]),
+    ("Zombie", [("Drowned", "zombie_drowned"), ("Husk", "zombie_husk"), ("Zombie", "zombie")]),
+    ("Bogged", [("Bogged", "bogged")]),
+    ("Parched", [("Parched", "parched")]),
+    ("Skeleton", [("Skeleton", "skeleton")]),
+    ("Stray", [("Stray", "stray")]),
+]
+
 def slug(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
@@ -359,35 +375,35 @@ def build_install():
 # ------------------------------------------------------------ DRAGONS
 def build_dragons():
     f = "dragons.html"
-    secs = [("forest", "Forest Dragon"), ("aether", "Aether Dragon"), ("species", "All 17 species")]
+    secs = [("appearances", "Dragon appearances"), ("species", "All 17 species")]
     roster_rows = ""
     for name, breath, nest, egg in DRAGON_ROSTER:
         idx(name + " Dragon", f, "species", "Dragon", breath + " breath; " + nest)
         roster_rows += f'<tr><th scope="row">{e(name)} Dragon</th><td><img class="dragon-roster-thumb" src="textures/dragon.egg/dragonmounts2.dragon_egg_{egg}.png" alt="{e(name)} Dragon egg" width="64" height="64" loading="lazy"></td><td>{e(breath)}</td><td>{e(nest)}</td></tr>'
+    appearances = [{
+        "name": name,
+        "variants": [{"name": variant, "src": f"textures/dragon.entity/dragonmounts2.{asset}.png"}
+                     for variant, asset in variants],
+    } for name, variants in DRAGON_APPEARANCES]
+    first_appearance = appearances[0]
+    first_variant = first_appearance["variants"][0]
+    appearance_json = e(json.dumps(appearances, separators=(",", ":")))
+    appearance_options = "".join(
+        f'<option value="{slug(item["name"])}">{e(item["name"])}</option>' for item in appearances)
+    appearance_anchors = "".join(
+        f'<span class="appearance-anchor" id="{slug(item["name"])}"></span>' for item in appearances)
+    initial_alt = f'{first_appearance["name"]} Dragon, {first_variant["name"]} appearance'
     body = f"""
-{h2("forest", "Forest Dragon", f, "Dragon")}
-<p><b>Breath:</b> Poison. <b>Nests:</b> Overworld forests, jungles, and flower forests. Its appearance varies by biome.</p>
-<div class="dragon-showcase" aria-label="Forest Dragon appearance gallery">
-<div class="dragon-showcase-head"><b>Forest Dragon</b><span>Four supplied appearances</span></div>
-<div class="dragon-gallery">
-<figure><img src="textures/dragon.entity/dragonmounts2.forest_base.png" alt="Forest Dragon with its base forest appearance." width="818" height="392"><figcaption><b>Forest Base</b><span>Base appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.forest_jungle.png" alt="Forest Dragon with its jungle appearance." width="818" height="392" loading="lazy"><figcaption><b>Jungle</b><span>Jungle appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.forest_dry.png" alt="Forest Dragon with its dry appearance." width="818" height="392" loading="lazy"><figcaption><b>Dry</b><span>Dry appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.forest_cold.png" alt="Forest Dragon with its cold appearance." width="818" height="392" loading="lazy"><figcaption><b>Cold</b><span>Cold appearance</span></figcaption></figure>
-</div>
-<p class="dragon-caption">Forest Dragon appearance textures included with the pack; these are reference renders, not in-game screenshots.</p>
-</div>
-
-{h2("aether", "Aether Dragon", f, "Dragon")}
-<p><b>Breath:</b> Levitation. <b>Nests:</b> Most Overworld biomes except Mesa.</p>
-<div class="dragon-showcase" aria-label="Aether Dragon appearance gallery">
-<div class="dragon-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
-<div class="dragon-gallery">
-<figure><img src="textures/dragon.entity/dragonmounts2.aether_normal.png" alt="Aether Dragon with its normal appearance." width="818" height="392"><figcaption><b>Aether Normal</b><span>Normal appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.aether_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.aether_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
-</div>
-<p class="dragon-caption">Aether Dragon appearance textures included with the pack; these are reference renders, not in-game screenshots.</p>
+{h2("appearances", "Dragon appearances", f, "Gallery")}
+<p>Browse the supplied appearance renders by dragon type. Light Dragon variants are omitted.</p>
+<div class="appearance-explorer" id="appearance-explorer" data-appearances="{appearance_json}">
+{appearance_anchors}
+<div class="appearance-toolbar"><label for="appearance-type">Dragon type<select id="appearance-type">{appearance_options}</select></label></div>
+<figure class="appearance-stage" id="appearance-stage" tabindex="0" aria-label="Dragon appearance. Use the left and right arrow keys to browse variants.">
+<img id="appearance-image" src="textures/dragon.entity/dragonmounts2.{first_variant['src'].split('.')[-2]}.png" alt="{e(initial_alt)}" width="818" height="392">
+<figcaption><b id="appearance-dragon">{e(first_appearance['name'])} Dragon</b><span id="appearance-variant">{e(first_variant['name'])}</span></figcaption>
+</figure>
+<div class="appearance-navigation"><button class="ibtn" id="appearance-previous" type="button" aria-label="Previous appearance"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><output id="appearance-position" aria-live="polite">1 of {len(first_appearance['variants'])}</output><button class="ibtn" id="appearance-next" type="button" aria-label="Next appearance"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
 </div>
 
 {h2("species", "All 17 species", f, "Roster")}
