@@ -251,7 +251,7 @@ def build_home():
         ("Find an egg", "Eggs occur in nests across the three dimensions.", "dragons.html#species"),
         ("Hatch it", "Interact with the egg until particles appear; allow about 20 minutes.", "breeding.html#hatching"),
         ("Tame a wild dragon", "Feed raw fish, except pufferfish. The documented tame chance is 10% per attempt.", "breeding.html#taming"),
-        ("Mount up", "Place a saddle, right-click to ride, and press Jump to take off.", "flight.html#controls"),
+        ("Mount up", "Place a saddle, interact to ride, and press Jump to take off.", "flight.html#controls"),
     ]
     path_html = "".join(f'<li><div><b><a href="{u}">{t}</a></b><span>{d}</span></div></li>' for t, d, u in path)
     TASKS_H2 = h2("tasks", "What do you want to do?")
@@ -383,9 +383,9 @@ def build_dragons():
 <div class="dragon-showcase" aria-label="Aether Dragon appearance gallery">
 <div class="dragon-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
 <div class="dragon-gallery">
-<figure><img src="textures/dragon.entity/dragonmounts2.aeteher_normal.png" alt="Aether Dragon with its normal appearance." width="818" height="392"><figcaption><b>Aether Normal</b><span>Normal appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.aeteher_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
-<figure><img src="textures/dragon.entity/dragonmounts2.aeteher_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.aether_normal.png" alt="Aether Dragon with its normal appearance." width="818" height="392"><figcaption><b>Aether Normal</b><span>Normal appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.aether_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
+<figure><img src="textures/dragon.entity/dragonmounts2.aether_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
 </div>
 <p class="dragon-caption">Aether Dragon appearance textures included with the pack; these are reference renders, not in-game screenshots.</p>
 </div>
