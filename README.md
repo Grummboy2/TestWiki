@@ -12,7 +12,15 @@ GitHub Pages deploys committed files from the `main` branch and repository root.
 
 The dragon images are tracked under `textures/`. Keep their paths relative to the page, including exact letter case, for example `textures/dragon.entity/dragonmounts2.forest_base.png`. GitHub Pages serves these PNGs directly; avoid computer-specific paths such as `C:\Users\...`.
 
-In **Settings > Pages**, use **Deploy from a branch**, branch `main`, folder `/ (root)`. Keep `.nojekyll`, `assets/`, and `textures/` in the repository.
+In **Settings > Pages**, use **Deploy from a branch**, branch `main`, folder `/ (root)`. Keep `.nojekyll`, `assets/`, and `textures/` in the repository. The edition-selection page must remain at the root as `index.html`; GitHub Pages uses it as the site entry point.
+
+Pull requests and pushes to `main` run the **Site checks** workflow. To run the same checks locally, install Node.js 22 or newer and run:
+
+```sh
+node tools/check-site.js
+```
+
+The check verifies the root homepage, tracked page links and anchors, case-sensitive asset paths, and shared JavaScript syntax. GitHub Pages still deploys the root of `main` after changes are pushed.
 
 ## Project files
 

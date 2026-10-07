@@ -332,10 +332,10 @@ def build_home():
         ("Raise and ride", [
             ("Tame a dragon", "Feed a wild dragon raw fish, except pufferfish.", "breeding.html#taming"),
             ("Ride and fly", "Equip a saddle, mount, then press Jump to take off.", "flight.html#controls"),
-            ("Breed and transform eggs", "Review food, block, and lightning transformations.", "breeding.html#transformations"),
+            ("Breed and transform eggs", "Use fish to breed dragons; use blocks or lightning to transform eggs.", "breeding.html#transformations"),
         ]),
         ("Look things up", [
-            ("Browse all 17 dragons", "Compare egg images, breath types, and nest information.", "dragons.html#species"),
+            ("Browse all 17 dragons", "Compare egg images, breath types, natural nests, and transformations.", "dragons.html#species"),
             ("Items and equipment", "Dragon scales, armor, tools, flutes, and more.", "items.html"),
             ("FAQ and glossary", "Find quick answers and common terms.", "faq.html"),
             ("Release details", "Check supported game versions and current release notes.", OFFICIAL_FILES),
@@ -350,7 +350,7 @@ def build_home():
     body = head(f, "", f"Dragon Mounts 2 Wiki for Minecraft Bedrock and Java editions.") + header(f, [("tasks", "Browse the guide"), ("meet", "Meet the dragons"), ("help", "Contribute")]) + f"""<main id="main">
 <section class="edition-picker" id="edition-picker" aria-labelledby="edition-title">
 <div class="wrap edition-picker-inner">
-<p class="eyebrow" style="text-align:center">DRAGON MOUNTS 2 WIKI</p>
+<p class="eyebrow">DRAGON MOUNTS 2 WIKI</p>
 <h1 id="edition-title">Which Minecraft edition do you play?</h1>
 <p class="lede">Choose your edition to open the right guide. We’ll remember your choice on this device, and you can change it whenever you like.</p>
 <div class="edition-options">
@@ -382,20 +382,20 @@ def build_home():
 </div>
 </section>
 <div class="wrap home-note"><p class="note"><strong>Dragon Mounts 2 project guide.</strong> Mechanics and species are documented for the public v{VERSION} release. Check the <a href="{OFFICIAL_WIKI}">project development wiki</a> for technical notes and the <a href="{OFFICIAL_FILES}">official download listing</a> for current game-version support.</p></div>
-<div class="wrap" style="padding-bottom:1rem">
+<div class="wrap home-content">
 {h2("tasks", "Browse the guide by goal", f, "Section")}
 {tasks_html}
 
 {h2("meet", "Meet the dragons", f, "Section")}
 <div class="three">
-<div><h3>Forest Dragon</h3><p>Four supplied appearances: Forest Base, Jungle, Dry and Cold.</p><a href="dragons.html#forest">Explore the Forest Dragon</a></div>
-<div><h3>Aether Dragon</h3><p>Three supplied appearances: Normal, Breeze and Wind.</p><a href="dragons.html#aether">Explore the Aether Dragon</a></div>
-<div><h3>All 17 species</h3><p>Find each dragon's breath type, egg image, and nest information.</p><a href="dragons.html#species">Browse the roster</a></div>
+<div><h3>Forest Dragon</h3><p>Preview Nature, Cold, Jungle, and Warm appearances.</p><a href="dragons.html#forest">Explore the Forest Dragon</a></div>
+<div><h3>Aether Dragon</h3><p>Preview Aethra, Breeze, and Wind appearances.</p><a href="dragons.html#aether">Explore the Aether Dragon</a></div>
+<div><h3>All 17 species</h3><p>Compare eggs, breath types, natural nests, and transformations.</p><a href="dragons.html#species">Browse the roster</a></div>
 </div>
 
 {h2("help", "Contribute", f, "Section")}
 <p>Report missing or outdated information to help keep the guide accurate.</p>
-<p class="cta" style="margin-top:1rem"><span data-link="issues" hidden><a class="btn sm" href="#">Report a mistake</a></span> <span data-link="discord" hidden><a class="btn sm ghost" href="#">Ask on Discord</a></span></p>
+<p class="cta contribute-actions"><span data-link="issues" hidden><a class="btn sm" href="#">Report a mistake</a></span> <span data-link="discord" hidden><a class="btn sm ghost" href="#">Ask on Discord</a></span></p>
 </div>
 </div>
 </main>
