@@ -140,6 +140,14 @@ PAGES = [  # file, nav label, title
     ("faq.html", "FAQ", "FAQ and glossary"),
 ]
 
+GUIDE_GROUPS = [
+    ("Start here", [("index.html", "Overview"), ("install.html", "Install")]),
+    ("Dragon guide", [("dragons.html", "Dragons"), ("breeding.html", "Eggs and taming"),
+                      ("flight.html", "Riding and flight")]),
+    ("Reference", [("items.html", "Items and equipment"), ("changelog.html", "Release info"),
+                   ("faq.html", "FAQ and glossary")]),
+]
+
 INDEX = []  # search index entries
 
 def idx(title, page, anchor, kind, extra=""):
@@ -154,6 +162,17 @@ def h3(i, title, page=None, kind=None):
     if page:
         idx(title, page, i, kind or "Section")
     return f'<h3 id="{i}"><a class="anchor" href="#{i}" aria-label="Link to this section">#</a>{title}</h3>'
+
+def guide_navigation(file):
+    groups = []
+    for title, links in GUIDE_GROUPS:
+        items = "".join(
+            f'<li><a href="{target}"' +
+            (' aria-current="page"' if target == file else '') +
+            f'>{label}</a></li>'
+            for target, label in links)
+        groups.append(f'<section class="guide-group"><h2>{title}</h2><ul>{items}</ul></section>')
+    return "".join(groups)
 
 # ------------------------------------------------------------ page shell
 def head(file, title, desc, theme_hero=False):
@@ -182,10 +201,6 @@ def head(file, title, desc, theme_hero=False):
 """
 
 def header(file, sections=()):
-    def current(target):
-        return ' aria-current="page"' if target == file else ""
-    guide_links = f'<li><a href="index.html"{current("index.html")}>Overview</a></li>' + "".join(
-        f'<li><a href="{f}"{current(f)}>{l}</a></li>' for f, l, _ in PAGES)
     section_links = "".join(f'<li><a href="#{e(i)}">{e(label)}</a></li>' for i, label in sections)
     section_nav = (f'<section class="drawer-section"><h2>On this page</h2><ul>{section_links}</ul></section>'
                    if section_links else "")
@@ -198,10 +213,18 @@ def header(file, sections=()):
 </div></div></header>
 <dialog class="nav-drawer" id="nav-drawer" aria-labelledby="nav-title">
 <div class="drawer-head"><b id="nav-title">Explore the wiki</b><button class="ibtn" id="nav-close" type="button" aria-label="Close guide menu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
-<nav class="drawer-section" aria-label="Guide pages"><h2>Guides</h2><ul>{guide_links}</ul></nav>
+<nav aria-label="Guide pages">{guide_navigation(file)}</nav>
 {section_nav}
 </dialog>
 """
+
+def guide_sidebar(file, sections):
+    section_links = "".join(
+        f'<li><a href="#{e(i)}">{e(label)}</a></li>' for i, label in sections)
+    contents = (
+        f'<section class="guide-group"><h2>On this page</h2><ul>{section_links}</ul></section>'
+        if section_links else "")
+    return f'<aside class="guide-sidebar"><nav aria-label="Wiki chapters">{guide_navigation(file)}</nav>{contents}</aside>'
 
 def footer():
     nav = "".join(f'<li><a href="{f}">{l}</a></li>' for f, l, _ in PAGES)
@@ -228,11 +251,12 @@ def footer():
 """
 
 def inner_page(file, title, lede, desc, sections, body_html, extra_layout_class=""):
-    """sections: list of (id, label) for the guide drawer."""
+    """sections: list of (id, label) for page contents navigation."""
     idx(title, file, "", "Page", lede)
     return (head(file, title, desc) + header(file, sections) + f"""<main id="main">
 <div class="phead"><div class="wrap"><h1>{title}</h1><p class="lede">{lede}</p></div></div>
-<div class="wrap layout{extra_layout_class}">
+<div class="wrap layout has-sidebar{extra_layout_class}">
+{guide_sidebar(file, sections)}
 <article>
 {body_html}
 </article>
@@ -251,17 +275,30 @@ def write(path, content):
 
 def build_home():
     f = "index.html"
-    tasks = [
-        ("Find an egg", "Look for nests in the Overworld, Nether, and End.", "dragons.html#species"),
-        ("Hatch an egg", "Interact until particles appear; hatching takes about 20 minutes.", "breeding.html#hatching"),
-        ("Tame a dragon", "Feed a wild dragon raw fish, except pufferfish.", "breeding.html#taming"),
-        ("Ride and fly", "Equip a saddle, mount, then press Jump to take off.", "flight.html#controls"),
-        ("Browse equipment", "Dragon scales, armor, tools, flutes, and more.", "items.html"),
-        ("Browse release details", "Check supported game versions and current release notes.", OFFICIAL_FILES),
+    task_groups = [
+        ("Get started", [
+            ("Install the add-on", "Set up the packs in a Bedrock world.", "install.html"),
+            ("Find an egg", "Look for nests in the Overworld, Nether, and End.", "dragons.html#species"),
+            ("Hatch an egg", "Interact until particles appear; hatching takes about 20 minutes.", "breeding.html#hatching"),
+        ]),
+        ("Raise and ride", [
+            ("Tame a dragon", "Feed a wild dragon raw fish, except pufferfish.", "breeding.html#taming"),
+            ("Ride and fly", "Equip a saddle, mount, then press Jump to take off.", "flight.html#controls"),
+            ("Breed and transform eggs", "Review food, block, and lightning transformations.", "breeding.html#transformations"),
+        ]),
+        ("Look things up", [
+            ("Browse all 17 dragons", "Compare egg images, breath types, and nest information.", "dragons.html#species"),
+            ("Items and equipment", "Dragon scales, armor, tools, flutes, and more.", "items.html"),
+            ("FAQ and glossary", "Find quick answers and common terms.", "faq.html"),
+            ("Release details", "Check supported game versions and current release notes.", OFFICIAL_FILES),
+        ]),
     ]
-    tasks_html = "".join(f'<a href="{u}"><b>{t}</b><span>{d}</span></a>' for t, d, u in tasks)
-    TASKS_H2 = h2("tasks", "What do you want to do?")
-    idx("What do you want to do?", f, "tasks", "Section")
+    tasks_html = "".join(
+        f'<section class="task-group"><h3>{title}</h3><div class="tasks">' +
+        "".join(f'<a href="{url}"><b>{label}</b><span>{description}</span></a>'
+                for label, description, url in tasks) +
+        '</div></section>'
+        for title, tasks in task_groups)
     body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f, [("tasks", "Browse the guide"), ("meet", "Meet the dragons"), ("help", "Contribute")]) + f"""<main id="main">
 <section class="home-hero">
 <div class="wrap home-hero-inner">
@@ -277,8 +314,8 @@ def build_home():
 </section>
 <div class="wrap home-note"><p class="note"><strong>Dragon Mounts 2 project guide.</strong> Mechanics and species are documented for the public v{VERSION} release. Check the <a href="{OFFICIAL_WIKI}">project development wiki</a> for technical notes and the <a href="{OFFICIAL_FILES}">official download listing</a> for current game-version support.</p></div>
 <div class="wrap" style="padding-bottom:1rem">
-{TASKS_H2}
-<div class="tasks">{tasks_html}</div>
+{h2("tasks", "Browse the guide by goal", f, "Section")}
+{tasks_html}
 
 {h2("meet", "Meet the dragons", f, "Section")}
 <div class="three">
@@ -403,7 +440,6 @@ def build_breeding():
     secs = [("hatching", "Hatching"), ("taming", "Taming and breeding"), ("transformations", "Block transformations"), ("lightning", "Lightning transformations")]
     block_changes = [
         ("Lava", "Fire"), ("Water", "Water"), ("Snow, Ice, Blue Ice, Packed Ice", "Ice"),
-        ("Review the release notes", f'Check the notes for your <a href="{OFFICIAL_FILES}">selected release</a> before installing.'),
         ("Bone Block", "Skeleton"), ("Mossy Cobblestone or Soul Sand", "Zombie"),
         ("Terracotta or Sand", "Terra"), ("End Stone", "Ender"),
         ("Daylight Sensor (day mode)", "Sunlight"), ("Inverted Daylight Sensor (night mode)", "Moonlight"),
