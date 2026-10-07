@@ -31,6 +31,15 @@
     root.setAttribute("data-theme", next); store.set("dm2-theme", next);
   });
 
+  var navToggle = $("#nav-toggle"), navDrawer = $("#nav-drawer"), navClose = $("#nav-close");
+  if (navToggle && navDrawer) {
+    navToggle.addEventListener("click", function () { navDrawer.showModal(); navToggle.setAttribute("aria-expanded", "true"); });
+    if (navClose) navClose.addEventListener("click", function () { navDrawer.close(); });
+    navDrawer.addEventListener("click", function (event) { if (event.target === navDrawer) navDrawer.close(); });
+    navDrawer.addEventListener("close", function () { navToggle.setAttribute("aria-expanded", "false"); navToggle.focus(); });
+    $$(".nav-drawer a").forEach(function (a) { a.addEventListener("click", function () { navDrawer.close(); }); });
+  }
+
   /* ---------- items filter ---------- */
   var il = $("#itemlist");
   if (il) {

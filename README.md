@@ -1,6 +1,6 @@
 # DragonMounts 2 Wiki
 
-An unofficial quick reference for the Dragon Mounts 2 Minecraft Bedrock add-on. It follows the public v1.2.5.1 release; check the official file listing for the supported game version and latest release notes.
+The Dragon Mounts 2 project wiki for the Minecraft Bedrock add-on. It documents the public v1.2.5.1 release; check the official file listing for supported game versions and the latest release notes.
 
 - [Official CurseForge files](https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all)
 - [Official project wiki](https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki)

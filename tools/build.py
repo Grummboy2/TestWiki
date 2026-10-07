@@ -62,10 +62,10 @@ ITEMS = [
     ("Dragon Armor", "Armor", "i-chest", "Six material types equip on the dragon. All types prevent fall damage; damage reduction depends on material and dragon."),
     ("Dragon Flutes", "Equipment", "i-flute", "Crouch and interact with a tamed dragon while holding a flute to bind it. Use the flute to teleport it to you; 16 dye colors are listed."),
     ("Dragon Scepter", "Equipment", "i-scepter", "Use while riding a dragon to activate its breath attack."),
-    ("Amulets", "Equipment", "i-core", "Tame a dragon, then hit it with an amulet to bind the two together. The official guide lists 18 types."),
+    ("Amulets", "Equipment", "i-core", "Tame a dragon, then hit it with an amulet to bind the two together. The item reference lists 18 types."),
     ("Variation Orb", "Equipment", "i-disc", "Changes the visual variant of a tamed dragon."),
     ("Essence Gems", "Materials", "i-bone", "Used with a Dragon Core to revive a tamed dragon as a hatchling."),
-    ("Eggs and Nests", "Eggs and blocks", "i-egg", "The official guide lists 17 dragon eggs. Find nests or use the documented block and lightning transformations."),
+    ("Eggs and Nests", "Eggs and blocks", "i-egg", "The roster covers 17 dragon eggs. Find nests or use the documented block and lightning transformations."),
     ("Dragon Core", "Eggs and blocks", "i-core", "A revival block dropped when a tamed dragon dies; it is not used to hatch eggs."),
     ("Dragon Meat", "Food", "i-bone", "Raw dragon meat gives 3 nutrition; cooked dragon meat gives 6. Cook raw meat in a furnace."),
 ]
@@ -74,17 +74,17 @@ FAQ = [
     ("Getting started", [
         ("Which version does this wiki cover?", f"The latest public CurseForge file listed is v{VERSION} for Minecraft Bedrock {BEDROCK_VERSION}+. Check the <a href=\"{OFFICIAL_FILES}\">official files page</a> before downloading."),
         ("How do I install the add-on?", 'Follow the <a href="install.html#steps">install steps</a>. In short: import the add-on file, then turn on both the Behavior Pack and the Resource Pack in your world.'),
-        ("Where are the official instructions?", f'Use the <a href="{OFFICIAL_WIKI}">Dragon Mounts 2 official wiki</a> for the complete guide and current mechanics.'),
+        ("Where can I find current instructions?", f'Use the guides on this site, then check the <a href="{OFFICIAL_FILES}">release notes</a> for version-specific changes.'),
     ]),
     ("Eggs and taming", [
         ("How do I find a dragon egg?", f'Eggs occur in naturally generated nests across the Overworld, Nether and End. See the official <a href="{OFFICIAL_DRAGONS}">dragon guide</a> for species-specific locations.'),
-        ("How long does hatching take?", "Interact with an egg until particles appear; the official guide gives an approximate hatch time of 20 minutes."),
-        ("How do I tame a wild dragon?", "Feed it raw fish other than pufferfish. The official guide lists a 10% tame chance per attempt."),
-        ("What food is used for breeding?", "The official guide lists raw fish (except pufferfish) as breeding food. Follow its instructions for the current release."),
+        ("How long does hatching take?", "Interact with an egg until particles appear; allow about 20 minutes for it to hatch."),
+        ("How do I tame a wild dragon?", "Feed it raw fish other than pufferfish. The documented tame chance is 10% per attempt."),
+        ("What food is used for breeding?", "Use raw fish other than pufferfish. Check release notes if this mechanic changes in a later version."),
         ("Can eggs change into other breeds?", f'Yes. Some eggs transform when placed on specific blocks; others require lightning. See the official <a href="{OFFICIAL_DRAGONS}">egg transformation table</a>.'),
     ]),
     ("Riding and items", [
-        ("How do I ride a dragon?", "Equip it with a saddle, then right-click to mount. Press Jump to take off and use arrow keys to steer while airborne."),
+        ("How do I ride a dragon?", "For keyboard and mouse, equip a saddle, interact to mount, press Jump to take off, and use arrow keys to steer. Touch and controller inputs differ."),
         ("What does the Dragon Core do?", f'The Dragon Core is for revival, not egg hatching. See the official <a href="{OFFICIAL_BLOCKS}">blocks guide</a>.'),
         ("Where are item recipes?", f'The official <a href="{OFFICIAL_RECIPES}">recipes guide</a> is the source for crafting grids and ingredients.'),
     ]),
@@ -95,7 +95,7 @@ GLOSSARY = [
     ("Egg transformation", "Changing an egg into another breed by placing it on a documented block or striking it with lightning."),
     ("Dragon Core", "A block dropped when a tamed dragon dies; use it with the dropped Essence Gems to revive the dragon as a hatchling."),
     ("Dragon flute", "A bindable item used to teleport a tamed dragon to its owner."),
-    ("Raw fish", "The official guide lists raw fish, except pufferfish, for taming and breeding."),
+    ("Raw fish", "Raw fish other than pufferfish is used to tame and breed dragons."),
 ]
 
 # ------------------------------------------------------------ svg pieces
@@ -115,7 +115,7 @@ SPRITE = """<svg width="0" height="0" style="position:absolute" aria-hidden="tru
 <symbol id="i-follow" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="17" cy="12" r="2.5"/><path d="M9 12h5M12 9l3 3-3 3"/></symbol>
 </defs></svg>"""
 
-MARK = '<svg class="mark" viewBox="0 0 160 120" aria-hidden="true"><use href="#head" width="160" height="120"/></svg>'
+MARK = '<img class="mark" src="textures/pack_icon.png" alt="">'
 
 PAGES = [  # file, nav label, title
     ("install.html", "Install", "Install"),
@@ -157,8 +157,8 @@ def head(file, title, desc, theme_hero=False):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(full_title)}</title>
 <meta name="description" content="{e(desc)}">
-<meta name="theme-color" content="#f6f7f5">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#21152d">
+<link rel="icon" href="textures/pack_icon.png" type="image/png">
 {canon}{og}
 <script>try{{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}}catch(x){{}}</script>
 <link rel="stylesheet" href="assets/style.css">
@@ -168,24 +168,33 @@ def head(file, title, desc, theme_hero=False):
 {SPRITE}
 """
 
-def header(file):
-    cur = ' aria-current="page"'
-    links = "".join(
-        f'<li><a href="{f}"{cur if f == file else ""}>{l}</a></li>' for f, l, _ in PAGES)
+def header(file, sections=()):
+    def current(target):
+        return ' aria-current="page"' if target == file else ""
+    guide_links = f'<li><a href="index.html"{current("index.html")}>Overview</a></li>' + "".join(
+        f'<li><a href="{f}"{current(f)}>{l}</a></li>' for f, l, _ in PAGES)
+    section_links = "".join(f'<li><a href="#{e(i)}">{e(label)}</a></li>' for i, label in sections)
+    section_nav = (f'<section class="drawer-section"><h2>On this page</h2><ul>{section_links}</ul></section>'
+                   if section_links else "")
     return f"""<header class="site"><div class="wrap bar">
 <a class="brand" href="index.html" aria-label="DragonMounts 2 Wiki, home">{MARK}<span>DragonMounts 2</span></a>
-<nav class="primary" aria-label="Main"><ul>{links}</ul></nav>
 <div class="tools">
+<button class="ibtn menu-toggle" id="nav-toggle" type="button" aria-label="Open guide menu" aria-controls="nav-drawer" aria-expanded="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <button class="sbtn" id="sbtn" type="button" aria-label="Search the wiki"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span><kbd>/</kbd></button>
 <button class="ibtn" id="theme" type="button" aria-label="Switch between light and dark mode"><svg class="ico moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="ico sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
 </div></div></header>
+<dialog class="nav-drawer" id="nav-drawer" aria-labelledby="nav-title">
+<div class="drawer-head"><b id="nav-title">Explore the wiki</b><button class="ibtn" id="nav-close" type="button" aria-label="Close guide menu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+<nav class="drawer-section" aria-label="Guide pages"><h2>Guides</h2><ul>{guide_links}</ul></nav>
+{section_nav}
+</dialog>
 """
 
 def footer():
     nav = "".join(f'<li><a href="{f}">{l}</a></li>' for f, l, _ in PAGES)
     return f"""<footer class="foot"><div class="wrap">
 <div class="footgrid">
-<div><a class="brand" href="index.html">{MARK}<span>DragonMounts 2 Wiki</span></a><p>Unofficial quick reference for the public Minecraft Bedrock v{VERSION} release.</p></div>
+<div><a class="brand" href="index.html">{MARK}<span>DragonMounts 2 Wiki</span></a><p>Project wiki for the public Minecraft Bedrock v{VERSION} release.</p></div>
 <div><h4>Guide</h4><ul>{nav}</ul></div>
 <div><h4>Official sources</h4><ul>
 <li><a href="{OFFICIAL_WIKI}">Project wiki</a></li>
@@ -195,7 +204,7 @@ def footer():
 <li data-link="issues" hidden><a href="#">Report a mistake</a></li>
 <li data-link="repo" hidden><a href="#">Source on GitHub</a></li></ul></div>
 </div>
-<small>Fan-made quick reference; not an official Dragon Mounts 2 resource. Verify release-specific details in the official project wiki and download listing.</small>
+<small>Release information on this site is specific to v{VERSION}. Check the official download listing for current game-version support and updates.</small>
 </div></footer>
 <div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search dragons, eggs, taming, riding, equipment" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
 <script src="assets/config.js"></script>
@@ -205,30 +214,14 @@ def footer():
 </html>
 """
 
-def pager(file):
-    order = [f for f, _, _ in PAGES]
-    i = order.index(file)
-    out = '<nav class="pager" aria-label="Next and previous pages">'
-    if i > 0:
-        p = PAGES[i - 1]
-        out += f'<a class="prev" href="{p[0]}"><small>Previous</small><b>{p[2]}</b></a>'
-    if i < len(PAGES) - 1:
-        n = PAGES[i + 1]
-        out += f'<a class="next" href="{n[0]}"><small>Next</small><b>{n[2]}</b></a>'
-    return out + "</nav>"
-
 def inner_page(file, title, lede, desc, sections, body_html, extra_layout_class=""):
-    """sections: list of (id, label) for the table of contents."""
-    toc = '<nav class="toc" aria-label="On this page"><b>On this page</b><ul>' + "".join(
-        f'<li><a href="#{i}">{l}</a></li>' for i, l in sections) + "</ul></nav>"
+    """sections: list of (id, label) for the guide drawer."""
     idx(title, file, "", "Page", lede)
-    return (head(file, title, desc) + header(file) + f"""<main id="main">
+    return (head(file, title, desc) + header(file, sections) + f"""<main id="main">
 <div class="phead"><div class="wrap"><h1>{title}</h1><p class="lede">{lede}</p></div></div>
 <div class="wrap layout{extra_layout_class}">
-{toc}
 <article>
 {body_html}
-{pager(file)}
 </article>
 </div>
 </main>
@@ -243,7 +236,6 @@ def write(path, content):
     with open(full, "w", encoding="utf-8") as f:
         f.write(content)
 
-# ------------------------------------------------------------ HOME
 def build_home():
     f = "index.html"
     tasks = [
@@ -252,20 +244,20 @@ def build_home():
         ("Tame a dragon", "Feed a wild dragon raw fish, except pufferfish.", "breeding.html#taming"),
         ("Ride and fly", "Equip a saddle, mount, then press Jump to take off.", "flight.html#controls"),
         ("Browse equipment", "Dragon scales, armor, tools, flutes, and more.", "items.html"),
-        ("Check the official guide", "Use the project wiki for the complete instructions.", OFFICIAL_WIKI),
+        ("Browse release details", "Check supported game versions and current release notes.", OFFICIAL_FILES),
     ]
     tasks_html = "".join(f'<a href="{u}"><b>{t}</b><span>{d}</span></a>' for t, d, u in tasks)
     path = [
         ("Find an egg", "Eggs occur in nests across the three dimensions.", "dragons.html#species"),
         ("Hatch it", "Interact with the egg until particles appear; allow about 20 minutes.", "breeding.html#hatching"),
-        ("Tame a wild dragon", "Feed raw fish, except pufferfish. The official guide lists a 10% chance per attempt.", "breeding.html#taming"),
+        ("Tame a wild dragon", "Feed raw fish, except pufferfish. The documented tame chance is 10% per attempt.", "breeding.html#taming"),
         ("Mount up", "Place a saddle, right-click to ride, and press Jump to take off.", "flight.html#controls"),
     ]
     path_html = "".join(f'<li><div><b><a href="{u}">{t}</a></b><span>{d}</span></div></li>' for t, d, u in path)
     TASKS_H2 = h2("tasks", "What do you want to do?")
     idx("Quick start", f, "quick-start", "Section")
     idx("What do you want to do?", f, "tasks", "Section")
-    body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} quick guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f) + f"""<main id="main">
+    body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} quick guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f, [("tasks", "Choose a guide"), ("quick-start", "Quick start"), ("meet", "Meet the dragons"), ("sources", "Project resources"), ("help", "Contribute")]) + f"""<main id="main">
 <section class="home-hero">
 <div class="wrap home-hero-inner">
 <div class="home-hero-copy">
@@ -275,10 +267,10 @@ def build_home():
 <div class="hero-actions"><a class="btn" href="dragons.html#species">Explore the dragons</a><a class="btn ghost" href="breeding.html#hatching">Start with an egg</a></div>
 <p class="hero-release"><span>PUBLIC RELEASE</span><b>v{VERSION}</b><span>Minecraft Bedrock {BEDROCK_VERSION}+</span></p>
 </div>
-<figure class="home-hero-art"><img src="textures/dragon.entity/dragonmounts2.forest_base.png" alt="Forest Dragon appearance render" width="818" height="392"><figcaption>Forest Dragon · appearance render</figcaption></figure>
+<figure class="home-hero-art"><img src="textures/dragon.egg/dragonmounts2.dragon_egg_ender.png" alt="Ender Dragon egg from the Dragon Mounts 2 pack" width="512" height="512"><figcaption>ENDER DRAGON EGG</figcaption></figure>
 </div>
 </section>
-<div class="wrap home-note"><p class="note"><strong>Fan-made quick reference.</strong> Mechanics and species below follow the <a href="{OFFICIAL_WIKI}">official project wiki</a>. Check it for full instructions and updates. <a href="{OFFICIAL_FILES}">View official release files</a>.</p></div>
+<div class="wrap home-note"><p class="note"><strong>Dragon Mounts 2 project guide.</strong> Mechanics and species are documented for the public v{VERSION} release. Check the <a href="{OFFICIAL_WIKI}">project development wiki</a> for technical notes and the <a href="{OFFICIAL_FILES}">official download listing</a> for current game-version support.</p></div>
 <div class="wrap" style="padding-bottom:1rem">
 {TASKS_H2}
 <div class="tasks">{tasks_html}</div>
@@ -294,10 +286,10 @@ def build_home():
 </div>
 
 {h2("sources", "Use the project sources")}
-<p>This wiki is an independent quick reference, not the complete manual. Check the official <a href="{OFFICIAL_WIKI}">wiki</a> and <a href="{OFFICIAL_FILES}">release page</a> when a mechanic or version detail matters.</p>
+<p>For technical notes and current release details, consult the <a href="{OFFICIAL_WIKI}">project development wiki</a> and <a href="{OFFICIAL_FILES}">official download listing</a>.</p>
 
 {h2("help", "Spotted a mistake or a gap?")}
-<p>This is a community guide and it improves when players speak up. Tell us what is wrong or missing.</p>
+<p>Help keep the guide accurate. Report missing or outdated details.</p>
 <p class="cta" style="margin-top:1rem"><span data-link="issues" hidden><a class="btn sm" href="#">Report a mistake</a></span> <span data-link="discord" hidden><a class="btn sm ghost" href="#">Ask on Discord</a></span></p>
 </div>
 </main>
@@ -311,7 +303,7 @@ def build_install():
         ("Download the current file", f'Use the official <a href="{OFFICIAL_FILES}">CurseForge files page</a> and check that the release supports your Minecraft version.'),
         ("Import the add-on", "Open the downloaded file with Minecraft Bedrock and wait for the import to finish."),
         ("Apply it to a world", "In the world settings, enable the imported Dragon Mounts 2 packs, then load the world."),
-        ("Check the official guide", f'Read the project <a href="{OFFICIAL_WIKI}">wiki</a> for full instructions and current troubleshooting.'),
+        ("Review the release notes", f'Check the notes for your <a href="{OFFICIAL_FILES}">selected release</a> before installing.'),
     ]
     steps_html = "".join(f'<li><label><input type="checkbox"><span>{t}<small>{d}</small></span></label></li>' for t, d in steps)
     for t, d in steps:
@@ -323,8 +315,8 @@ def build_install():
             "Check that every pack included with the download is enabled for the world."),
            ("The file will not import",
             f'Confirm your Minecraft version is supported by the selected <a href="{OFFICIAL_FILES}">release file</a>, then follow the official <a href="{OFFICIAL_WIKI}">installation notes</a>.'),
-           ("A mechanic differs from this quick guide",
-            f'Use the <a href="{OFFICIAL_WIKI}">official project wiki</a> and the notes attached to your exact release.'),
+           ("A mechanic differs from this guide",
+            f'Check the notes attached to your exact <a href="{OFFICIAL_FILES}">release file</a>, then report the difference.'),
     ]
     tr_html = ""
     for q, a in trouble:
@@ -337,7 +329,7 @@ def build_install():
 <ul>
 <li>This is the <b>Minecraft Bedrock</b> add-on; check the exact supported game version on the selected file.</li>
 <li>Back up your world before adding or updating packs.</li>
-<li>Use the official project pages linked here for release-specific steps.</li>
+<li>Use the notes attached to the selected release for version-specific steps.</li>
 </ul>
 <p><a class="btn" href="{OFFICIAL_FILES}">Open official downloads</a></p>
 
@@ -374,7 +366,7 @@ def build_dragons():
         roster_rows += f'<tr><th scope="row">{e(name)} Dragon</th><td><img class="dragon-roster-thumb" src="textures/dragon.egg/dragonmounts2.dragon_egg_{egg}.png" alt="{e(name)} Dragon egg" width="64" height="64" loading="lazy"></td><td>{e(breath)}</td><td>{e(nest)}</td></tr>'
     body = f"""
 {h2("forest", "Forest Dragon", f, "Dragon")}
-<p>The official guide lists Poison breath and nests in Overworld forests, jungles, and flower forests. Its appearance varies by biome rather than by gender.</p>
+<p><b>Breath:</b> Poison. <b>Nests:</b> Overworld forests, jungles, and flower forests. Its appearance varies by biome.</p>
 <div class="dragon-showcase" aria-label="Forest Dragon appearance gallery">
 <div class="dragon-showcase-head"><b>Forest Dragon</b><span>Four supplied appearances</span></div>
 <div class="dragon-gallery">
@@ -383,11 +375,11 @@ def build_dragons():
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_dry.png" alt="Forest Dragon with its dry appearance." width="818" height="392" loading="lazy"><figcaption><b>Dry</b><span>Dry appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.forest_cold.png" alt="Forest Dragon with its cold appearance." width="818" height="392" loading="lazy"><figcaption><b>Cold</b><span>Cold appearance</span></figcaption></figure>
 </div>
-<p class="dragon-caption">Appearance renders supplied with this fan wiki. See the official guide for full Forest Dragon details.</p>
+<p class="dragon-caption">Forest Dragon appearance textures included with the pack; these are reference renders, not in-game screenshots.</p>
 </div>
 
 {h2("aether", "Aether Dragon", f, "Dragon")}
-<p>The official guide lists Levitation breath and nests across most Overworld biomes, except Mesa.</p>
+<p><b>Breath:</b> Levitation. <b>Nests:</b> Most Overworld biomes except Mesa.</p>
 <div class="dragon-showcase" aria-label="Aether Dragon appearance gallery">
 <div class="dragon-showcase-head"><b>Aether Dragon</b><span>Three supplied appearances</span></div>
 <div class="dragon-gallery">
@@ -395,7 +387,7 @@ def build_dragons():
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_breeze.png" alt="Aether Dragon with its breeze appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Breeze</b><span>Breeze appearance</span></figcaption></figure>
 <figure><img src="textures/dragon.entity/dragonmounts2.aeteher_wind.png" alt="Aether Dragon with its wind appearance." width="818" height="392" loading="lazy"><figcaption><b>Aether Wind</b><span>Wind appearance</span></figcaption></figure>
 </div>
-<p class="dragon-caption">Appearance renders supplied with this fan wiki. See the official guide for full Aether Dragon details.</p>
+<p class="dragon-caption">Aether Dragon appearance textures included with the pack; these are reference renders, not in-game screenshots.</p>
 </div>
 
 {h2("species", "All 17 species", f, "Roster")}
@@ -412,7 +404,7 @@ def build_breeding():
     secs = [("hatching", "Hatching"), ("taming", "Taming and breeding"), ("transformations", "Block transformations"), ("lightning", "Lightning transformations")]
     block_changes = [
         ("Lava", "Fire"), ("Water", "Water"), ("Snow, Ice, Blue Ice, Packed Ice", "Ice"),
-        ("Glowstone", "Aether"), ("Magma Block", "Nether"), ("Sculk or Sculk Catalyst", "Sculk"),
+        ("Review the release notes", f'Check the notes for your <a href="{OFFICIAL_FILES}">selected release</a> before installing.'),
         ("Bone Block", "Skeleton"), ("Mossy Cobblestone or Soul Sand", "Zombie"),
         ("Terracotta or Sand", "Terra"), ("End Stone", "Ender"),
         ("Daylight Sensor (day mode)", "Sunlight"), ("Inverted Daylight Sensor (night mode)", "Moonlight"),
@@ -422,7 +414,7 @@ def build_breeding():
     lightning_rows = "".join(f"<tr><th scope=\"row\">{e(start)} Dragon Egg</th><td>{e(result)} Dragon Egg</td></tr>" for start, result in [("Water", "Storm"), ("Skeleton", "Wither"), ("Moonlight", "Dark")])
     body = f"""
 {h2("hatching", "Hatching an egg", f)}
-<p>Dragon eggs are found in naturally generated nests across the Overworld, Nether, and End. Interact with an egg until particles appear; the official guide gives an approximate incubation time of 20 minutes.</p>
+<p>Dragon eggs are found in naturally generated nests across the Overworld, Nether, and End. Interact with an egg until particles appear; allow about 20 minutes for it to hatch.</p>
 <p><a href="{OFFICIAL_DRAGONS}">Official dragon and nest guide</a></p>
 
 {h2("taming", "Taming and breeding", f)}
@@ -447,11 +439,11 @@ def build_flight():
     secs = [("controls", "Mount and take off"), ("inventory", "Dragon inventory")]
     body = f"""
 {h2("controls", "Mount and take off", f)}
-<ol><li>Place a saddle on your dragon.</li><li>Right-click the dragon to mount it.</li><li>Press Jump to take off.</li><li>Use the arrow keys to steer while airborne.</li></ol>
-<p>The official guide describes these controls for the public release. Other control schemes may vary by platform.</p>
+<ol><li>Place a saddle on your dragon.</li><li>Interact with the dragon to mount it.</li><li>Press Jump to take off.</li><li>Use the arrow keys to steer while airborne.</li></ol>
+<p>These steps describe keyboard-and-mouse controls. Touch and controller inputs vary by platform and are not listed here.</p>
 
 {h2("inventory", "Dragon inventory", f)}
-<p>Open the dragon's inventory while riding to manage its equipment. The official guide documents saddle, dragon armor, and chest slots; a chest unlocks 18 storage slots.</p>
+<p>Open the dragon's inventory while riding to manage its equipment. The inventory has saddle, dragon armor, and chest slots; a chest unlocks 18 storage slots.</p>
 <p class="source-line">Source: <a href="{OFFICIAL_DRAGONS}">Official Dragon Mounts 2 Dragons guide</a>.</p>
 """
     write(f, inner_page(f, "Riding and flight", "Mount with a saddle, press Jump to take off, and steer with the arrow keys.",
@@ -482,7 +474,7 @@ def build_items():
 {h2("sources", "Official references")}
 <ul><li><a href="{OFFICIAL_ITEMS}">Items and equipment</a></li><li><a href="{OFFICIAL_RECIPES}">Crafting recipes</a></li><li><a href="{OFFICIAL_BLOCKS}">Blocks and eggs</a></li></ul>
 """
-    write(f, inner_page(f, "Items and equipment", "A sourced quick reference to Dragon Mounts 2 equipment, materials, and food.",
+    write(f, inner_page(f, "Items and equipment", "Dragon Mounts 2 equipment, materials, and food.",
                         f"Documented items for Dragon Mounts 2 v{VERSION}, with direct links to official equipment and recipe guides.", secs, body))
 
 # ------------------------------------------------------------ CHANGELOG
@@ -492,7 +484,7 @@ def build_changelog():
     body = f"""
 {h2("release", "Current public release", f)}
 <dl class="facts"><dt>Release</dt><dd>Dragon Mounts 2 v{VERSION}</dd><dt>Platform</dt><dd>Minecraft Bedrock</dd><dt>Listed game version</dt><dd>{BEDROCK_VERSION}+</dd></dl>
-<p>The official CurseForge listing is the authority for current files, supported game versions, and release notes. This fan wiki does not reproduce an unverified changelog.</p>
+<p>The official CurseForge listing has current files, supported game versions, and release notes. This page summarizes the release without reproducing an unverified changelog.</p>
 <p><a class="btn" href="{OFFICIAL_FILES}">View official files and release notes</a></p>
 
 {h2("sources", "Official release pages")}

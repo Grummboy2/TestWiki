@@ -1,6 +1,6 @@
 # Content backlog
 
-This fan wiki follows the public Dragon Mounts 2 Bedrock release v1.2.5.1. The official project wiki and the exact CurseForge file are the source of truth; do not copy draft 2.0 notes into public-release pages.
+This project wiki documents the public Dragon Mounts 2 Bedrock release v1.2.5.1. Verify mechanics against the project references and the exact CurseForge file; do not copy draft 2.0 notes into public-release pages.
 
 ## Needs new assets or confirmation
 
