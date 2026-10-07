@@ -737,7 +737,7 @@ def build_changelog():
         f'<dl class="facts"><dt>Documented guide</dt><dd>Dragon Mounts 2 v{VERSION}</dd>'
         f'<dt>Platform</dt><dd>Minecraft Bedrock</dd>'
         f'<dt>Listed game version</dt><dd>{BEDROCK_VERSION}+</dd></dl>'
-        f'<p>This Wiki’s gameplay guides describe v{VERSION}. The archive below records published project releases and prereleases from GitHub; it does not mean their mechanics are covered by this guide. Check each release’s notes and supported game version before installing.</p>'
+        f'<p>This Wiki’s gameplay guides describe v{VERSION}. The archive below records published project releases and prereleases from GitHub; it does not mean their mechanics are covered by this guide. Older or platform-specific notes may also be attached to download files.</p>'
         f'<p><a class="btn" href="{OFFICIAL_FILES}">Check current download files</a></p>'
     )
     body = f"""
@@ -753,7 +753,7 @@ def build_changelog():
 <div class="release-list">{''.join(prerelease_entries)}</div>
 
 {h2("sources", "Official release pages")}
-<ul>{''.join(f'<li><a href="{e(url)}">{e(name)}</a></li>' for name, url in DOWNLOAD_SOURCES)}<li><a href="{OFFICIAL_WIKI}">Project wiki</a></li></ul>
+<ul>{''.join(f'<li><a href="{e(url)}">{e(name)}</a></li>' for name, url in DOWNLOAD_SOURCES)}<li><a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/releases">GitHub Releases</a></li><li><a href="{OFFICIAL_WIKI}">Project wiki</a></li></ul>
 """
     write(f, inner_page(f, "Changelog", "Browse published Dragon Mounts 2 releases, hotfixes, and 2.0 prerelease notes.",
                         "Chronological Dragon Mounts 2 changelog with summarized GitHub release notes and direct source links.", secs, body))

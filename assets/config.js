@@ -44,7 +44,7 @@ window.DM_CONFIG = {
           "href": "items.html"
         },
         {
-          "label": "Release info",
+          "label": "Changelog",
           "href": "changelog.html"
         },
         {
