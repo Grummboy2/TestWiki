@@ -10,10 +10,11 @@
 :root[data-theme="light"]{color-scheme:light}
 :root[data-theme="dark"]{--bg:#17131c;--panel:#211b29;--soft:#2b2435;--fg:#eee8f5;--mute:#bdb2c9;--line:#42364e;--a:#c393ed;--on-a:#23172b;color-scheme:dark}
 
-*,*::before,*::after{box-sizing:border-box;transition:background-color .28s ease,color .24s ease,border-color .24s ease,box-shadow .24s ease}
+*,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hh) + 1.25rem);-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 1.0625rem/1.7 var(--sans);-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
+.theme-transitioning,.theme-transitioning *,.theme-transitioning *::before,.theme-transitioning *::after{transition:background-color .32s ease,color .32s ease,border-color .32s ease,box-shadow .32s ease}
 a{color:var(--at);text-underline-offset:.18em}
 a:hover{color:var(--fg)}
 :focus-visible{outline:2px solid var(--a);outline-offset:3px;border-radius:3px}
@@ -92,7 +93,7 @@ mark{background:var(--a);color:var(--on-a);border-radius:3px;padding:0 2px}
 .home-hero-art img{display:block;width:100%;height:100%;min-height:0;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 1rem 1.6rem rgba(0,0,0,.32))}
 .home-hero-art figcaption{color:#e1c8f4;font-size:.78rem;font-weight:700}
 .home-note{padding-top:.2rem}
-@media(max-width:900px){.home-hero-inner{grid-template-columns:1fr;gap:.8rem;padding-block:2rem}.home-hero-art{width:min(100%,22rem);justify-self:center}}
+@media(max-width:700px){.home-hero-inner{grid-template-columns:1fr;gap:.8rem;padding-block:1.5rem}.home-hero-art{grid-row:1;width:min(100%,10rem);justify-self:center}.home-hero-copy{grid-row:2;text-align:center}.home-hero .lede{margin-inline:auto}.hero-actions,.hero-release{justify-content:center}}
 .wide{max-width:none!important}
 
 /* ---------- components ---------- */

@@ -24,6 +24,7 @@
 
   /* ---------- theme ---------- */
   var tbtn = $("#theme");
+  var themeTransitionTimer;
   function syncThemeControl() {
     if (!tbtn) return;
     var dark = root.getAttribute("data-theme") === "dark" ||
@@ -38,8 +39,18 @@
       var cur = root.getAttribute("data-theme");
       if (!cur) cur = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
       var next = cur === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next); store.set("dm2-theme", next);
-      syncThemeControl();
+      function applyTheme() {
+        var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!reduceMotion) {
+          root.classList.add("theme-transitioning");
+          clearTimeout(themeTransitionTimer);
+          themeTransitionTimer = setTimeout(function () { root.classList.remove("theme-transitioning"); }, 380);
+        }
+        root.setAttribute("data-theme", next);
+        store.set("dm2-theme", next);
+        syncThemeControl();
+      }
+      applyTheme();
     });
   }
 
@@ -138,15 +149,26 @@
       return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     }
 
-    function preloadAppearanceGroup(group) {
+    function preloadAppearanceGroup(group, priority) {
       group.variants.forEach(function (variant) {
         if (preloadedAppearances[variant.src]) return;
         var image = new Image();
         image.decoding = "async";
-        image.fetchPriority = "low";
+        image.fetchPriority = priority || "low";
         image.src = variant.src;
         preloadedAppearances[variant.src] = image;
       });
+    }
+
+    function preloadAllAppearances() {
+      function loadAppearanceArt() {
+        appearanceTypes.forEach(function (group) { preloadAppearanceGroup(group, "low"); });
+      }
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(loadAppearanceArt, { timeout: 180 });
+      } else {
+        setTimeout(loadAppearanceArt, 100);
+      }
     }
 
     function drawAppearance() {
@@ -164,6 +186,7 @@
         appearanceStage.setAttribute("aria-busy", "true");
         appearanceImage.onload = finishImageLoad;
         appearanceImage.onerror = finishImageLoad;
+        appearanceImage.fetchPriority = "high";
         appearanceImage.src = variant.src;
       } else {
         finishImageLoad();
@@ -185,7 +208,7 @@
       activeVariant = 0;
       appearanceSelect.value = appearanceKey(match.name);
       drawAppearance();
-      preloadAppearanceGroup(match);
+      preloadAppearanceGroup(match, "high");
     }
 
     function moveAppearance(step) {
@@ -198,7 +221,7 @@
       activeAppearance = appearanceTypes.filter(function (item) { return appearanceKey(item.name) === appearanceSelect.value; })[0];
       activeVariant = 0;
       drawAppearance();
-      preloadAppearanceGroup(activeAppearance);
+      preloadAppearanceGroup(activeAppearance, "high");
     });
     previousAppearance.addEventListener("click", function () { moveAppearance(-1); });
     nextAppearance.addEventListener("click", function () { moveAppearance(1); });
@@ -222,7 +245,8 @@
     addEventListener("hashchange", selectAppearanceFromHash);
     selectAppearanceFromHash();
     drawAppearance();
-    preloadAppearanceGroup(activeAppearance);
+    preloadAppearanceGroup(activeAppearance, "high");
+    preloadAllAppearances();
   }
 
   /* ---------- open a section when linked to it ---------- */

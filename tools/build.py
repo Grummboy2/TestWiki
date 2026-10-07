@@ -260,17 +260,9 @@ def build_home():
         ("Browse release details", "Check supported game versions and current release notes.", OFFICIAL_FILES),
     ]
     tasks_html = "".join(f'<a href="{u}"><b>{t}</b><span>{d}</span></a>' for t, d, u in tasks)
-    path = [
-        ("Find an egg", "Eggs occur in nests across the three dimensions.", "dragons.html#species"),
-        ("Hatch it", "Interact with the egg until particles appear; allow about 20 minutes.", "breeding.html#hatching"),
-        ("Tame a wild dragon", "Feed raw fish, except pufferfish. The documented tame chance is 10% per attempt.", "breeding.html#taming"),
-        ("Mount up", "Place a saddle, interact to ride, and press Jump to take off.", "flight.html#controls"),
-    ]
-    path_html = "".join(f'<li><div><b><a href="{u}">{t}</a></b><span>{d}</span></div></li>' for t, d, u in path)
     TASKS_H2 = h2("tasks", "What do you want to do?")
-    idx("Quick start", f, "quick-start", "Section")
     idx("What do you want to do?", f, "tasks", "Section")
-    body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} quick guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f, [("tasks", "Choose a guide"), ("quick-start", "Quick start"), ("meet", "Meet the dragons"), ("sources", "Project resources"), ("help", "Contribute")]) + f"""<main id="main">
+    body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f, [("tasks", "Browse the guide"), ("meet", "Meet the dragons"), ("help", "Contribute")]) + f"""<main id="main">
 <section class="home-hero">
 <div class="wrap home-hero-inner">
 <div class="home-hero-copy">
@@ -288,9 +280,6 @@ def build_home():
 {TASKS_H2}
 <div class="tasks">{tasks_html}</div>
 
-{h2("quick-start", "Quick start")}
-<ol class="path">{path_html}</ol>
-
 {h2("meet", "Meet the dragons", f, "Section")}
 <div class="three">
 <div><h3>Forest Dragon</h3><p>Four supplied appearances: Forest Base, Jungle, Dry and Cold.</p><a href="dragons.html#forest">Explore the Forest Dragon</a></div>
@@ -298,11 +287,8 @@ def build_home():
 <div><h3>All 17 species</h3><p>Find each dragon's breath type, egg image, and nest information.</p><a href="dragons.html#species">Browse the roster</a></div>
 </div>
 
-{h2("sources", "Use the project sources")}
-<p>For technical notes and current release details, consult the <a href="{OFFICIAL_WIKI}">project development wiki</a> and <a href="{OFFICIAL_FILES}">official download listing</a>.</p>
-
-{h2("help", "Spotted a mistake or a gap?")}
-<p>Help keep the guide accurate. Report missing or outdated details.</p>
+{h2("help", "Contribute", f, "Section")}
+<p>Report missing or outdated information to help keep the guide accurate.</p>
 <p class="cta" style="margin-top:1rem"><span data-link="issues" hidden><a class="btn sm" href="#">Report a mistake</a></span> <span data-link="discord" hidden><a class="btn sm ghost" href="#">Ask on Discord</a></span></p>
 </div>
 </main>
