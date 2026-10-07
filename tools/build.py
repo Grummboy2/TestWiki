@@ -34,36 +34,36 @@ DOWNLOAD_SOURCES = [
 ]
 
 DRAGON_ROSTER = [
-    ("Forest", "Poison", "Overworld: forests, jungles and flower forests", "forest"),
-    ("Aether", "Levitation", "Overworld: most biomes except Mesa", "aether"),
-    ("Fire", "Fire", "Overworld: desert, plains, dripstone caves and plateaus", "fire"),
-    ("Ice", "Ice", "Overworld: frozen biomes", "ice"),
-    ("Dark", "Dark", "No natural nest; transform a Moonlight egg with lightning", "dark"),
-    ("Enchant", "Fire", "The End: End biomes", "enchanted"),
-    ("Ender", "Ender", "Convert the vanilla Ender Dragon egg", "ender"),
-    ("Moonlight", "Dark", "Overworld: cold and deep oceans, and rivers", "moonlight"),
-    ("Nether", "Nether", "Nether: all biomes", "nether"),
-    ("Sculk", "Wither", "Overworld underground: Deep Dark only", "sculk"),
-    ("Skeleton", "Melee only", "Nether: all biomes", "skeleton"),
-    ("Storm", "Air", "No natural nest; transform a Water egg with lightning", "storm"),
-    ("Sunlight", "Fire", "Overworld: desert and desert hills", "sunlight"),
-    ("Terra", "Fire", "Overworld: Mesa / Badlands", "terra"),
-    ("Water", "Water", "Overworld: oceans and swamps", "water"),
-    ("Wither", "Wither", "No natural nest; transform a Skeleton egg with lightning", "wither"),
-    ("Zombie", "Poison", "Nether: all biomes", "zombie"),
+    ("Aether", "Levitation", "Natural nest", "Most biomes except Mesa", "aether"),
+    ("Dark", "Dark", "Lightning transformation", "Moonlight egg struck by lightning", "dark"),
+    ("Enchant", "Fire", "Block transformation", "Bookshelves (Ender egg only)", "enchanted"),
+    ("Ender", "Ender", "Vanilla egg", "Convert the vanilla Ender Dragon egg", "ender"),
+    ("Fire", "Fire", "Natural nest", "Desert, plains, dripstone caves and plateaus", "fire"),
+    ("Forest", "Poison", "Natural nest", "Forests, jungles and flower forests", "forest"),
+    ("Ice", "Ice", "Natural nest", "Frozen biomes", "ice"),
+    ("Moonlight", "Dark", "Natural nest", "Cold and deep oceans, and rivers", "moonlight"),
+    ("Nether", "Nether", "Natural nest", "All Nether biomes", "nether"),
+    ("Sculk", "Wither", "Natural nest", "Underground in the Deep Dark", "sculk"),
+    ("Skeleton", "Melee only", "Natural nest", "All Nether biomes", "skeleton"),
+    ("Storm", "Air", "Lightning transformation", "Water egg struck by lightning", "storm"),
+    ("Sunlight", "Fire", "Natural nest", "Desert and desert hills", "sunlight"),
+    ("Terra", "Fire", "Natural nest", "Mesa / Badlands", "terra"),
+    ("Water", "Water", "Natural nest", "Oceans and swamps", "water"),
+    ("Wither", "Wither", "Lightning transformation", "Skeleton egg struck by lightning", "wither"),
+    ("Zombie", "Poison", "Natural nest", "All Nether biomes", "zombie"),
 ]
 
 DRAGON_APPEARANCES = [
-    ("Forest", [("Base", "forest_base"), ("Cold", "forest_cold"), ("Dry", "forest_dry"), ("Jungle", "forest_jungle")]),
-    ("Aether", [("Normal", "aether_normal"), ("Breeze", "aether_breeze"), ("Wind", "aether_wind")]),
+    ("Aether", [("Aethra", "aether_normal"), ("Breeze", "aether_breeze"), ("Wind", "aether_wind")]),
     ("Dark", [("Bloodmoon", "dark_bloodmoon"), ("Demon", "dark_demon"), ("Imp", "dark_imp"), ("Underworld", "dark_underworld")]),
+    ("Forest", [("Nature", "forest_base"), ("Cold", "forest_cold"), ("Jungle", "forest_jungle"), ("Warm", "forest_dry")]),
     ("Ice", [("Alpine", "ice_alpine"), ("Frost", "ice_frost"), ("Iceberg", "ice_iceberg")]),
-    ("Nether", [("Ash", "nether_ash"), ("Soul Fire", "nether_soul_fire"), ("Volcanic", "nether_volcanic")]),
-    ("Sculk", [("Amethyst", "sculk_amythest"), ("Mutated", "sculk_mutated"), ("Warden", "sculk_warden")]),
-    ("Storm", [("Bronzed", "storm_bronzed"), ("Lightning", "storm_lightning"), ("Thunder", "storm_thunder")]),
-    ("Water", [("Ocean", "water_ocean"), ("Pond", "water_pond"), ("Tidal", "water_tidel")]),
-    ("Zombie", [("Drowned", "zombie_drowned"), ("Husk", "zombie_husk"), ("Zombie", "zombie")]),
-    ("Skeleton", [("Skeleton", "skeleton"), ("Bogged", "bogged"), ("Parched", "parched"), ("Stray", "stray")]),
+    ("Nether", [("Volcanic", "nether_volcanic"), ("Magma", "nether_ash"), ("Soul Fire", "nether_soul_fire")]),
+    ("Sculk", [("Warden", "sculk_warden"), ("Amethyst", "sculk_amythest"), ("Beta", "sculk_mutated")]),
+    ("Skeleton", [("Skeleton", "skeleton"), ("Bogged", "bogged"), ("Stray", "stray")]),
+    ("Storm", [("Lightning", "storm_lightning"), ("Bronzed", "storm_bronzed"), ("Thunder", "storm_thunder")]),
+    ("Water", [("Tidal", "water_tidel"), ("Brine", "water_ocean"), ("Pond", "water_pond")]),
+    ("Zombie", [("Zombie", "zombie"), ("Drowned", "zombie_drowned"), ("Husk", "zombie_husk")]),
 ]
 
 def slug(s):
@@ -492,9 +492,9 @@ def build_dragons():
     f = "dragons.html"
     secs = [("appearances", "Dragon appearances"), ("species", "All 17 species")]
     roster_rows = ""
-    for name, breath, nest, egg in DRAGON_ROSTER:
-        idx(name + " Dragon", f, "species", "Dragon", breath + " breath; " + nest)
-        roster_rows += f'<tr><th scope="row">{e(name)} Dragon</th><td><img class="dragon-roster-thumb" src="textures/dragon.egg/dragonmounts2.dragon_egg_{egg}.png" alt="{e(name)} Dragon egg" width="64" height="64" loading="lazy"></td><td>{e(breath)}</td><td>{e(nest)}</td></tr>'
+    for name, breath, source_type, source, egg in DRAGON_ROSTER:
+        idx(name + " Dragon", f, "species", "Dragon", breath + " breath; " + source_type + ": " + source)
+        roster_rows += f'<tr><th scope="row">{e(name)} Dragon</th><td><img class="dragon-roster-thumb" src="textures/dragon.egg/dragonmounts2.dragon_egg_{egg}.png" alt="{e(name)} Dragon egg" width="64" height="64" loading="lazy"></td><td>{e(breath)}</td><td>{e(source_type)}</td><td>{e(source)}</td></tr>'
     appearances = [{
         "name": name,
         "variants": [{"name": variant, "src": f"textures/dragon.entity/dragonmounts2.{asset}.png"}
@@ -521,11 +521,11 @@ def build_dragons():
 </div>
 
 {h2("species", "All 17 species", f, "Roster")}
-<p>Quick reference for each dragon’s egg, breath, and nest or transformation source. <a href="{OFFICIAL_DRAGONS}">See the official guide for details.</a></p>
-<div class="tbl"><table class="dragon-roster"><thead><tr><th scope="col">Dragon</th><th scope="col">Egg</th><th scope="col">Breath</th><th scope="col">Nest or egg source</th></tr></thead><tbody>{roster_rows}</tbody></table></div>
+<p>Quick reference for each dragon’s egg, breath, and how to find or create it. <a href="breeding.html#transformations">See egg transformations</a> or the <a href="{OFFICIAL_DRAGONS}">official dragon guide</a>.</p>
+<div class="tbl"><table class="dragon-roster"><thead><tr><th scope="col">Dragon</th><th scope="col">Egg</th><th scope="col">Breath</th><th scope="col">Source type</th><th scope="col">Location or method</th></tr></thead><tbody>{roster_rows}</tbody></table></div>
 """
-    write(f, inner_page(f, "Dragons", f"Browse all 17 dragons in the public v{VERSION} release, with egg images and official nest and breath summaries.",
-                        f"Browse appearance variants for 10 Dragon Mounts 2 dragons and compare egg sources and breath types for all 17 species.", secs, body))
+    write(f, inner_page(f, "Dragons", f"Browse all 17 dragons in the public v{VERSION} release, with egg images, breath types, natural nests, and transformations.",
+                        f"Browse dragon appearance variants and compare egg sources, breath types, natural nests, and transformations.", secs, body))
 
 # ------------------------------------------------------------ BREEDING
 def build_breeding():
