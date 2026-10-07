@@ -46,7 +46,7 @@ mark{background:var(--a);color:var(--on-a);border-radius:3px;padding:0 2px}
 .nav-drawer{position:fixed;inset:0 0 0 auto;margin:0 0 0 auto;width:min(23rem,calc(100vw - 1rem));height:100%;max-height:100dvh;border:0;border-left:1px solid var(--line);padding:1.25rem;background:var(--panel);color:var(--fg);box-shadow:-1rem 0 3rem rgba(0,0,0,.24);overflow-y:auto}
 @keyframes drawer-enter{from{opacity:.75;transform:translateX(1rem)}to{opacity:1;transform:translateX(0)}}
 .nav-drawer[open]{animation:drawer-enter .22s ease-out both}
-.nav-drawer::backdrop{background:rgba(13,7,19,.62)}
+.nav-drawer::backdrop{background:rgba(0,0,0,.58)}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
 .drawer-head b{font:700 1.15rem var(--serif)}
 .drawer-section{margin-top:1.25rem}

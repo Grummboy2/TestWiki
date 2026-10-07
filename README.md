@@ -6,12 +6,6 @@ The Dragon Mounts 2 project wiki starts by asking whether you play Minecraft Bed
 - [Official project wiki](https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki)
 - [Report a wiki issue](https://github.com/Grummboy2/TestWiki/issues/new)
 
-## Edit the Wiki visually
-
-Double-click `Start-Wiki-Editor.bat`, then edit the page preview. The local editor connects to this project folder automatically and can change page content, create pages, drag blocks to reorder them, use three-dot menus for common block actions, rearrange menu links, and choose colors without editing code. Read [wiki-editor.html](wiki-editor.html) for details.
-
-The editor's server listens only on this computer and saves approved Wiki pages and settings directly to this folder. It has no GitHub login or publishing access. After reviewing local changes, publish them to the website through your usual GitHub account and repository permissions. Avoid rerunning `tools/build.py` after visual edits to generated pages, since the generator may replace those edits.
-
 ## Publish changes
 
 GitHub Pages deploys committed files from the `main` branch and repository root. Local edits do not appear on GitHub until they are committed and pushed; allow the Pages deployment to finish before checking the site.
@@ -25,9 +19,6 @@ In **Settings > Pages**, use **Deploy from a branch**, branch `main`, folder `/ 
 | Path | Purpose |
 | --- | --- |
 | `tools/build.py` | Page content and static-site generator |
-| `Start-Wiki-Editor.bat` | Start the local visual editor on Windows |
-| `tools/visual-editor/` | Visual page, menu, and color editor |
-| `tools/visual-editor-server.js` | Loopback-only server used by the local editor |
 | `index.html` | Edition chooser and Bedrock overview |
 | `java.html` | Java edition starter section |
 | Other root HTML pages | Bedrock guides |
