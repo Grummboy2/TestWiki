@@ -266,12 +266,19 @@ def build_home():
     idx("Quick start", f, "quick-start", "Section")
     idx("What do you want to do?", f, "tasks", "Section")
     body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} quick guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f) + f"""<main id="main">
-<div class="wrap homehead">
+<section class="home-hero">
+<div class="wrap home-hero-inner">
+<div class="home-hero-copy">
+<p class="eyebrow">BEDROCK FIELD GUIDE</p>
 <h1>DragonMounts 2 Wiki</h1>
-<p class="lede">A concise field guide to the Bedrock add-on's dragons, eggs, riding, and equipment.</p>
-<div class="release-strip"><span>PUBLIC RELEASE</span><b>v{VERSION}</b><span>Minecraft Bedrock {BEDROCK_VERSION}+</span><a href="{OFFICIAL_FILES}">Official download and files</a></div>
-<p class="note"><strong>Fan-made quick reference.</strong> Mechanics and species below follow the <a href="{OFFICIAL_WIKI}">official project wiki</a>. Check it for full instructions and updates.</p>
+<p class="lede">A field guide to finding, raising, and flying dragons in Minecraft Bedrock.</p>
+<div class="hero-actions"><a class="btn" href="dragons.html#species">Explore the dragons</a><a class="btn ghost" href="breeding.html#hatching">Start with an egg</a></div>
+<p class="hero-release"><span>PUBLIC RELEASE</span><b>v{VERSION}</b><span>Minecraft Bedrock {BEDROCK_VERSION}+</span></p>
 </div>
+<figure class="home-hero-art"><img src="textures/dragon.entity/dragonmounts2.forest_base.png" alt="Forest Dragon appearance render" width="818" height="392"><figcaption>Forest Dragon · appearance render</figcaption></figure>
+</div>
+</section>
+<div class="wrap home-note"><p class="note"><strong>Fan-made quick reference.</strong> Mechanics and species below follow the <a href="{OFFICIAL_WIKI}">official project wiki</a>. Check it for full instructions and updates. <a href="{OFFICIAL_FILES}">View official release files</a>.</p></div>
 <div class="wrap" style="padding-bottom:1rem">
 {TASKS_H2}
 <div class="tasks">{tasks_html}</div>
