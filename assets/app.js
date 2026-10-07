@@ -24,12 +24,24 @@
 
   /* ---------- theme ---------- */
   var tbtn = $("#theme");
-  if (tbtn) tbtn.addEventListener("click", function () {
-    var cur = root.getAttribute("data-theme");
-    if (!cur) cur = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
-    var next = cur === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next); store.set("dm2-theme", next);
-  });
+  function syncThemeControl() {
+    if (!tbtn) return;
+    var dark = root.getAttribute("data-theme") === "dark" ||
+      (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme:dark)").matches);
+    tbtn.setAttribute("aria-pressed", dark ? "true" : "false");
+    tbtn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    tbtn.title = dark ? "Switch to light mode" : "Switch to dark mode";
+  }
+  if (tbtn) {
+    syncThemeControl();
+    tbtn.addEventListener("click", function () {
+      var cur = root.getAttribute("data-theme");
+      if (!cur) cur = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
+      var next = cur === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next); store.set("dm2-theme", next);
+      syncThemeControl();
+    });
+  }
 
   var navToggle = $("#nav-toggle"), navDrawer = $("#nav-drawer"), navClose = $("#nav-close");
   if (navToggle && navDrawer) {
