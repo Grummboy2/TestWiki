@@ -175,7 +175,8 @@ ol.path span{color:var(--mute)}
 .appearance-toolbar label{display:grid;gap:.35rem;color:var(--mute);font-size:.84rem;font-weight:600}
 .appearance-toolbar select{min-width:13rem;min-height:42px;padding:.5rem 2.2rem .5rem .75rem;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--fg);font:500 .98rem var(--sans)}
 .appearance-stage{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:.6rem;margin:0;touch-action:pan-y;user-select:none}
-.appearance-stage img{display:block;width:100%;height:auto;max-height:27rem;aspect-ratio:818/392;object-fit:contain;background:var(--soft)}
+.appearance-stage img{display:block;width:100%;height:auto;max-height:27rem;aspect-ratio:818/392;object-fit:contain;background:var(--soft);transition:opacity .14s ease}
+.appearance-stage img.is-loading{opacity:.35}
 .appearance-stage figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:.1rem 0 .65rem;border-bottom:1px solid var(--line)}
 .appearance-stage figcaption b{font:650 1rem var(--sans)}
 .appearance-stage figcaption span{color:var(--mute);font-size:.9rem}

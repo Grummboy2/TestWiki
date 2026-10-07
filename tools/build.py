@@ -57,10 +57,7 @@ DRAGON_APPEARANCES = [
     ("Storm", [("Bronzed", "storm_bronzed"), ("Lightning", "storm_lightning"), ("Thunder", "storm_thunder")]),
     ("Water", [("Ocean", "water_ocean"), ("Pond", "water_pond"), ("Tidal", "water_tidel")]),
     ("Zombie", [("Drowned", "zombie_drowned"), ("Husk", "zombie_husk"), ("Zombie", "zombie")]),
-    ("Bogged", [("Bogged", "bogged")]),
-    ("Parched", [("Parched", "parched")]),
-    ("Skeleton", [("Skeleton", "skeleton")]),
-    ("Stray", [("Stray", "stray")]),
+    ("Skeleton", [("Skeleton", "skeleton"), ("Bogged", "bogged"), ("Parched", "parched"), ("Stray", "stray")]),
 ]
 
 def slug(s):

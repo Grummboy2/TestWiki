@@ -132,15 +132,42 @@
     var appearanceStage = $("#appearance-stage", appearanceExplorer);
     var activeAppearance = appearanceTypes[0];
     var activeVariant = 0;
+    var preloadedAppearances = Object.create(null);
+    var imageRequest = 0;
     function appearanceKey(name) {
       return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    }
+
+    function preloadAppearanceGroup(group) {
+      group.variants.forEach(function (variant) {
+        if (preloadedAppearances[variant.src]) return;
+        var image = new Image();
+        image.decoding = "async";
+        image.fetchPriority = "low";
+        image.src = variant.src;
+        preloadedAppearances[variant.src] = image;
+      });
     }
 
     function drawAppearance() {
       if (!activeAppearance) return;
       var variants = activeAppearance.variants;
       var variant = variants[activeVariant];
-      appearanceImage.src = variant.src;
+      var request = ++imageRequest;
+      function finishImageLoad() {
+        if (request !== imageRequest) return;
+        appearanceImage.classList.remove("is-loading");
+        appearanceStage.removeAttribute("aria-busy");
+      }
+      if (appearanceImage.getAttribute("src") !== variant.src || !appearanceImage.complete || !appearanceImage.naturalWidth) {
+        appearanceImage.classList.add("is-loading");
+        appearanceStage.setAttribute("aria-busy", "true");
+        appearanceImage.onload = finishImageLoad;
+        appearanceImage.onerror = finishImageLoad;
+        appearanceImage.src = variant.src;
+      } else {
+        finishImageLoad();
+      }
       appearanceImage.alt = activeAppearance.name + " Dragon, " + variant.name + " appearance";
       appearanceDragon.textContent = activeAppearance.name + " Dragon";
       appearanceVariant.textContent = variant.name;
@@ -158,6 +185,7 @@
       activeVariant = 0;
       appearanceSelect.value = appearanceKey(match.name);
       drawAppearance();
+      preloadAppearanceGroup(match);
     }
 
     function moveAppearance(step) {
@@ -170,6 +198,7 @@
       activeAppearance = appearanceTypes.filter(function (item) { return appearanceKey(item.name) === appearanceSelect.value; })[0];
       activeVariant = 0;
       drawAppearance();
+      preloadAppearanceGroup(activeAppearance);
     });
     previousAppearance.addEventListener("click", function () { moveAppearance(-1); });
     nextAppearance.addEventListener("click", function () { moveAppearance(1); });
@@ -193,6 +222,7 @@
     addEventListener("hashchange", selectAppearanceFromHash);
     selectAppearanceFromHash();
     drawAppearance();
+    preloadAppearanceGroup(activeAppearance);
   }
 
   /* ---------- open a section when linked to it ---------- */
