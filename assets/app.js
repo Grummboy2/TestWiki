@@ -6,6 +6,54 @@
   function $(s, c) { return (c || document).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (m) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]; }); }
+  function setWikiSettings() {
+    var theme = CFG.theme || {};
+    var colors = {
+      "--wiki-accent-light": theme.accentLight,
+      "--wiki-accent-dark": theme.accentDark,
+      "--wiki-hero-light": theme.heroLight,
+      "--wiki-hero-dark": theme.heroDark
+    };
+    Object.keys(colors).forEach(function (name) {
+      if (/^#[0-9a-f]{6}$/i.test(colors[name] || "")) {
+        root.style.setProperty(name, colors[name]);
+      }
+    });
+  }
+  function renderNavigation() {
+    if (!Array.isArray(CFG.navigation)) return;
+    var currentPath = window.location.pathname;
+    $$(".nav-drawer nav, .guide-sidebar nav").forEach(function (nav) {
+      var fragment = document.createDocumentFragment();
+      CFG.navigation.forEach(function (group) {
+        if (!group || typeof group.title !== "string" || !Array.isArray(group.links)) return;
+        var section = document.createElement("section");
+        section.className = "guide-group";
+        var heading = document.createElement("h2");
+        heading.textContent = group.title;
+        section.appendChild(heading);
+        var list = document.createElement("ul");
+        group.links.forEach(function (page) {
+          if (!page || typeof page.label !== "string" || typeof page.href !== "string") return;
+          var item = document.createElement("li");
+          var link = document.createElement("a");
+          link.textContent = page.label;
+          link.href = page.href;
+          if (new URL(page.href, window.location.href).pathname === currentPath) {
+            link.setAttribute("aria-current", "page");
+          }
+          item.appendChild(link);
+          list.appendChild(item);
+        });
+        section.appendChild(list);
+        fragment.appendChild(section);
+      });
+      nav.replaceChildren(fragment);
+    });
+  }
+  setWikiSettings();
+  renderNavigation();
+
   var store = {
     get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -133,120 +181,23 @@
   var appearanceExplorer = $("#appearance-explorer");
   if (appearanceExplorer) {
     var appearanceTypes = JSON.parse(appearanceExplorer.getAttribute("data-appearances") || "[]");
-    var appearanceSelect = $("#appearance-type", appearanceExplorer);
-    var appearanceImage = $("#appearance-image", appearanceExplorer);
-    var appearanceDragon = $("#appearance-dragon", appearanceExplorer);
-    var appearanceVariant = $("#appearance-variant", appearanceExplorer);
-    var appearancePosition = $("#appearance-position", appearanceExplorer);
-    var previousAppearance = $("#appearance-previous", appearanceExplorer);
-    var nextAppearance = $("#appearance-next", appearanceExplorer);
-    var appearanceStage = $("#appearance-stage", appearanceExplorer);
-    var activeAppearance = appearanceTypes[0];
-    var activeVariant = 0;
-    var preloadedAppearances = Object.create(null);
-    var imageRequest = 0;
-    function appearanceKey(name) {
-      return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    }
+    appearanceTypes.forEach(function (group) {
+      var key = group.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      var card = $('[data-appearance="' + key + '"]', appearanceExplorer);
+      if (!card) return;
+      var image = $("[data-appearance-image]", card);
+      var variantLabel = $("[data-appearance-variant]", card);
+      var select = $("[data-appearance-select]", card);
+      if (!image || !variantLabel || !select) return;
 
-    function preloadAppearanceGroup(group, priority) {
-      group.variants.forEach(function (variant) {
-        if (preloadedAppearances[variant.src]) return;
-        var image = new Image();
-        image.decoding = "async";
-        image.fetchPriority = priority || "low";
+      select.addEventListener("change", function () {
+        var variant = group.variants[Number(select.value)];
+        if (!variant) return;
         image.src = variant.src;
-        preloadedAppearances[variant.src] = image;
+        image.alt = group.name + " Dragon, " + variant.name + " appearance";
+        variantLabel.textContent = variant.name;
       });
-    }
-
-    function preloadAllAppearances() {
-      function loadAppearanceArt() {
-        appearanceTypes.forEach(function (group) { preloadAppearanceGroup(group, "low"); });
-      }
-      if ("requestIdleCallback" in window) {
-        requestIdleCallback(loadAppearanceArt, { timeout: 180 });
-      } else {
-        setTimeout(loadAppearanceArt, 100);
-      }
-    }
-
-    function drawAppearance() {
-      if (!activeAppearance) return;
-      var variants = activeAppearance.variants;
-      var variant = variants[activeVariant];
-      var request = ++imageRequest;
-      function finishImageLoad() {
-        if (request !== imageRequest) return;
-        appearanceImage.classList.remove("is-loading");
-        appearanceStage.removeAttribute("aria-busy");
-      }
-      if (appearanceImage.getAttribute("src") !== variant.src || !appearanceImage.complete || !appearanceImage.naturalWidth) {
-        appearanceImage.classList.add("is-loading");
-        appearanceStage.setAttribute("aria-busy", "true");
-        appearanceImage.onload = finishImageLoad;
-        appearanceImage.onerror = finishImageLoad;
-        appearanceImage.fetchPriority = "high";
-        appearanceImage.src = variant.src;
-      } else {
-        finishImageLoad();
-      }
-      appearanceImage.alt = activeAppearance.name + " Dragon, " + variant.name + " appearance";
-      appearanceDragon.textContent = activeAppearance.name + " Dragon";
-      appearanceVariant.textContent = variant.name;
-      appearancePosition.textContent = (activeVariant + 1) + " of " + variants.length;
-      previousAppearance.disabled = variants.length < 2;
-      nextAppearance.disabled = variants.length < 2;
-      appearanceStage.setAttribute("aria-label", activeAppearance.name + " Dragon, " + variant.name + " appearance. Use the left and right arrow keys to browse variants.");
-    }
-
-    function selectAppearanceFromHash() {
-      var key = decodeURIComponent((location.hash || "").slice(1));
-      var match = appearanceTypes.filter(function (item) { return appearanceKey(item.name) === key; })[0];
-      if (!match) return;
-      activeAppearance = match;
-      activeVariant = 0;
-      appearanceSelect.value = appearanceKey(match.name);
-      drawAppearance();
-      preloadAppearanceGroup(match, "high");
-    }
-
-    function moveAppearance(step) {
-      if (!activeAppearance || activeAppearance.variants.length < 2) return;
-      activeVariant = (activeVariant + step + activeAppearance.variants.length) % activeAppearance.variants.length;
-      drawAppearance();
-    }
-
-    appearanceSelect.addEventListener("change", function () {
-      activeAppearance = appearanceTypes.filter(function (item) { return appearanceKey(item.name) === appearanceSelect.value; })[0];
-      activeVariant = 0;
-      drawAppearance();
-      preloadAppearanceGroup(activeAppearance, "high");
     });
-    previousAppearance.addEventListener("click", function () { moveAppearance(-1); });
-    nextAppearance.addEventListener("click", function () { moveAppearance(1); });
-    appearanceStage.addEventListener("keydown", function (event) {
-      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-        event.preventDefault();
-        moveAppearance(event.key === "ArrowRight" ? 1 : -1);
-      }
-    });
-    var swipeStart = null;
-    appearanceStage.addEventListener("pointerdown", function (event) {
-      swipeStart = event.pointerType === "mouse" ? null : event.clientX;
-    });
-    appearanceStage.addEventListener("pointerup", function (event) {
-      if (swipeStart === null) return;
-      var distance = event.clientX - swipeStart;
-      swipeStart = null;
-      if (Math.abs(distance) > 45) moveAppearance(distance < 0 ? 1 : -1);
-    });
-    appearanceStage.addEventListener("pointercancel", function () { swipeStart = null; });
-    addEventListener("hashchange", selectAppearanceFromHash);
-    selectAppearanceFromHash();
-    drawAppearance();
-    preloadAppearanceGroup(activeAppearance, "high");
-    preloadAllAppearances();
   }
 
   /* ---------- open a section when linked to it ---------- */
@@ -278,6 +229,16 @@
   /* ---------- site search ---------- */
   var sx = $("#sx"), sq = $("#sq"), sr = $("#sres"), lastFocus = null;
   var IDX = window.DM_INDEX || [];
+  if (Array.isArray(CFG.navigation)) {
+    CFG.navigation.forEach(function (group) {
+      (group && Array.isArray(group.links) ? group.links : []).forEach(function (page) {
+        if (!page || typeof page.label !== "string" || typeof page.href !== "string") return;
+        if (!IDX.some(function (entry) { return entry.p === page.href && entry.k === "Page"; })) {
+          IDX.push({ t: page.label, p: page.href, a: "", k: "Page", x: "Wiki guide" });
+        }
+      });
+    });
+  }
   function rank(e, terms) {
     var t = e.t.toLowerCase(), x = (e.x || "").toLowerCase(), s = 0;
     for (var i = 0; i < terms.length; i++) {

@@ -26,6 +26,12 @@ OFFICIAL_ITEMS = OFFICIAL_WIKI + "/Items"
 OFFICIAL_RECIPES = OFFICIAL_WIKI + "/Recipes"
 OFFICIAL_BLOCKS = OFFICIAL_WIKI + "/Blocks"
 OFFICIAL_FILES = "https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all"
+DOWNLOAD_SOURCES = [
+    ("CurseForge", "https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2"),
+    ("MCPEDL", "https://mcpedl.com/dragon-mounts-2/"),
+    ("Vatonage", "https://vatonage.com/mods/dragon-mounts-2"),
+    ("ModBay", "https://modbay.org/mods/4446-dragon-mounts-2.html"),
+]
 
 DRAGON_ROSTER = [
     ("Forest", "Poison", "Overworld: forests, jungles and flower forests", "forest"),
@@ -147,6 +153,47 @@ GUIDE_GROUPS = [
     ("Reference", [("items.html", "Items and equipment"), ("changelog.html", "Release info"),
                    ("faq.html", "FAQ and glossary")]),
 ]
+
+EDITION_SCRIPT = """<script>
+(() => {
+  const key = "dm2-edition";
+  const picker = document.querySelector("#edition-picker");
+  const bedrock = document.querySelector("#bedrock-content");
+  const params = new URLSearchParams(window.location.search);
+  let saved = null;
+  try { saved = localStorage.getItem(key); } catch (error) {}
+  const showBedrock = (remember) => {
+    picker.hidden = true;
+    bedrock.hidden = false;
+    if (remember) { try { localStorage.setItem(key, "bedrock"); } catch (error) {} }
+  };
+  if (params.get("choose") === "1") {
+    try { localStorage.removeItem(key); } catch (error) {}
+  } else if (params.get("edition") === "bedrock" || window.location.hash) {
+    showBedrock(true);
+  } else if (saved === "java") {
+    window.location.replace("java.html");
+  } else if (saved === "bedrock") {
+    showBedrock(false);
+  }
+  document.querySelector("#select-bedrock").addEventListener("click", () => showBedrock(true));
+  document.querySelector("#select-java").addEventListener("click", () => {
+    try { localStorage.setItem(key, "java"); } catch (error) {}
+  });
+  document.querySelector("#change-edition").addEventListener("click", () => {
+    try { localStorage.removeItem(key); } catch (error) {}
+    bedrock.hidden = true;
+    picker.hidden = false;
+    window.history.replaceState(null, "", window.location.pathname);
+    picker.scrollIntoView({ block: "start" });
+  });
+  if (window.location.hash && !bedrock.hidden) {
+    const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    if (target) requestAnimationFrame(() => target.scrollIntoView());
+  }
+})();
+</script>
+"""
 
 INDEX = []  # search index entries
 
@@ -278,6 +325,7 @@ def build_home():
     task_groups = [
         ("Get started", [
             ("Install the add-on", "Set up the packs in a Bedrock world.", "install.html"),
+            ("Download options", "Choose from the listed Dragon Mounts 2 download sites.", "install.html#downloads"),
             ("Find an egg", "Look for nests in the Overworld, Nether, and End.", "dragons.html#species"),
             ("Hatch an egg", "Interact until particles appear; hatching takes about 20 minutes.", "breeding.html#hatching"),
         ]),
@@ -299,14 +347,35 @@ def build_home():
                 for label, description, url in tasks) +
         '</div></section>'
         for title, tasks in task_groups)
-    body = head(f, "", f"Dragon Mounts 2 Bedrock {VERSION} guide: find eggs, hatch and tame dragons, ride, and browse equipment.") + header(f, [("tasks", "Browse the guide"), ("meet", "Meet the dragons"), ("help", "Contribute")]) + f"""<main id="main">
+    body = head(f, "", f"Dragon Mounts 2 Wiki for Minecraft Bedrock and Java editions.") + header(f, [("tasks", "Browse the guide"), ("meet", "Meet the dragons"), ("help", "Contribute")]) + f"""<main id="main">
+<section class="edition-picker" id="edition-picker" aria-labelledby="edition-title">
+<div class="wrap edition-picker-inner">
+<p class="eyebrow" style="text-align:center">DRAGON MOUNTS 2 WIKI</p>
+<h1 id="edition-title">Which Minecraft edition do you play?</h1>
+<p class="lede">Choose your edition to open the right guide. We’ll remember your choice on this device, and you can change it whenever you like.</p>
+<div class="edition-options">
+<button class="edition-card" id="select-bedrock" type="button">
+<span class="edition-tag">GUIDES AVAILABLE</span>
+<strong>Minecraft Bedrock</strong>
+<span>Open the Bedrock guides for installing the add-on, dragons, eggs, flight, and more.</span>
+</button>
+<a class="edition-card" id="select-java" href="java.html">
+<span class="edition-tag">STARTER SECTION</span>
+<strong>Minecraft Java</strong>
+<span>Open the Java section. It is a blank area ready for Java-specific guides.</span>
+</a>
+</div>
+</div>
+</section>
+<div id="bedrock-content" hidden>
+<div class="edition-status"><span>Showing Minecraft Bedrock guides</span><button id="change-edition" type="button">Change edition</button></div>
 <section class="home-hero">
 <div class="wrap home-hero-inner">
 <div class="home-hero-copy">
 <p class="eyebrow">BEDROCK FIELD GUIDE</p>
 <h1>DragonMounts 2 Wiki</h1>
 <p class="lede">A field guide to finding, raising, and flying dragons in Minecraft Bedrock.</p>
-<div class="hero-actions"><a class="btn" href="dragons.html#species">Explore the dragons</a><a class="btn ghost" href="breeding.html#hatching">Start with an egg</a></div>
+<div class="hero-actions"><a class="btn" href="dragons.html#species">Explore the dragons</a><a class="btn ghost" href="breeding.html#hatching">Start with an egg</a><a class="btn ghost" href="install.html#downloads">Download options</a></div>
 <p class="hero-release"><span>PUBLIC RELEASE</span><b>v{VERSION}</b><span>Minecraft Bedrock {BEDROCK_VERSION}+</span></p>
 </div>
 <figure class="home-hero-art"><img src="textures/dragon.egg/dragonmounts2.dragon_egg_ender.png" alt="Ender Dragon egg from the Dragon Mounts 2 pack" width="512" height="512"><figcaption>ENDER DRAGON EGG</figcaption></figure>
@@ -328,15 +397,37 @@ def build_home():
 <p>Report missing or outdated information to help keep the guide accurate.</p>
 <p class="cta" style="margin-top:1rem"><span data-link="issues" hidden><a class="btn sm" href="#">Report a mistake</a></span> <span data-link="discord" hidden><a class="btn sm ghost" href="#">Ask on Discord</a></span></p>
 </div>
+</div>
 </main>
-""" + footer()
+""" + EDITION_SCRIPT + footer()
+    write(f, body)
+
+def build_java():
+    f = "java.html"
+    body = head(f, "Minecraft Java", "The Java edition section of the DragonMounts 2 Wiki, ready for future Java-specific guides.") + """<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="index.html?choose=1"><img class="mark" src="textures/pack_icon.png" alt=""><span>DragonMounts 2 Wiki</span></a>
+    <a class="btn sm" href="index.html?choose=1">Change edition</a>
+  </div>
+</header>
+<main id="main">
+  <div class="phead"><div class="wrap"><p class="eyebrow">MINECRAFT JAVA</p><h1>Java Edition guides</h1><p class="lede">This is the Java section of the Wiki. It is a starter area ready for Java-specific guides.</p></div></div>
+  <section class="wrap java-empty" aria-labelledby="java-empty-title">
+    <h2 id="java-empty-title">This section is ready for future guides</h2>
+    <p>There are no Java guides here yet. The existing Dragon Mounts 2 guides are for Minecraft Bedrock; this section is kept separate for Java information.</p>
+    <p class="cta"><a class="btn" href="index.html?edition=bedrock">Open the Bedrock guides</a><a class="btn ghost" href="index.html?choose=1">Choose another edition</a></p>
+  </section>
+</main>
+<footer class="foot"><div class="wrap"><p>Dragon Mounts 2 Wiki · <a href="index.html?choose=1">Choose edition</a> · <a href="https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki">Project wiki</a></p></div></footer>
+<script>try { localStorage.setItem("dm2-edition", "java"); } catch (error) {}</script>
+</body></html>"""
     write(f, body)
 
 # ------------------------------------------------------------ INSTALL
 def build_install():
     f = "install.html"
     steps = [
-        ("Download the current file", f'Use the official <a href="{OFFICIAL_FILES}">CurseForge files page</a> and check that the release supports your Minecraft version.'),
+        ("Download the current file", f'Choose a page from the <a href="install.html#downloads">download options</a> and check that the release supports your Minecraft version.'),
         ("Import the add-on", "Open the downloaded file with Minecraft Bedrock and wait for the import to finish."),
         ("Apply it to a world", "In the world settings, enable the imported Dragon Mounts 2 packs, then load the world."),
         ("Review the release notes", f'Check the notes for your <a href="{OFFICIAL_FILES}">selected release</a> before installing.'),
@@ -359,7 +450,9 @@ def build_install():
         i = "t-" + slug(q)
         idx(q, f, i, "Troubleshooting", re.sub("<[^>]+>", "", a))
         tr_html += f'<details class="q" id="{i}"><summary>{q}</summary><div class="body"><p>{a}</p></div></details>'
-    secs = [("before", "Before you start"), ("steps", "Install steps"), ("version", "Version scope"), ("troubleshooting", "Troubleshooting")]
+    download_links = "".join(
+        f'<li><a href="{e(url)}">{e(name)}</a></li>' for name, url in DOWNLOAD_SOURCES)
+    secs = [("before", "Before you start"), ("downloads", "Download options"), ("steps", "Install steps"), ("version", "Version scope"), ("troubleshooting", "Troubleshooting")]
     body = f"""
 {h2("before", "Before you start", f)}
 <ul>
@@ -367,7 +460,9 @@ def build_install():
 <li>Back up your world before adding or updating packs.</li>
 <li>Use the notes attached to the selected release for version-specific steps.</li>
 </ul>
-<p><a class="btn" href="{OFFICIAL_FILES}">Open official downloads</a></p>
+{h2("downloads", "Download options", f)}
+<p>Choose a download page and confirm the file supports your Minecraft version before installing.</p>
+<ul class="download-sources">{download_links}</ul>
 
 {h2("steps", "Install steps", f)}
 <p>Tick each step as you go. Your progress is saved in this browser.</p>
@@ -382,7 +477,7 @@ def build_install():
 <dt>Latest public file</dt><dd>v{VERSION}</dd>
 <dt>Listed game version</dt><dd>Minecraft Bedrock {BEDROCK_VERSION}+</dd>
 <dt>Edition</dt><dd>Minecraft Bedrock</dd>
-<dt>Release source</dt><dd><a href="{OFFICIAL_FILES}">CurseForge</a></dd>
+<dt>Download sources</dt><dd>{", ".join(f'<a href="{e(url)}">{e(name)}</a>' for name, url in DOWNLOAD_SOURCES)}</dd>
 </dl>
 
 {h2("troubleshooting", "Troubleshooting", f)}
@@ -405,34 +500,32 @@ def build_dragons():
         "variants": [{"name": variant, "src": f"textures/dragon.entity/dragonmounts2.{asset}.png"}
                      for variant, asset in variants],
     } for name, variants in DRAGON_APPEARANCES]
-    first_appearance = appearances[0]
-    first_variant = first_appearance["variants"][0]
     appearance_json = e(json.dumps(appearances, separators=(",", ":")))
-    appearance_options = "".join(
-        f'<option value="{slug(item["name"])}">{e(item["name"])}</option>' for item in appearances)
-    appearance_anchors = "".join(
-        f'<span class="appearance-anchor" id="{slug(item["name"])}"></span>' for item in appearances)
-    initial_alt = f'{first_appearance["name"]} Dragon, {first_variant["name"]} appearance'
+    appearance_cards = "".join(
+        f'<section class="appearance-card" id="{slug(item["name"])}" data-appearance="{slug(item["name"])}">'
+        f'<h3>{e(item["name"])} Dragon</h3>'
+        f'<figure><img data-appearance-image src="{e(item["variants"][0]["src"])}" '
+        f'alt="{e(item["name"])} Dragon, {e(item["variants"][0]["name"])} appearance" '
+        f'width="818" height="392" loading="lazy">'
+        f'<figcaption><b>{e(item["name"])} Dragon</b><span data-appearance-variant>{e(item["variants"][0]["name"])}</span></figcaption></figure>'
+        f'<label>Appearance<select data-appearance-select aria-label="{e(item["name"])} Dragon appearance">'
+        + "".join(f'<option value="{index}">{e(variant["name"])}</option>'
+                  for index, variant in enumerate(item["variants"])) +
+        '</select></label></section>'
+        for item in appearances)
     body = f"""
 {h2("appearances", "Dragon appearances", f, "Gallery")}
-<p>Browse the supplied appearance renders by dragon type. Light Dragon variants are omitted.</p>
+<p>Scroll through the dragons and choose a variant to preview it.</p>
 <div class="appearance-explorer" id="appearance-explorer" data-appearances="{appearance_json}">
-{appearance_anchors}
-<div class="appearance-toolbar"><label for="appearance-type">Dragon type<select id="appearance-type">{appearance_options}</select></label></div>
-<figure class="appearance-stage" id="appearance-stage" tabindex="0" aria-label="Dragon appearance. Use the left and right arrow keys to browse variants.">
-<img id="appearance-image" src="textures/dragon.entity/dragonmounts2.{first_variant['src'].split('.')[-2]}.png" alt="{e(initial_alt)}" width="818" height="392">
-<figcaption><b id="appearance-dragon">{e(first_appearance['name'])} Dragon</b><span id="appearance-variant">{e(first_variant['name'])}</span></figcaption>
-</figure>
-<div class="appearance-navigation"><button class="ibtn" id="appearance-previous" type="button" aria-label="Previous appearance"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><output id="appearance-position" aria-live="polite">1 of {len(first_appearance['variants'])}</output><button class="ibtn" id="appearance-next" type="button" aria-label="Next appearance"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
+{appearance_cards}
 </div>
 
 {h2("species", "All 17 species", f, "Roster")}
-<p>Egg thumbnails and quick facts below follow the <a href="{OFFICIAL_DRAGONS}">official Dragons guide</a>. For full stats, variants, and mechanics, use that source.</p>
+<p>Quick reference for each dragon’s egg, breath, and nest or transformation source. <a href="{OFFICIAL_DRAGONS}">See the official guide for details.</a></p>
 <div class="tbl"><table class="dragon-roster"><thead><tr><th scope="col">Dragon</th><th scope="col">Egg</th><th scope="col">Breath</th><th scope="col">Nest or egg source</th></tr></thead><tbody>{roster_rows}</tbody></table></div>
-<p class="source-line">Source: <a href="{OFFICIAL_DRAGONS}">Official Dragon Mounts 2 Dragons guide</a>.</p>
 """
     write(f, inner_page(f, "Dragons", f"Browse all 17 dragons in the public v{VERSION} release, with egg images and official nest and breath summaries.",
-                        f"The 17 Dragon Mounts 2 dragons, with official egg sources and breath types, plus Forest and Aether appearance galleries.", secs, body))
+                        f"Browse appearance variants for 10 Dragon Mounts 2 dragons and compare egg sources and breath types for all 17 species.", secs, body))
 
 # ------------------------------------------------------------ BREEDING
 def build_breeding():
@@ -519,11 +612,11 @@ def build_changelog():
     body = f"""
 {h2("release", "Current public release", f)}
 <dl class="facts"><dt>Release</dt><dd>Dragon Mounts 2 v{VERSION}</dd><dt>Platform</dt><dd>Minecraft Bedrock</dd><dt>Listed game version</dt><dd>{BEDROCK_VERSION}+</dd></dl>
-<p>The official CurseForge listing has current files, supported game versions, and release notes. This page summarizes the release without reproducing an unverified changelog.</p>
+<p>These download pages list Dragon Mounts 2 files. Check the selected file’s supported Minecraft version and release notes before installing.</p>
 <p><a class="btn" href="{OFFICIAL_FILES}">View official files and release notes</a></p>
 
 {h2("sources", "Official release pages")}
-<ul><li><a href="{OFFICIAL_FILES}">CurseForge files</a></li><li><a href="{OFFICIAL_WIKI}">Project wiki</a></li></ul>
+<ul>{''.join(f'<li><a href="{e(url)}">{e(name)}</a></li>' for name, url in DOWNLOAD_SOURCES)}<li><a href="{OFFICIAL_WIKI}">Project wiki</a></li></ul>
 """
     write(f, inner_page(f, "Release info", f"Public release details and direct links for Dragon Mounts 2 v{VERSION}.",
                         f"Release reference for Dragon Mounts 2 v{VERSION}, with official file listing and project wiki.", secs, body))
@@ -572,13 +665,13 @@ def build_assets():
     write(".nojekyll", "")
     write("robots.txt", "User-agent: *\nAllow: /\n" + (f"Sitemap: {SITE_URL}/sitemap.xml\n" if SITE_URL else ""))
     if SITE_URL:
-        urls = ["index.html"] + [p[0] for p in PAGES]
+        urls = ["index.html", "java.html"] + [p[0] for p in PAGES]
         sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
             f'<url><loc>{SITE_URL}/{"" if u == "index.html" else u}</loc></url>\n' for u in urls) + "</urlset>\n"
         write("sitemap.xml", sm)
 
 if __name__ == "__main__":
-    build_home(); build_install(); build_dragons(); build_breeding(); build_flight()
+    build_home(); build_java(); build_install(); build_dragons(); build_breeding(); build_flight()
     build_items(); build_changelog(); build_faq(); build_404()
     idx("Home", "index.html", "", "Page", "DragonMounts 2 guide")
     build_assets()

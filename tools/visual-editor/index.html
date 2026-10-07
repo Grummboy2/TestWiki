@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Local visual editor · Dragon Mounts 2 Wiki</title>
+  <script src="../../assets/config.js"></script>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, "Segoe UI", system-ui, sans-serif; background: #11121a; color: #f4f1fa; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button, input, select { font: inherit; }
+    button { min-height: 38px; padding: .55rem .8rem; border: 1px solid #3d3b4b; border-radius: .5rem; background: #211f2c; color: #eeeaf7; cursor: pointer; }
+    button:hover { border-color: #ad83ef; background: #2b2738; }
+    button:disabled { cursor: not-allowed; opacity: .5; }
+    input, select { min-width: 0; padding: .52rem .6rem; border: 1px solid #3d3b4b; border-radius: .45rem; background: #171620; color: #f4f1fa; }
+    :focus-visible { outline: 2px solid #c59aff; outline-offset: 2px; }
+    .top { display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem 1.1rem; border-bottom: 1px solid #343241; background: #171620; }
+    .brand { display: grid; gap: .15rem; }
+    .brand strong { font-size: .98rem; }
+    .brand span, .hint, .status { color: #aaa6b7; font-size: .78rem; }
+    .top-actions, .toolbar, .row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
+    .primary { border-color: #9665d2; background: #68449a; color: white; font-weight: 700; }
+    .primary:hover { background: #7954ad; }
+    .editor-shell { display: grid; min-height: calc(100vh - 66px); grid-template-columns: 320px minmax(0, 1fr); }
+    .panel { display: flex; flex-direction: column; gap: 1rem; padding: 1rem; overflow-y: auto; border-right: 1px solid #343241; background: #171620; }
+    .panel-section { display: grid; gap: .55rem; padding-bottom: .9rem; border-bottom: 1px solid #343241; }
+    .panel-section h2 { margin: 0; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; }
+    .panel-section label { display: grid; gap: .32rem; color: #aaa6b7; font-size: .77rem; }
+    .notice { padding: .7rem; border: 1px solid #493b5d; border-radius: .55rem; background: #211b2c; color: #c9c2d5; font-size: .78rem; line-height: 1.5; }
+    .notice strong { color: #fff; }
+    .status { min-height: 1.15rem; }
+    .nav-group { display: grid; gap: .45rem; padding: .65rem; border: 1px solid #343241; border-radius: .55rem; background: #1c1a25; }
+    .nav-group-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .3rem; }
+    .nav-link-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(85px, .8fr) auto auto; gap: .3rem; }
+    .nav-link-row input { width: 100%; }
+    .mini { min-width: 34px; min-height: 34px; padding: .35rem; }
+    .colors { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+    .colors label:last-child { grid-column: 1 / -1; }
+    input[type="color"] { width: 100%; height: 40px; padding: .2rem; }
+    .preview { display: flex; min-width: 0; flex-direction: column; padding: .75rem; gap: .65rem; }
+    .preview-header { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+    .page-select { flex: 1 1 190px; }
+    .toolbar button { min-width: 38px; }
+    .canvas { flex: 1; min-height: 540px; overflow: hidden; border: 1px solid #3d3b4b; border-radius: .7rem; background: white; }
+    iframe { display: block; width: 100%; height: 100%; min-height: 540px; border: 0; background: white; }
+    .local-only { color: #f2cb8d; }
+    .hidden { display: none !important; }
+    .quick-edit-dialog { width: min(34rem, calc(100vw - 2rem)); border: 1px solid #76599a; border-radius: .75rem; padding: 1.2rem; background: #171620; color: #f4f1fa; box-shadow: 0 16px 48px #0009; }
+    .quick-edit-dialog::backdrop { background: #09070dcc; }
+    .quick-edit-dialog form { display: grid; gap: .8rem; }
+    .quick-edit-dialog h2 { margin: 0; font-size: 1.1rem; }
+    .quick-edit-dialog label { display: grid; gap: .4rem; color: #c9c2d5; font-size: .85rem; }
+    .quick-edit-dialog textarea { min-height: 5rem; resize: vertical; }
+    .quick-edit-dialog .row-actions { justify-content: flex-end; }
+    @media (max-width: 900px) {
+      .editor-shell { grid-template-columns: 1fr; }
+      .panel { max-height: 46vh; border-right: 0; border-bottom: 1px solid #343241; }
+      .canvas, iframe { min-height: 65vh; }
+    }
+    @media (max-width: 560px) {
+      .top { align-items: flex-start; }
+      .top-actions { justify-content: flex-end; }
+      .nav-link-row { grid-template-columns: 1fr 1fr; }
+      .nav-group-head { grid-template-columns: 1fr auto auto; }
+      .preview { padding: .45rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <strong>Dragon Mounts 2 · Visual editor</strong>
+      <span class="local-only">Private to this computer · nothing is published automatically</span>
+    </div>
+    <div class="top-actions">
+      <span id="editor-connection" class="status" role="status">Connecting to your local Wiki…</span>
+      <button id="save-page" type="button" disabled>Save page</button>
+      <button id="save-settings" type="button" disabled>Save menu &amp; colors</button>
+    </div>
+  </header>
+
+  <main class="editor-shell">
+    <aside class="panel">
+      <div class="notice">
+        <strong>Local editing only.</strong> This editor runs on your computer and saves changes directly into this TestWiki folder. It does not sign in to GitHub or publish changes.
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite">Connecting to this TestWiki folder…</div>
+
+      <section class="panel-section">
+        <h2>Page</h2>
+        <label for="page-select">Choose a page</label>
+        <select id="page-select" disabled></select>
+        <div class="row-actions">
+          <button id="new-page" type="button" disabled>＋ New page</button>
+          <button id="start-editing" class="primary" type="button" disabled>Start editing</button>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <h2>Menu</h2>
+        <p class="hint">Rename groups and links, change their order, or add and remove them.</p>
+        <div id="navigation-editor"></div>
+        <div class="row-actions">
+          <button id="add-group" type="button" disabled>Add group</button>
+          <button id="save-settings-secondary" type="button" disabled>Save menu &amp; colors</button>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <h2>Colors</h2>
+        <div class="colors">
+          <label>Light-mode accent<input id="accent-light" type="color" value="#7543a5" disabled></label>
+          <label>Dark-mode accent<input id="accent-dark" type="color" value="#c393ed" disabled></label>
+          <label>Light-mode home banner<input id="hero-light-color" type="color" value="#ffffff" disabled></label>
+          <label>Dark-mode home banner<input id="hero-dark-color" type="color" value="#222426" disabled></label>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <h2>Local saving</h2>
+        <p class="hint">Page and settings changes are written directly to this project folder by the loopback-only local editor server. Nothing is sent to GitHub.</p>
+      </section>
+    </aside>
+
+    <section class="preview" aria-label="Visual page editor">
+      <div class="preview-header">
+        <select class="page-select" id="preview-select" aria-label="Page preview" disabled></select>
+        <span class="hint">Click page text to edit it. Turn on extra options to rearrange blocks.</span>
+        <button id="extra-options" type="button" aria-pressed="false" disabled>Extra options: Off</button>
+        <div class="toolbar">
+          <button type="button" data-command="bold" aria-label="Bold" title="Bold" disabled><strong>B</strong></button>
+          <button type="button" data-command="italic" aria-label="Italic" title="Italic" disabled><em>I</em></button>
+          <button type="button" data-command="formatBlock" data-value="h2" aria-label="Heading" title="Heading" disabled>H2</button>
+          <button type="button" data-command="formatBlock" data-value="p" aria-label="Paragraph" title="Paragraph" disabled>P</button>
+          <button type="button" data-command="insertUnorderedList" aria-label="Bullet list" title="Bullet list" disabled>• List</button>
+          <button id="insert-link" type="button" disabled>Link</button>
+          <button id="insert-image" type="button" disabled>Image</button>
+          <input id="image-file" class="hidden" type="file" accept="image/*">
+        </div>
+      </div>
+      <div class="canvas"><iframe id="page-preview" title="Wiki page preview" src="../../index.html?edition=bedrock"></iframe></div>
+    </section>
+  </main>
+
+  <dialog id="quick-edit-dialog" class="quick-edit-dialog" aria-labelledby="quick-edit-title">
+    <form id="quick-edit-form" method="dialog">
+      <h2 id="quick-edit-title">Edit content</h2>
+      <label id="quick-edit-label" for="quick-edit-value">Text</label>
+      <textarea id="quick-edit-value" required></textarea>
+      <div class="row-actions">
+        <button type="submit" value="cancel" formnovalidate>Cancel</button>
+        <button class="primary" type="submit" value="apply">Apply</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const config = JSON.parse(JSON.stringify(window.DM_CONFIG || {}));
+      const knownPages = [
+        ["index.html", "Overview"],
+        ["java.html", "Java starter section"],
+        ["install.html", "Install"],
+        ["dragons.html", "Dragons"],
+        ["breeding.html", "Eggs and taming"],
+        ["flight.html", "Riding and flight"],
+        ["items.html", "Items and equipment"],
+        ["changelog.html", "Release info"],
+        ["faq.html", "FAQ and glossary"]
+      ];
+      const state = { ready: false, file: "index.html", isEditing: false, showExtraOptions: false, isNewPage: false, dirtyPage: false, dirtySettings: false };
+      const $ = (selector) => document.querySelector(selector);
+      const status = $("#status");
+      const preview = $("#page-preview");
+      const pageSelect = $("#page-select");
+      const previewSelect = $("#preview-select");
+      const savePageButton = $("#save-page");
+      const saveSettingsButton = $("#save-settings");
+      const saveSettingsSecondary = $("#save-settings-secondary");
+      const toolbarButtons = [...document.querySelectorAll(".toolbar button")];
+      const editableBlockSelector = "h1, h2, h3, p, figure, blockquote, ul, ol, .note, .task-group, .tasks > a, .three > div, .item, details.q, .editor-action-block";
+      let blockInputCallback = null;
+      function report(message, isError = false) {
+        status.textContent = message;
+        status.style.color = isError ? "#ffaaa8" : "";
+      }
+
+      function requestBlockText(title, label, value, callback) {
+        $("#quick-edit-title").textContent = title;
+        $("#quick-edit-label").textContent = label;
+        $("#quick-edit-value").value = value;
+        blockInputCallback = callback;
+        $("#quick-edit-dialog").showModal();
+        $("#quick-edit-value").focus();
+      }
+
+      $("#quick-edit-form").addEventListener("submit", (event) => {
+        if (event.submitter.value !== "apply") {
+          blockInputCallback = null;
+          return;
+        }
+        event.preventDefault();
+        const value = $("#quick-edit-value").value;
+        if (!value.trim()) {
+          $("#quick-edit-value").focus();
+          return;
+        }
+        const callback = blockInputCallback;
+        blockInputCallback = null;
+        $("#quick-edit-dialog").close("apply");
+        if (callback) callback(value);
+      });
+      $("#quick-edit-dialog").addEventListener("cancel", () => { blockInputCallback = null; });
+
+      function setEnabled(selectors, enabled) {
+        selectors.forEach((selector) => {
+          const element = $(selector);
+          if (element) element.disabled = !enabled;
+        });
+      }
+
+      function allFiles() {
+        return [...new Set([...knownPages.map(([file]) => file), ...config.navigation.flatMap((group) => group.links.map((link) => link.href))])];
+      }
+
+      function refreshPageSelects() {
+        const files = allFiles();
+        [pageSelect, previewSelect].forEach((select) => {
+          select.replaceChildren();
+          files.forEach((file) => {
+            const option = document.createElement("option");
+            option.value = file;
+            option.textContent = knownPages.find(([knownFile]) => knownFile === file)?.[1] || file;
+            select.appendChild(option);
+          });
+          select.value = state.file;
+        });
+      }
+
+      function setEditing(enabled) {
+        const doc = preview.contentDocument;
+        if (!doc || !doc.querySelector("#main")) return;
+        state.isEditing = enabled;
+        if (!enabled) state.showExtraOptions = false;
+        const main = doc.querySelector("#main");
+        main.contentEditable = enabled ? "true" : "false";
+        main.spellcheck = true;
+        main.classList.toggle("editor-extra-options", enabled && state.showExtraOptions);
+        doc.querySelectorAll(".editor-block-controls").forEach((controls) => {
+          controls.hidden = !(enabled && state.showExtraOptions);
+        });
+        const extraOptionsButton = $("#extra-options");
+        extraOptionsButton.disabled = !enabled;
+        extraOptionsButton.setAttribute("aria-pressed", String(enabled && state.showExtraOptions));
+        extraOptionsButton.textContent = `Extra options: ${enabled && state.showExtraOptions ? "On" : "Off"}`;
+        $("#start-editing").textContent = enabled ? "Stop editing" : "Start editing";
+        toolbarButtons.forEach((button) => { button.disabled = !enabled; });
+        $("#insert-link").disabled = !enabled;
+        $("#insert-image").disabled = !enabled;
+        report(enabled
+          ? state.showExtraOptions
+            ? "Extra options are on. Drag blocks to rearrange them or use ⋯ for more actions."
+            : "Click any text in the preview to edit it. Turn on Extra options to show drag handles and ⋯ menus."
+          : "Preview mode. Select a page or start editing.");
+      }
+
+      function cleanEditorMarkup(element, preserveActionBlocks = false) {
+        element.querySelectorAll(".editor-block-controls, .editor-block-menu, style[data-editor-styles]").forEach((node) => node.remove());
+        element.querySelectorAll("[data-editor-block], [data-editor-ui], [draggable]").forEach((node) => {
+          node.removeAttribute("data-editor-block");
+          node.removeAttribute("data-editor-ui");
+          node.removeAttribute("draggable");
+          node.classList.remove("editor-block-dragging", "editor-block-drop-before", "editor-block-drop-after");
+        });
+        element.removeAttribute("data-editor-block");
+        element.removeAttribute("data-editor-ui");
+        element.removeAttribute("draggable");
+        if (!preserveActionBlocks) {
+          element.querySelectorAll(".editor-action-block").forEach((wrapper) => {
+            wrapper.replaceWith(...wrapper.childNodes);
+          });
+        }
+      }
+
+      function markPageDirty(message) {
+        state.dirtyPage = true;
+        updateDirtyState();
+        if (message) report(message);
+      }
+
+      function clearDragState(main) {
+        if (state.draggedBlock) state.draggedBlock.classList.remove("editor-block-dragging");
+        main.querySelectorAll(".editor-block-drop-before, .editor-block-drop-after").forEach((item) => {
+          item.classList.remove("editor-block-drop-before", "editor-block-drop-after");
+        });
+        state.draggedBlock = null;
+      }
+
+      function installBlockEditor(main, doc) {
+        if (doc.querySelector("style[data-editor-styles]")) return;
+        const style = doc.createElement("style");
+        style.dataset.editorStyles = "true";
+        style.textContent = `
+          [data-editor-block] { position: relative; }
+          .editor-action-block { display: inline-flex; position: relative; }
+          #main.editor-extra-options [data-editor-block]:hover { outline: 1px dashed #a881e0; outline-offset: 2px; }
+          .editor-block-controls { position: absolute; z-index: 50; top: .15rem; right: .15rem; display: flex; gap: .2rem; padding: .2rem; border: 1px solid #76599a; border-radius: .45rem; background: #211b2c; box-shadow: 0 2px 10px #0004; font: 14px/1.2 system-ui, sans-serif; }
+          .editor-block-controls[hidden], .editor-block-menu[hidden] { display: none !important; }
+          .editor-block-controls button, .editor-block-menu button { min-width: 32px; min-height: 32px; margin: 0; padding: .35rem .5rem; border: 1px solid #514361; border-radius: .3rem; background: #30283b; color: #fff; font: 600 14px/1.2 system-ui, sans-serif; cursor: pointer; }
+          .editor-block-controls button:hover, .editor-block-menu button:hover { background: #49365f; }
+          .editor-block-handle { cursor: grab !important; touch-action: none; }
+          .editor-block-handle:active { cursor: grabbing !important; }
+          .editor-block-menu { position: absolute; z-index: 60; top: calc(100% + .3rem); right: 0; display: grid; min-width: 185px; gap: .25rem; padding: .35rem; border: 1px solid #76599a; border-radius: .5rem; background: #211b2c; box-shadow: 0 8px 24px #0006; }
+          .editor-block-menu button { width: 100%; text-align: left; }
+          .editor-block-dragging { opacity: .45; }
+          .editor-block-drop-before { box-shadow: inset 0 3px #a881e0 !important; }
+          .editor-block-drop-after { box-shadow: inset 0 -3px #a881e0 !important; }
+          [contenteditable="true"] { caret-color: #7543a5; }
+        `;
+        doc.head.appendChild(style);
+
+        [...main.querySelectorAll(".hero-actions > a, .hero-actions > button, .quick-actions > a, .quick-actions > button, .cta > a.btn, .cta > button, .cta > span, .edition-options > .edition-card")]
+          .filter((action) => !action.matches(".cta > span") || action.querySelector("a.btn"))
+          .forEach((action) => {
+          if (action.parentElement.classList.contains("editor-action-block")) return;
+          const wrapper = doc.createElement("span");
+          wrapper.className = "editor-action-block";
+          action.parentElement.insertBefore(wrapper, action);
+          wrapper.appendChild(action);
+          });
+
+        const eligibleBlocks = () => [...main.querySelectorAll(editableBlockSelector)];
+        const focusBlockText = (block) => {
+          main.focus();
+          const walker = doc.createTreeWalker(block, doc.defaultView.NodeFilter.SHOW_TEXT, {
+            acceptNode: (node) => node.parentElement.closest("[data-editor-ui]")
+              ? doc.defaultView.NodeFilter.FILTER_REJECT
+              : doc.defaultView.NodeFilter.FILTER_ACCEPT
+          });
+          let lastText = null;
+          while (walker.nextNode()) lastText = walker.currentNode;
+          const range = doc.createRange();
+          if (lastText) {
+            range.setStart(lastText, lastText.textContent.length);
+          } else {
+            range.setStartBefore(block.querySelector(".editor-block-controls"));
+          }
+          range.collapse(true);
+          const selection = doc.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        };
+        const selectBlockText = (block) => {
+          const walker = doc.createTreeWalker(block, doc.defaultView.NodeFilter.SHOW_TEXT, {
+            acceptNode: (node) => node.parentElement.closest("[data-editor-ui]")
+              ? doc.defaultView.NodeFilter.FILTER_REJECT
+              : doc.defaultView.NodeFilter.FILTER_ACCEPT
+          });
+          let firstText = null;
+          let lastText = null;
+          while (walker.nextNode()) {
+            if (!firstText) firstText = walker.currentNode;
+            lastText = walker.currentNode;
+          }
+          if (!firstText || !lastText) {
+            focusBlockText(block);
+            return;
+          }
+          main.focus();
+          const range = doc.createRange();
+          range.setStart(firstText, 0);
+          range.setEnd(lastText, lastText.textContent.length);
+          const selection = doc.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          report("The block text is selected. Type to replace it, or click in the text to edit a specific part.");
+        };
+        const reorderBlock = (block, direction) => {
+          const siblings = eligibleBlocks().filter((element) => element.parentElement === block.parentElement);
+          const index = siblings.indexOf(block);
+          const target = siblings[index + direction];
+          if (!target) return;
+          block.parentElement.insertBefore(block, direction < 0 ? target : target.nextSibling);
+          markPageDirty("Moved the content block. Save the page to keep this change.");
+        };
+
+        function makeNewBlock(type, source) {
+          if (source.closest("a, button") || (source.closest("figure") && source.closest("figure") !== source)) {
+            report("Choose a text or list block to add content beside.", true);
+            return;
+          }
+          const block = doc.createElement(type === "heading" ? "h2" : type === "list" ? "ul" : "p");
+          if (type === "list") {
+            const item = doc.createElement("li");
+            item.textContent = "New list item";
+            block.appendChild(item);
+          } else {
+            block.textContent = type === "heading" ? "New section" : "Click to add your text.";
+          }
+          source.parentElement.insertBefore(block, source.nextSibling);
+          decorateBlock(block);
+          focusBlockText(block);
+          markPageDirty("Added a block. Click its text to edit it, then save the page.");
+        }
+
+        function decorateBlock(block) {
+          if (block.hasAttribute("data-editor-block")) return;
+          block.setAttribute("data-editor-block", "");
+          const controls = doc.createElement(block.matches("ul, ol") ? "li" : "span");
+          controls.className = "editor-block-controls";
+          controls.dataset.editorUi = "true";
+          controls.contentEditable = "false";
+          controls.hidden = !state.isEditing;
+
+          const handle = doc.createElement("button");
+          handle.type = "button";
+          handle.className = "editor-block-handle";
+          handle.textContent = "⠿";
+          handle.title = "Drag to reorder this block";
+          handle.setAttribute("aria-label", "Drag to reorder this block");
+          handle.draggable = true;
+          controls.appendChild(handle);
+
+          const more = doc.createElement("button");
+          more.type = "button";
+          more.textContent = "⋯";
+          more.title = "More block actions";
+          more.setAttribute("aria-label", "More block actions");
+          controls.appendChild(more);
+
+          const menu = doc.createElement("span");
+          menu.className = "editor-block-menu";
+          menu.dataset.editorUi = "true";
+          menu.contentEditable = "false";
+          menu.hidden = true;
+          const addMenuAction = (label, action) => {
+            const button = doc.createElement("button");
+            button.type = "button";
+            button.textContent = label;
+            button.addEventListener("mousedown", (event) => event.preventDefault());
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              menu.hidden = true;
+              action();
+            });
+            menu.appendChild(button);
+          };
+          addMenuAction("Edit this text", () => {
+            selectBlockText(block);
+          });
+          addMenuAction("Add paragraph below", () => makeNewBlock("paragraph", block));
+          addMenuAction("Add heading below", () => makeNewBlock("heading", block));
+          addMenuAction("Add bullet list below", () => makeNewBlock("list", block));
+          const image = block.matches("img") ? block : block.querySelector("img");
+          if (image) {
+            addMenuAction("Replace image", () => {
+              state.editingImage = image;
+              $("#image-file").click();
+            });
+            addMenuAction("Change image description", () => {
+              requestBlockText("Change image description", "Text for screen readers", image.alt, (alt) => {
+                image.alt = alt.trim();
+                markPageDirty("Updated the image description. Save the page to keep this change.");
+              });
+            });
+          }
+          const link = block.matches("a") ? block : block.querySelector("a");
+          if (link) {
+            addMenuAction("Change link address", () => {
+              requestBlockText("Change link address", "Link address", link.getAttribute("href") || "", (href) => {
+                if (!/^(https?:\/\/|mailto:|#|[a-z0-9][a-z0-9./_-]*\.html(?:#[a-z0-9_-]+)?$)/i.test(href.trim())) {
+                  report("Use an https://, mailto:, page.html, or #section link.", true);
+                  return;
+                }
+                link.setAttribute("href", href.trim());
+                markPageDirty("Updated the link. Save the page to keep this change.");
+              });
+            });
+          }
+          addMenuAction("Duplicate block", () => {
+            const copy = block.cloneNode(true);
+            cleanEditorMarkup(copy, true);
+            copy.querySelectorAll("[id]").forEach((element) => element.removeAttribute("id"));
+            copy.removeAttribute("id");
+            copy.querySelectorAll(".anchor").forEach((element) => element.remove());
+            block.parentElement.insertBefore(copy, block.nextSibling);
+            decorateBlock(copy);
+            markPageDirty("Duplicated the block. Edit the copy and save the page.");
+          });
+          addMenuAction("Move up", () => reorderBlock(block, -1));
+          addMenuAction("Move down", () => reorderBlock(block, 1));
+          addMenuAction("Delete block", () => {
+            const label = block.classList.contains("editor-action-block")
+              ? "button"
+              : block.matches("h1, h2, h3") ? block.textContent.trim() : block.tagName.toLowerCase();
+            if (!window.confirm(`Delete this ${label || "content block"}?`)) return;
+            block.remove();
+            markPageDirty("Deleted the block. Save the page to keep this change.");
+          });
+          more.addEventListener("mousedown", (event) => event.preventDefault());
+          more.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const shouldOpen = menu.hidden;
+            main.querySelectorAll(".editor-block-menu").forEach((otherMenu) => { otherMenu.hidden = true; });
+            menu.hidden = !shouldOpen;
+          });
+          controls.appendChild(menu);
+          block.appendChild(controls);
+        }
+
+        eligibleBlocks().forEach(decorateBlock);
+        main.addEventListener("click", (event) => {
+          if (event.target.closest("[data-editor-ui]")) return;
+          main.querySelectorAll(".editor-block-menu").forEach((menu) => { menu.hidden = true; });
+        });
+        main.addEventListener("dragstart", (event) => {
+          const handle = event.target.closest(".editor-block-handle");
+          const block = handle && handle.closest("[data-editor-block]");
+          if (!state.isEditing || !block) {
+            event.preventDefault();
+            return;
+          }
+          event.dataTransfer.setData("text/plain", "wiki-block");
+          event.dataTransfer.effectAllowed = "move";
+          block.classList.add("editor-block-dragging");
+          state.draggedBlock = block;
+        });
+        main.addEventListener("dragover", (event) => {
+          const dragged = state.draggedBlock;
+          const target = event.target.closest("[data-editor-block]");
+          if (!dragged || !target || dragged === target || dragged.parentElement !== target.parentElement) return;
+          event.preventDefault();
+          main.querySelectorAll(".editor-block-drop-before, .editor-block-drop-after").forEach((item) => {
+            item.classList.remove("editor-block-drop-before", "editor-block-drop-after");
+          });
+          const rect = target.getBoundingClientRect();
+          target.classList.add(event.clientY >= rect.top + rect.height / 2 ? "editor-block-drop-after" : "editor-block-drop-before");
+        });
+        main.addEventListener("drop", (event) => {
+          const dragged = state.draggedBlock;
+          const target = event.target.closest("[data-editor-block]");
+          if (!dragged || !target || dragged === target || dragged.parentElement !== target.parentElement) return;
+          event.preventDefault();
+          const after = target.classList.contains("editor-block-drop-after");
+          target.parentElement.insertBefore(dragged, after ? target.nextSibling : target);
+          markPageDirty("Reordered the content. Save the page to keep this change.");
+          clearDragState(main);
+        });
+        main.addEventListener("dragend", () => clearDragState(main));
+      }
+
+      function updateDirtyState() {
+        savePageButton.disabled = !state.ready || !state.dirtyPage;
+        saveSettingsButton.disabled = !state.ready || !state.dirtySettings;
+        saveSettingsSecondary.disabled = !state.ready || !state.dirtySettings;
+        $("#start-editing").textContent = state.isEditing ? "Stop editing" : "Start editing";
+        if (state.dirtyPage || state.dirtySettings) {
+          report([state.dirtyPage ? "page" : "", state.dirtySettings ? "menu and colors" : ""].filter(Boolean).join(" and ") + " have unsaved changes.");
+        }
+      }
+
+      function bindPreview() {
+        const doc = preview.contentDocument;
+        const main = doc && doc.querySelector("#main");
+        if (!main) {
+          report("This page is missing its main content area and cannot be edited.", true);
+          return;
+        }
+        const isEditing = state.isEditing;
+        installBlockEditor(main, doc);
+        main.contentEditable = isEditing ? "true" : "false";
+        main.spellcheck = true;
+        if (main.dataset.editorBound !== "true") {
+          main.dataset.editorBound = "true";
+          main.addEventListener("input", () => {
+            state.dirtyPage = true;
+            updateDirtyState();
+          });
+          doc.addEventListener("click", (event) => {
+            if (state.isEditing && event.target.closest("#main a")) event.preventDefault();
+          });
+        }
+        refreshPageSelects();
+        setEnabled(["#page-select", "#preview-select", "#new-page", "#start-editing", "#add-group", "#accent-light", "#accent-dark", "#hero-light-color", "#hero-dark-color"], state.ready);
+        setEditing(isEditing);
+        renderPreviewSettings();
+      }
+
+      function setPreview(file) {
+        state.file = file;
+        state.isNewPage = false;
+        pageSelect.value = file;
+        previewSelect.value = file;
+        state.isEditing = false;
+        preview.src = `../../${encodeURIComponent(file)}${file === "index.html" ? "?edition=bedrock" : ""}`;
+        preview.addEventListener("load", bindPreview, { once: true });
+      }
+
+      function appendAction(container, label, action, disabled = false) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mini";
+        button.textContent = label;
+        button.disabled = disabled;
+        button.addEventListener("click", action);
+        container.appendChild(button);
+      }
+
+      function renderNavigation() {
+        const editor = $("#navigation-editor");
+        editor.replaceChildren();
+        config.navigation.forEach((group, groupIndex) => {
+          const card = document.createElement("section");
+          card.className = "nav-group";
+          const head = document.createElement("div");
+          head.className = "nav-group-head";
+          const groupName = document.createElement("input");
+          groupName.setAttribute("aria-label", "Menu group name");
+          groupName.value = group.title;
+          groupName.disabled = !state.ready;
+          groupName.addEventListener("input", () => {
+            group.title = groupName.value;
+            renderPreviewSettings();
+            markSettingsDirty();
+          });
+          head.appendChild(groupName);
+          appendAction(head, "↑", () => moveGroup(groupIndex, -1), !state.ready || groupIndex === 0);
+          appendAction(head, "↓", () => moveGroup(groupIndex, 1), !state.ready || groupIndex === config.navigation.length - 1);
+          card.appendChild(head);
+
+          group.links.forEach((link, linkIndex) => {
+            const row = document.createElement("div");
+            row.className = "nav-link-row";
+            const label = document.createElement("input");
+            label.setAttribute("aria-label", "Menu link label");
+            label.value = link.label;
+            label.disabled = !state.ready;
+            label.addEventListener("input", () => {
+              link.label = label.value;
+              renderPreviewSettings();
+              markSettingsDirty();
+            });
+            row.appendChild(label);
+
+            const destination = document.createElement("select");
+            destination.setAttribute("aria-label", "Menu link page");
+            destination.disabled = !state.ready;
+            allFiles().forEach((file) => {
+              const option = document.createElement("option");
+              option.value = file;
+              option.textContent = knownPages.find(([knownFile]) => knownFile === file)?.[1] || file;
+              destination.appendChild(option);
+            });
+            destination.value = link.href;
+            destination.addEventListener("change", () => {
+              link.href = destination.value;
+              renderPreviewSettings();
+              markSettingsDirty();
+            });
+            row.appendChild(destination);
+            appendAction(row, "↑", () => moveLink(groupIndex, linkIndex, -1), !state.ready || linkIndex === 0);
+            appendAction(row, "×", () => removeLink(groupIndex, linkIndex), !state.ready);
+            card.appendChild(row);
+
+            const moveSelect = document.createElement("select");
+            moveSelect.setAttribute("aria-label", `Move ${link.label} to a group`);
+            moveSelect.disabled = !state.ready;
+            const currentGroup = document.createElement("option");
+            currentGroup.value = String(groupIndex);
+            currentGroup.textContent = `In ${group.title}`;
+            moveSelect.appendChild(currentGroup);
+            config.navigation.forEach((targetGroup, targetIndex) => {
+              if (targetIndex === groupIndex) return;
+              const option = document.createElement("option");
+              option.value = String(targetIndex);
+              option.textContent = `Move to ${targetGroup.title}`;
+              moveSelect.appendChild(option);
+            });
+            moveSelect.addEventListener("change", () => {
+              const targetIndex = Number(moveSelect.value);
+              if (!Number.isInteger(targetIndex) || !config.navigation[targetIndex]) return;
+              const [movedLink] = group.links.splice(linkIndex, 1);
+              config.navigation[targetIndex].links.push(movedLink);
+              renderNavigation();
+              markSettingsDirty();
+            });
+            card.appendChild(moveSelect);
+          });
+
+          const addLink = document.createElement("button");
+          addLink.type = "button";
+          addLink.textContent = "Add page link";
+          addLink.disabled = !state.ready;
+          addLink.addEventListener("click", () => {
+            const available = allFiles().filter((file) => !config.navigation.some((item) => item.links.some((link) => link.href === file)));
+            const destination = available[0] || state.file;
+            const label = knownPages.find(([file]) => file === destination)?.[1] || destination.replace(/\.html$/, "");
+            group.links.push({ label, href: destination });
+            renderNavigation();
+            markSettingsDirty();
+          });
+          card.appendChild(addLink);
+          appendAction(card, "Remove group", () => {
+            if (config.navigation.length < 2) return report("Keep at least one navigation group.", true);
+            config.navigation.splice(groupIndex, 1);
+            renderNavigation();
+            markSettingsDirty();
+          });
+          editor.appendChild(card);
+        });
+        renderPreviewSettings();
+      }
+
+      function renderPreviewSettings() {
+        const doc = preview.contentDocument;
+        if (!doc) return;
+        const root = doc.documentElement;
+        const colors = config.theme || {};
+        [["--wiki-accent-light", colors.accentLight], ["--wiki-accent-dark", colors.accentDark], ["--wiki-hero-light", colors.heroLight], ["--wiki-hero-dark", colors.heroDark]].forEach(([name, value]) => {
+          if (/^#[0-9a-f]{6}$/i.test(value || "")) root.style.setProperty(name, value);
+        });
+        doc.querySelectorAll(".nav-drawer nav, .guide-sidebar nav").forEach((nav) => {
+          const fragment = doc.createDocumentFragment();
+          config.navigation.forEach((group) => {
+            const section = doc.createElement("section");
+            section.className = "guide-group";
+            const heading = doc.createElement("h2");
+            heading.textContent = group.title;
+            section.appendChild(heading);
+            const list = doc.createElement("ul");
+            group.links.forEach((page) => {
+              const item = doc.createElement("li");
+              const link = doc.createElement("a");
+              link.textContent = page.label;
+              link.href = page.href;
+              item.appendChild(link);
+              list.appendChild(item);
+            });
+            section.appendChild(list);
+            fragment.appendChild(section);
+          });
+          nav.replaceChildren(fragment);
+        });
+      }
+
+      function markSettingsDirty() {
+        state.dirtySettings = true;
+        updateDirtyState();
+      }
+
+      function moveGroup(index, direction) {
+        const target = index + direction;
+        if (target < 0 || target >= config.navigation.length) return;
+        [config.navigation[index], config.navigation[target]] = [config.navigation[target], config.navigation[index]];
+        renderNavigation();
+        markSettingsDirty();
+      }
+
+      function moveLink(groupIndex, index, direction) {
+        const links = config.navigation[groupIndex].links;
+        const target = index + direction;
+        if (target < 0 || target >= links.length) return;
+        [links[index], links[target]] = [links[target], links[index]];
+        renderNavigation();
+        markSettingsDirty();
+      }
+
+      function removeLink(groupIndex, index) {
+        config.navigation[groupIndex].links.splice(index, 1);
+        renderNavigation();
+        markSettingsDirty();
+      }
+
+      function findPageLabel(file) {
+        for (const group of config.navigation) {
+          const found = group.links.find((link) => link.href === file);
+          if (found) return found.label;
+        }
+        return knownPages.find(([knownFile]) => knownFile === file)?.[1] || file.replace(/\.html$/, "");
+      }
+
+      function installThemeInputs() {
+        const theme = config.theme || {};
+        $("#accent-light").value = theme.accentLight || "#7543a5";
+        $("#accent-dark").value = theme.accentDark || "#c393ed";
+        $("#hero-light-color").value = theme.heroLight || "#ffffff";
+        $("#hero-dark-color").value = theme.heroDark || "#222426";
+        [["#accent-light", "accentLight"], ["#accent-dark", "accentDark"], ["#hero-light-color", "heroLight"], ["#hero-dark-color", "heroDark"]].forEach(([selector, key]) => {
+          $(selector).addEventListener("input", () => {
+            config.theme[key] = $(selector).value;
+            renderPreviewSettings();
+            markSettingsDirty();
+          });
+        });
+      }
+
+      async function connectLocalEditor() {
+        const connection = $("#editor-connection");
+        try {
+          const response = await fetch("/__editor/status", { cache: "no-store" });
+          const result = await response.json();
+          if (!response.ok || !result.ready || result.project !== "TestWiki") {
+            throw new Error(result.error || "The local Wiki editor is unavailable.");
+          }
+          state.ready = true;
+          connection.textContent = "Connected to local TestWiki";
+          connection.style.color = "#9ce6ba";
+          refreshPageSelects();
+          renderNavigation();
+          setEnabled(["#page-select", "#preview-select", "#new-page", "#start-editing", "#add-group", "#accent-light", "#accent-dark", "#hero-light-color", "#hero-dark-color"], true);
+          updateDirtyState();
+          report("Connected to your local TestWiki folder. Saves are written here; nothing is published automatically.");
+        } catch (error) {
+          connection.textContent = "Local editor unavailable";
+          connection.style.color = "#ffaaa8";
+          report(`Could not connect to the local Wiki file server: ${error.message}. Restart it with Start-Wiki-Editor.bat.`, true);
+        }
+      }
+
+      function serializePage() {
+        const doc = preview.contentDocument;
+        if (!doc || !doc.querySelector("#main")) throw new Error("The preview page is not ready to save.");
+        const page = doc.documentElement.cloneNode(true);
+        cleanEditorMarkup(page);
+        if (state.file === "index.html") {
+          const editionPicker = page.querySelector("#edition-picker");
+          const bedrockContent = page.querySelector("#bedrock-content");
+          if (editionPicker) editionPicker.hidden = false;
+          if (bedrockContent) bedrockContent.hidden = true;
+        }
+        page.querySelector("base[data-editor-base]")?.remove();
+        page.querySelector("#main")?.removeAttribute("data-editor-bound");
+        page.querySelector("#main")?.removeAttribute("contenteditable");
+        page.querySelector("#main")?.removeAttribute("spellcheck");
+        return `<!DOCTYPE html>\n${page.outerHTML}`;
+      }
+
+      async function saveFiles(files) {
+        const response = await fetch("/__editor/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ files })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || `Save failed (${response.status})`);
+        return result;
+      }
+
+      async function savePage() {
+        if (!state.ready) return report("The local Wiki file server is not connected.", true);
+        try {
+          const doc = preview.contentDocument;
+          const searchIndex = doc.defaultView.DM_INDEX;
+          if (!Array.isArray(searchIndex)) throw new Error("The page search index is not available.");
+          const mainCopy = doc.querySelector("#main").cloneNode(true);
+          cleanEditorMarkup(mainCopy);
+          const title = mainCopy.querySelector("h1")?.textContent.trim() || state.file;
+          const pageText = (mainCopy.innerText || mainCopy.textContent)
+            .replace(/\s+/g, " ")
+            .trim();
+          let replacedPageEntry = false;
+          const updatedIndex = searchIndex.reduce((entries, entry) => {
+            if (entry.p === state.file && entry.k === "Page") {
+              if (!replacedPageEntry) {
+                entries.push({ ...entry, t: title, a: "", x: pageText });
+                replacedPageEntry = true;
+              }
+            } else {
+              entries.push(entry);
+            }
+            return entries;
+          }, []);
+          if (!replacedPageEntry) {
+            updatedIndex.push({ t: title, p: state.file, a: "", k: "Page", x: pageText });
+          }
+          await saveFiles([
+            { path: state.file, contents: serializePage(), createOnly: state.isNewPage },
+            { path: "assets/data.js", contents: `window.DM_INDEX=${JSON.stringify(updatedIndex)};\n` }
+          ]);
+          state.dirtyPage = false;
+          state.isNewPage = false;
+          updateDirtyState();
+          report(`Saved ${state.file} to your local Wiki folder.`);
+          setPreview(state.file);
+        } catch (error) {
+          report(`Could not save ${state.file}: ${error.message}`, true);
+        }
+      }
+
+      async function saveSettings() {
+        if (!state.ready) return report("The local Wiki file server is not connected.", true);
+        try {
+          if (!Array.isArray(config.navigation) || !config.navigation.length ||
+              config.navigation.some((group) => !group.title.trim() ||
+                group.links.some((link) => !link.label.trim() || !/^[a-z0-9][a-z0-9-]*\.html$/i.test(link.href)))) {
+            throw new Error("Give every menu group and link a name, and choose a valid Wiki page for each link.");
+          }
+          if (!["accentLight", "accentDark", "heroLight", "heroDark"].every((key) => /^#[0-9a-f]{6}$/i.test(config.theme[key] || ""))) {
+            throw new Error("Choose valid colors for light mode, dark mode, and the home banner.");
+          }
+          const source = `window.DM_CONFIG = ${JSON.stringify(config, null, 2)};\n`;
+          await saveFiles([{ path: "assets/config.js", contents: source }]);
+          state.dirtySettings = false;
+          renderNavigation();
+          updateDirtyState();
+          report("Saved menu and color settings to assets/config.js in your local Wiki folder.");
+        } catch (error) {
+          report(`Could not save the menu and colors: ${error.message}`, true);
+        }
+      }
+
+      async function createPage() {
+        if (!state.ready) return report("The local Wiki file server is not connected.", true);
+        if (state.dirtyPage && !window.confirm("Discard unsaved page changes and create a new page?")) return;
+        const title = window.prompt("What should the new page be called?");
+        if (!title || !title.trim()) return;
+        const cleanTitle = title.trim();
+        const baseName = cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        if (!baseName) return report("Use a title with at least one English letter or number.", true);
+        const filename = `${baseName}.html`;
+        if (!/^[a-z0-9-]+\.html$/.test(filename) || allFiles().includes(filename)) {
+          return report("A page with that name already exists. Choose a different title.", true);
+        }
+        const groupIndex = Math.max(0, config.navigation.length - 1);
+        const groupName = window.prompt("Which menu group should contain this page?", config.navigation[groupIndex].title);
+        if (groupName === null) return;
+        const targetGroup = config.navigation.find((group) => group.title.toLowerCase() === groupName.trim().toLowerCase()) || config.navigation[groupIndex];
+
+        fetch("../../PAGE-TEMPLATE.html", { cache: "no-store" })
+          .then((response) => {
+            if (!response.ok) throw new Error("The page template could not be loaded.");
+            return response.text();
+          })
+          .then((template) => {
+            const doc = preview.contentDocument;
+            doc.open();
+            doc.write(template.replace("<head>", '<head>\n  <base data-editor-base href="../../">'));
+            doc.close();
+            doc.title = `${cleanTitle} | DragonMounts 2 Wiki`;
+            doc.querySelector('meta[name="description"]').content = `A guide to ${cleanTitle} in Dragon Mounts 2.`;
+            doc.querySelector("main h1").textContent = cleanTitle;
+            doc.querySelector("main .lede").textContent = `A new guide about ${cleanTitle}. Add your page summary here.`;
+            doc.querySelector("main article h2").textContent = "Your first section";
+            doc.querySelector("main article p").textContent = "Click here to add information to your new page.";
+            state.file = filename;
+            state.isNewPage = true;
+            state.dirtyPage = true;
+            targetGroup.links.push({ label: cleanTitle, href: filename });
+            state.dirtySettings = true;
+            refreshPageSelects();
+            pageSelect.value = filename;
+            previewSelect.value = filename;
+            renderNavigation();
+            bindPreview();
+            setEditing(true);
+            updateDirtyState();
+            report(`New page "${cleanTitle}" is ready. Save the page, then save menu and colors.`);
+          })
+          .catch((error) => report(`Could not create the page: ${error.message}`, true));
+      }
+
+      $("#save-page").addEventListener("click", savePage);
+      $("#save-settings").addEventListener("click", saveSettings);
+      $("#save-settings-secondary").addEventListener("click", saveSettings);
+      $("#new-page").addEventListener("click", createPage);
+      $("#add-group").addEventListener("click", () => {
+        const title = window.prompt("Name the new menu group.");
+        if (!title || !title.trim()) return;
+        config.navigation.push({ title: title.trim(), links: [] });
+        renderNavigation();
+        markSettingsDirty();
+      });
+
+      pageSelect.addEventListener("change", () => {
+        if (state.dirtyPage && !window.confirm("Discard unsaved page changes?")) {
+          pageSelect.value = state.file;
+          return;
+        }
+        state.dirtyPage = false;
+        setPreview(pageSelect.value);
+      });
+      previewSelect.addEventListener("change", () => {
+        pageSelect.value = previewSelect.value;
+        pageSelect.dispatchEvent(new Event("change"));
+      });
+
+      $("#start-editing").addEventListener("click", () => setEditing(!state.isEditing));
+      $("#extra-options").addEventListener("click", () => {
+        if (!state.isEditing) return;
+        state.showExtraOptions = !state.showExtraOptions;
+        setEditing(true);
+      });
+      document.querySelectorAll("[data-command]").forEach((button) => {
+        button.addEventListener("mousedown", (event) => event.preventDefault());
+        button.addEventListener("click", () => {
+          const doc = preview.contentDocument;
+          const command = button.dataset.command;
+          doc.execCommand(command, false, button.dataset.value || null);
+          state.dirtyPage = true;
+          updateDirtyState();
+          doc.querySelector("#main").focus();
+        });
+      });
+
+      $("#insert-link").addEventListener("click", () => {
+        const url = window.prompt("Enter the link address.");
+        if (!url) return;
+        if (!/^(https?:\/\/|mailto:|#|[a-z0-9][a-z0-9./_-]*\.html(?:#[a-z0-9_-]+)?$)/i.test(url.trim())) {
+          return report("Use an https://, mailto:, page.html, or #section link.", true);
+        }
+        preview.contentDocument.execCommand("createLink", false, url.trim());
+        state.dirtyPage = true;
+        updateDirtyState();
+      });
+
+      $("#insert-image").addEventListener("click", () => {
+        state.editingImage = null;
+        $("#image-file").click();
+      });
+      $("#image-file").addEventListener("change", () => {
+        const file = $("#image-file").files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+          $("#image-file").value = "";
+          return report("Choose an image file smaller than 2 MB.", true);
+        }
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          if (state.editingImage) {
+            state.editingImage.src = reader.result;
+            state.editingImage = null;
+            markPageDirty("Replaced the image. Save the page to keep this change.");
+          } else {
+            preview.contentDocument.execCommand("insertImage", false, reader.result);
+            markPageDirty();
+          }
+          $("#image-file").value = "";
+        });
+        reader.addEventListener("error", () => report("The image could not be read.", true));
+        reader.readAsDataURL(file);
+      });
+
+      renderNavigation();
+      installThemeInputs();
+      preview.addEventListener("load", bindPreview);
+      connectLocalEditor();
+    })();
+  </script>
+</body>
+</html>

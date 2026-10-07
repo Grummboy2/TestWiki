@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Local Wiki Editor | DragonMounts 2 Wiki</title>
+<meta name="description" content="Use the local visual editor to update your own DragonMounts 2 Wiki copy.">
+<meta name="theme-color" content="#21152d">
+<link rel="icon" href="textures/pack_icon.png" type="image/png">
+<script>try{var t=localStorage.getItem("dm2-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(x){}</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="index.html"><img class="mark" src="textures/pack_icon.png" alt=""><span>DragonMounts 2</span></a>
+    <div class="tools">
+      <button class="ibtn menu-toggle" id="nav-toggle" type="button" aria-label="Open guide menu" aria-controls="nav-drawer" aria-expanded="false">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <button class="sbtn" id="sbtn" type="button" aria-label="Search the wiki">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search</span><kbd>/</kbd>
+      </button>
+      <button class="ibtn" id="theme" type="button" aria-label="Switch between light and dark mode">
+        <svg class="ico moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="ico sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<dialog class="nav-drawer" id="nav-drawer" aria-labelledby="nav-title">
+  <div class="drawer-head"><b id="nav-title">Explore the wiki</b><button class="ibtn" id="nav-close" type="button" aria-label="Close guide menu">×</button></div>
+  <nav aria-label="Guide pages"></nav>
+</dialog>
+<main id="main">
+  <div class="phead"><div class="wrap"><h1>Edit the Wiki</h1><p class="lede">Use the visual editor on your own computer to change pages, organize the menu, and adjust the colors. It saves directly to the TestWiki folder without a browser folder picker.</p></div></div>
+  <div class="wrap layout has-sidebar">
+    <aside class="guide-sidebar"><nav aria-label="Wiki chapters"></nav></aside>
+    <article>
+      <div class="quick-actions">
+        <a class="btn" href="https://github.com/Grummboy2/TestWiki">Open the repository</a>
+      </div>
+
+      <h2 id="open-editor"><a class="anchor" href="#open-editor" aria-label="Link to this section">#</a>Open the local editor</h2>
+      <ol>
+        <li>Double-click <code>Start-Wiki-Editor.bat</code> in your TestWiki folder. Or, open a terminal in that folder and run <code>node tools/visual-editor-server.js</code>.</li>
+        <li>Open <code>http://127.0.0.1:8765/tools/visual-editor/</code> in a desktop browser.</li>
+        <li>The editor connects to the TestWiki folder automatically. You do not need to grant browser file access or choose a folder.</li>
+        <li>Keep the terminal running while using the editor. Stop the local server with Ctrl+C when you are finished.</li>
+      </ol>
+
+      <h2 id="visual-editing"><a class="anchor" href="#visual-editing" aria-label="Link to this section">#</a>Edit pages visually</h2>
+      <p>Choose a page in the editor and select <b>Start editing</b>. Click text in the preview to edit it directly; use the formatting buttons for emphasis and lists. Select <b>Extra options: On</b> when you want drag handles and <b>⋯</b> menus to appear. Button-style links in action rows can be dragged and reordered individually. A block's menu can select all of its text for replacement, add paragraphs, headings, or lists; duplicate or delete a block; move it up or down; change link addresses; and replace images or edit their descriptions. Save the page to write it into this local TestWiki folder.</p>
+
+      <h2 id="organize"><a class="anchor" href="#organize" aria-label="Link to this section">#</a>Add pages, move links, and change colors</h2>
+      <p>Use the editor's page and menu controls instead of writing HTML or changing the settings file yourself. New pages start from the site's existing page template and can be added to a menu group. Reorder, rename, or regroup menu links, and choose light- and dark-mode accent and home-banner colors using color pickers.</p>
+
+      <h2 id="editions"><a class="anchor" href="#editions" aria-label="Link to this section">#</a>Choose a Minecraft edition</h2>
+      <p>The Wiki opens with a Bedrock-or-Java choice. Bedrock opens the current guides; Java opens a separate starter page for future Java-specific content. The edition choice is remembered on this device and can be changed from the Bedrock overview or by choosing <code>Change edition</code>.</p>
+
+      <h2 id="owner-only"><a class="anchor" href="#owner-only" aria-label="Link to this section">#</a>What "only me" means</h2>
+      <p>This is a local editor, not a public control panel. It has no website login and cannot publish commits. Its local server listens only on this computer and only saves Wiki pages and settings. Other website visitors cannot use it to change your computer or the live Wiki. It does not distinguish between Windows accounts on this same computer, so stop the server when you finish editing. Publish local edits to the website later using your normal GitHub account and repository access.</p>
+
+      <h2 id="browser-support"><a class="anchor" href="#browser-support" aria-label="Link to this section">#</a>Browser and safety</h2>
+      <p>Use a desktop browser such as Microsoft Edge or Google Chrome. The editor saves directly into the local TestWiki folder through its loopback-only server. It does not ask for a password, GitHub token, account credentials, or browser folder permissions.</p>
+      <p>Keep the site server running only while you use the editor. It listens on <code>127.0.0.1</code> (this computer), serves Wiki pages and assets, and accepts save requests only from this local editor for approved Wiki files. Changes remain local until you publish them through GitHub.</p>
+    </article>
+  </div>
+</main>
+<footer class="foot"><div class="wrap"><p>Dragon Mounts 2 Wiki · <a href="index.html">Home</a> · <a href="https://github.com/Grummboy2/TestWiki">Edit the source on GitHub</a></p></div></footer>
+<div id="sx" hidden><div class="sbox" role="dialog" aria-modal="true" aria-label="Search the wiki"><input id="sq" type="search" placeholder="Search the wiki" aria-label="Search the wiki" autocomplete="off"><div id="sres"></div><div class="sfoot">Arrow keys to move, Enter to open, Esc to close</div></div></div>
+<script src="assets/config.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

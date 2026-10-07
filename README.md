@@ -1,20 +1,16 @@
 # DragonMounts 2 Wiki
 
-The Dragon Mounts 2 project wiki for the Minecraft Bedrock add-on. It documents the public v1.2.5.1 release; check the official file listing for supported game versions and the latest release notes.
+The Dragon Mounts 2 project wiki starts by asking whether you play Minecraft Bedrock or Java. Bedrock has the current guides for the public v1.2.5.1 release; Java has a separate starter section ready for future guides.
 
 - [Official CurseForge files](https://www.curseforge.com/minecraft-bedrock/addons/dragon-mounts-2/files/all)
 - [Official project wiki](https://github.com/DragonMounts-Team/DragonMounts2-Bedrock/wiki)
 - [Report a wiki issue](https://github.com/Grummboy2/TestWiki/issues/new)
 
-## Edit and preview
+## Edit the Wiki visually
 
-The generated HTML pages are served directly by GitHub Pages. For content changes, edit `tools/build.py` and run:
+Double-click `Start-Wiki-Editor.bat`, then edit the page preview. The local editor connects to this project folder automatically and can change page content, create pages, drag blocks to reorder them, use three-dot menus for common block actions, rearrange menu links, and choose colors without editing code. Read [wiki-editor.html](wiki-editor.html) for details.
 
-```powershell
-python tools/build.py
-```
-
-This regenerates the pages and `assets/data.js`; do not hand-edit generated HTML. Open `index.html` locally to preview. To add search/share canonical URLs, run `python tools/build.py --url https://Grummboy2.github.io/TestWiki`.
+The editor's server listens only on this computer and saves approved Wiki pages and settings directly to this folder. It has no GitHub login or publishing access. After reviewing local changes, publish them to the website through your usual GitHub account and repository permissions. Avoid rerunning `tools/build.py` after visual edits to generated pages, since the generator may replace those edits.
 
 ## Publish changes
 
@@ -29,7 +25,12 @@ In **Settings > Pages**, use **Deploy from a branch**, branch `main`, folder `/ 
 | Path | Purpose |
 | --- | --- |
 | `tools/build.py` | Page content and static-site generator |
-| `index.html` and guide pages | Generated static pages |
+| `Start-Wiki-Editor.bat` | Start the local visual editor on Windows |
+| `tools/visual-editor/` | Visual page, menu, and color editor |
+| `tools/visual-editor-server.js` | Loopback-only server used by the local editor |
+| `index.html` | Edition chooser and Bedrock overview |
+| `java.html` | Java edition starter section |
+| Other root HTML pages | Bedrock guides |
 | `assets/` | Shared styling, behavior, configuration, and search index |
 | `textures/` | Dragon and egg artwork used by the galleries |
 | `CONTENT-TODO.md` | Remaining work that needs source confirmation or new assets |
